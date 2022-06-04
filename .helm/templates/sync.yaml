@@ -1,0 +1,37 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: sync
+spec:
+  schedule: "* * * * *"
+  concurrencyPolicy: Forbid
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+          labels:
+            app: sync
+        spec:
+          restartPolicy: Never
+          containers:
+            - name: python
+              image: "{{ .Values.werf.image.sync }}"
+              workingDir: /app
+              env:
+                - name: MONGO_URI
+                  value: "{{ .Values.mongodb.uri }}"
+                - name: MONGO_DB_NAME
+                  value: '{{ eq .Values.werf.env "staging" | ternary .Values.mongodb.dbName.staging .Values.mongodb.dbName._default }}'
+                - name: SHEET_ID
+                  value: "{{ .Values.sheets.sheetId }}"
+                - name: GOOGLE_SHEETS_CREDENTIALS_FILE
+                  value: "{{ .Values.sheets.credentialsFile }}"
+              volumeMounts:
+                - name: secret-files
+                  mountPath: "/app/secret"
+                  readOnly: true
+          volumes:
+            - name: secret-files
+              secret:
+                secretName: secret-files
+                optional: false

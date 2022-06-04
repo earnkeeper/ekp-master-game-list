@@ -1,0 +1,6 @@
+configVersion: 1
+project: master-game-list
+---
+image: sync
+dockerfile: Dockerfile.sync
+context: .
