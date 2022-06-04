@@ -9,9 +9,10 @@ class GameRepo:
         self.mg_client = mg_client
         self.collection = self.mg_client.db['master_game_list']
         self.collection.create_index("id", unique=True)
+        self.collection.create_index("source")
 
     def find_by_source(self, source):
-        return list(self.collection.find({ source: "source" }))
+        return list(self.collection.find({ "source": source }))
     
     def delete_by_id(self, id):
         self.collection.delete_many({ "id": id })

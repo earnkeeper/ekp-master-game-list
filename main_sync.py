@@ -6,6 +6,7 @@ from decouple import AutoConfig
 from ekp_sdk import BaseContainer
 
 from db.game_repo import GameRepo
+from sync.coingecko_config_service import CoingeckoConfigService
 from sync.sheets_config_service import SheetsConfigService
 
 
@@ -30,7 +31,13 @@ class AppContainer(BaseContainer):
             game_repo = self.game_repo,
             sheet_id=SHEET_ID
         )
-        
+
+        self.coingecko_config_service = CoingeckoConfigService(
+            coingecko_service=self.coingecko_service,
+            cache_service=self.cache_service,
+            game_repo = self.game_repo
+        )
+
 
 
 if __name__ == '__main__':
@@ -44,4 +51,8 @@ if __name__ == '__main__':
 
     loop.run_until_complete(
         container.sheets_config_service.sync_games()
+    )
+    
+    loop.run_until_complete(
+        container.coingecko_config_service.sync_games()
     )
