@@ -75,19 +75,33 @@ class CoingeckoConfigService:
         )
 
         existing_games = self.game_repo.find_by_source("coingecko")
-
+        
         existing_games_map = {}
         
         for game in existing_games:
             existing_games_map[game["id"]] = 1
+
+        manual_games = self.game_repo.find_by_source("manual")
+
+        manual_games_map = {}
+        
+        for game in manual_games:
+            manual_games_map[game["id"]] = game
         
         for market in filtered_markets:
             id = market["id"]
-
+            
+            manual_game = None
+            
+            if id in manual_games_map:
+                manual_game = manual_games_map[id]
+                if manual_game["disable"]:
+                    continue
+                
             if (id in existing_games_map) or (id not in coin_map):
                 continue
 
-            coin = await self.coingecko_service.get_coin(market["id"])
+            coin = await self.coingecko_service.get_coin(id)
 
             platforms = coin_map[id]["platforms"]
 
