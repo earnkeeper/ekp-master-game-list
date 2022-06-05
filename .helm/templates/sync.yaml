@@ -23,7 +23,7 @@ spec:
                 - name: MONGO_DB_NAME
                   value: '{{ eq .Values.werf.env "staging" | ternary .Values.mongodb.dbName.staging .Values.mongodb.dbName._default }}'
                 - name: SHEET_ID
-                  value: "{{ .Values.sheets.sheetId }}"
+                  value: '{{ eq .Values.werf.env "staging" | ternary .Values.sheets.sheetId.staging .Values.sheets.sheetId._default }}'
                 - name: GOOGLE_SHEETS_CREDENTIALS_FILE
                   value: "{{ .Values.sheets.credentialsFile }}"
                 - name: REDIS_URI
