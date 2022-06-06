@@ -90,12 +90,18 @@ def __deep_dives_section():
     return Div([
         Span("Deep Dives", "font-medium-5 mt-3 d-block"),
         Hr(),
-        Paragraphs(
-            [
-                "Want to see an earnings deep dive on this game like we have already done on Metabomb, Splinterlands and more?",
-                "Add a feedback item here, then ping us on discord to talk it through."
-            ],
-        ),
+        Span("Want to see an earnings deep dive on this game like we have already done on "),
+        Link(content="Metabomb", href="/game/metabomb"),
+        Span(", "),
+        Link(content="Thetan Arena", href="/game/thetan-arena"),
+        Span(" and more?"),
+        Div(style={"height": "8px"}),
+        Span("Add a feedback item "),
+        Link(content="here", href="https://feedback.earnkeeper.io", external=True),
+        Span(", then ping us on "),
+        Link(content="discord", href="https://discord.gg/RHnnWBAkes", external=True),
+        Span(" to talk it through."),
+        Div(style={"height": "24px"}),
         {
             "_type": "DeepDives",
             "props": {
