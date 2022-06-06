@@ -17,7 +17,7 @@ def page(GAME_INFO_COLLECTION_NAME):
                     Div(
                         when="$",
                         children=[
-                            Span('$.name', 'font-large-1 d-block mb-2'),
+                            Span('$.name', 'font-large-1 d-block'),
                             __socials_section(),
                             __info_section()
                         ]
@@ -78,7 +78,7 @@ def __activity_card():
 def __activity_chart():
     return Div(
         style={
-            "marginRight": "-10px", 
+            "marginRight": "-10px",
             "marginLeft": "-22px",
             "marginBottom": "-14px",
             "marginTop": "-20px"
@@ -186,26 +186,50 @@ def __activity_stats():
 
 
 def __socials_section():
-    return Row([
-        __icon_link_col("$.twitter", "cib-twitter")
-    ])
+    return Row(
+        class_name="my-1",
+        children=[
+            __icon_link_col("$.website", "cil-globe-alt", "Website"),
+            __icon_link_col("$.twitter", "cib-twitter", "Twitter"),
+            __icon_link_col("$.discord", "cib-discord", "Discord"),
+            __icon_link_col("$.telegram", "cib-telegram", "Telegram"),
+        ]
+    )
 
 
-def __icon_link_col(href, icon_name):
+def __icon_link_col(href, icon_name, content):
     return Col(
-        "col-auto my-auto pl-0",
-        [
-            Div(
-                when=href,
-                children=[
-                    Link(
-                        href=href,
-                        external=True,
-                        content=Icon(
-                            icon_name,
+        when=href,
+        class_name="col-auto my-auto pr-2",
+        children=[
+            Link(
+                href=href,
+                external=True,
+                content=Row(
+                    [
+                        Col(
+                            "col-auto my-auto pr-0",
+                            [
+                                Icon(
+                                    icon_name,
+                                )
+                            ]
+                        ),
+                        Col(
+                            "col-auto px-0",
+                            [Div([], style={"width": "8px"})]
+                        ),
+                        Col(
+                            "col-auto my-auto px-0",
+                            [
+                                Span(
+                                    content,
+                                    "font-small-2 font-weight-bold"
+                                )
+                            ]
                         )
-                    )
-                ]
+                    ]
+                )
             )
         ]
     )

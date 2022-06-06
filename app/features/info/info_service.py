@@ -51,6 +51,9 @@ class InfoService:
                 "name": game["name"],
                 "description": coingecko_info["description"]["en"],
                 "twitter": twitter,
+                "telegram": game["telegram"],
+                "discord": game["discord"],
+                "website": game["website"],
                 "activity": activity_document
             }
         ]

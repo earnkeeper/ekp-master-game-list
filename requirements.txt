@@ -1,2 +1,2 @@
-ekp_sdk==0.5.16
+ekp_sdk==0.5.19
 python-dateutil==2.8.2
