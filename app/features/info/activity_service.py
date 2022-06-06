@@ -18,7 +18,6 @@ class ActivityService:
             return {
                 "gameId": game["id"],
                 "gameName": game["name"],
-                "chain": game["chain"],
                 "newUsers24h": 0,
                 "newUsers48h": 0,
                 "newUsersDelta": None,
