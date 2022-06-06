@@ -4,3 +4,7 @@ project: master-game-list
 image: sync
 dockerfile: Dockerfile.sync
 context: .
+---
+image: app
+dockerfile: Dockerfile.app
+context: .
