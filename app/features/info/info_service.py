@@ -42,7 +42,7 @@ class InfoService:
         twitter = None
         
         if game["twitter"]:
-            twitter = f"https://twitter.com/{twitter}"
+            twitter = f'https://twitter.com/{game["twitter"]}'
             
         return [
             {
