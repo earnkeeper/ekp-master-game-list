@@ -1,0 +1,10 @@
+{
+  "id": "game-info",
+  "gameId": "all",
+  "name": "Game Info",
+  "github": "https://github.com/earnkeeper/ekp-master-game-list",
+  "image": "/static/market.avif",
+  "mainPage": "",
+  "description": "",
+  "features": []
+}

@@ -1,0 +1,211 @@
+from app.utils.page_title import page_title
+from ekp_sdk.ui import (Card, Chart, Col, Column, Container, Datatable, Div,
+                        Image, Link, Paragraphs, Row, Span, collection,
+                        commify, documents, ekp_map, format_currency,
+                        format_mask_address, format_percent, format_template, Hr,
+                        is_busy, json_array, navigate, sort_by, Button, Icon, Tabs)
+
+
+def page(GAME_INFO_COLLECTION_NAME):
+    return Container(
+        children=[
+            Div(
+                context=format_template(f"$['{GAME_INFO_COLLECTION_NAME}']" + "[?(@.id == '{{ game_id }}')]", {
+                    "game_id": "$.location.pathParams[1]"
+                }),
+                children=[
+                    Div(
+                        when="$",
+                        children=[
+                            Span('$.name', 'font-large-1 d-block mb-2'),
+                            __socials_section(),
+                            __info_section()
+                        ]
+                    ),
+                    Div(
+                        when={"not": "$"},
+                        children=[page_title('loader', 'Loading')]
+                    )
+                ],
+            )
+        ]
+    )
+
+
+def __info_section():
+    return [
+        Div([
+            Image(
+                src="https://pbs.twimg.com/profile_banners/1434504204765339652/1651046414/1500x500",
+                style={"width": "70%"}
+            ),
+            Div([], "mb-2"),
+
+            Span("$.description", "new-line d-block"),
+            Span("Volumes and Stats", "font-medium-5 mt-3 d-block"),
+            Hr(),
+            __volumes_row()
+        ])
+    ]
+
+
+def __volumes_row():
+    return Row([
+        Col(
+            "col-12 col-md-6 col-lg-4",
+            [
+                __activity_card()
+            ]
+        ),
+    ])
+
+
+def __activity_card():
+    return Div(
+        context="$.activity",
+        children=[
+            Card(
+                children=[
+                    __activity_stats(),
+                    Hr(),
+                    __activity_chart(),
+                ]
+            )
+        ]
+    )
+
+
+def __activity_chart():
+    return Div(
+        style={
+            "marginRight": "-10px", 
+            "marginLeft": "-22px",
+            "marginBottom": "-14px",
+            "marginTop": "-20px"
+        },
+        children=[
+            Chart(
+                title="",
+                height=220,
+                type="line",
+                data="$.chart7d.*",
+                card=False,
+                options={
+                    "legend": {
+                        "show": False
+                    },
+                    "chart": {
+                        "zoom": {
+                            "enabled": False,
+                        },
+                        "toolbar": {
+                            "show": False,
+                        },
+                        "stacked": False,
+                        "type": "line"
+                    },
+                    "xaxis": {
+                        "type": "datetime",
+                        "labels": {"show": True}
+                    },
+                    "yaxis": [
+                        {
+                            "labels": {
+                                "show": False,
+                                "formatter": commify("$")
+                            },
+                        },
+                    ],
+                    "labels": ekp_map(
+                        sort_by(
+                            json_array(
+                                "$.chart7d.*"
+                            ),
+                            "$.timestamp_ms"
+                        ), "$.timestamp_ms"
+                    ),
+                    "stroke": {
+                        "width": [4, 4],
+                        "curve": 'smooth',
+                    }
+                },
+                series=[
+                    {
+                        "name": "New Users",
+                        "type": "line",
+                        "data": ekp_map(
+                                sort_by(
+                                    json_array("$.chart7d.*"),
+                                    "$.timestamp_ms"
+                                ),
+                            "$.newUsers"
+                        ),
+                    },
+                ],
+            )
+        ]
+    )
+
+
+def __activity_stats():
+    return Row(
+        class_name="my-1 mx-0",
+        children=[
+            Col(
+                "col-6",
+                [
+                    Span("New Users (24h)", "d-block font-small-3"),
+                    Span(
+                        commify("$.newUsers24h"),
+                        format_template(
+                            "d-block font-small-2 text-{{ color }}",
+                            {
+                                "color": "$.deltaColor"
+                            }
+                        )
+                    ),
+                ]
+            ),
+            Col(
+                "col-6",
+                [
+                    Span("Change (24h)", "d-block font-small-3 text-right"),
+                    Span(
+                        format_percent("$.newUsersDelta"),
+                        format_template(
+                            "d-block font-small-2 text-right text-{{ color }}",
+                            {
+                                "color": "$.deltaColor"
+                            }
+                        )
+                    ),
+                ]
+            ),
+        ]
+    )
+
+
+def __socials_section():
+    return Row([
+        __icon_link_col("$.twitter", "cib-twitter")
+    ])
+
+
+def __icon_link_col(href, icon_name):
+    return Col(
+        "col-auto my-auto pl-0",
+        [
+            Div(
+                when=href,
+                children=[
+                    Link(
+                        href=href,
+                        external=True,
+                        content=Icon(
+                            icon_name,
+                        )
+                    )
+                ]
+            )
+        ]
+    )
