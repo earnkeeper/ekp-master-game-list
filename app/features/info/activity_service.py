@@ -14,6 +14,8 @@ class ActivityService:
 
         records = self.activity_repo.find_by_game_id(game["id"])
 
+        now = datetime.now().timestamp()
+
         if not len(records):
             return {
                 "gameId": game["id"],
@@ -28,8 +30,6 @@ class ActivityService:
             }
 
         latest_date_timestamp = records[len(records) - 1]["timestamp"]
-
-        now = datetime.now().timestamp()
 
         document = self.__create_record(game, now, latest_date_timestamp)
 
