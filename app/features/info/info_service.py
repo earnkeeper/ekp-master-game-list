@@ -21,8 +21,6 @@ class InfoService:
     async def get_documents(self, game_id):
         game = self.game_repo.find_one_by_id(game_id)
         
-        activity_document = await self.activity_service.get_activity_document(game)
-        
         now = datetime.now().timestamp()
 
         if not game:
@@ -43,6 +41,8 @@ class InfoService:
         
         if game["twitter"]:
             twitter = f'https://twitter.com/{game["twitter"]}'
+
+        activity_document = await self.activity_service.get_activity_document(game)
             
         return [
             {
@@ -54,6 +54,7 @@ class InfoService:
                 "telegram": game["telegram"],
                 "discord": game["discord"],
                 "website": game["website"],
-                "activity": activity_document
+                "activity": activity_document,
+                "statsAvailable": activity_document is not None
             }
         ]

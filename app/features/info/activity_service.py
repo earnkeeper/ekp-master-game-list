@@ -17,17 +17,7 @@ class ActivityService:
         now = datetime.now().timestamp()
 
         if not len(records):
-            return {
-                "gameId": game["id"],
-                "gameName": game["name"],
-                "newUsers24h": 0,
-                "newUsers48h": 0,
-                "newUsersDelta": None,
-                "newUsers7d": 0,
-                "newUsers7dcount": 0,
-                "updated": now,
-                "chart7d": {},
-            }
+            return None
 
         latest_date_timestamp = records[len(records) - 1]["timestamp"]
 

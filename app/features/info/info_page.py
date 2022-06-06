@@ -19,7 +19,10 @@ def page(GAME_INFO_COLLECTION_NAME):
                         children=[
                             Span('$.name', 'font-large-1 d-block'),
                             __socials_section(),
-                            __info_section()
+                            __info_section(),
+                            __volumes_section(),
+                            __deep_dives_section(),
+                            Div([], style={"height": "300px"})
                         ]
                     ),
                     Div(
@@ -42,21 +45,63 @@ def __info_section():
             Div([], "mb-2"),
 
             Span("$.description", "new-line d-block"),
-            Span("Volumes and Stats", "font-medium-5 mt-3 d-block"),
-            Hr(),
-            __volumes_row()
         ])
     ]
 
 
-def __volumes_row():
-    return Row([
-        Col(
-            "col-12 col-md-6 col-lg-4",
-            [
-                __activity_card()
+def __volumes_section():
+    return Div([
+        Span("Volumes and Stats", "font-medium-5 mt-3 d-block"),
+        Hr(),
+        Div(
+            when="$.statsAvailable",
+            children=[
+                Span(
+                    "We collect volume statistics for hundreds of games to show you were users are spending their time."),
+                Div(style={"height": "8px"}),
+                Span(format_template("The stats we have for {{ name }} are below.", {
+                    "name": "$.name"
+                })),
+                Row([
+                    Col(
+                        "col-12 col-md-6 col-lg-4",
+                        [
+                            __activity_card()
+                        ]
+                    ),
+                ])
             ]
         ),
+        Div(
+            when={"not": "$.statsAvailable"},
+            children=[
+                Span("⚠️ We have not collected any usage stats for this game yet."),
+                Div(style={"height": "8px"}),
+                Span(
+                    "Connect with us on discord if you would like us to dive deeper"
+                ),
+            ]
+        )
+
+    ])
+
+
+def __deep_dives_section():
+    return Div([
+        Span("Deep Dives", "font-medium-5 mt-3 d-block"),
+        Hr(),
+        Paragraphs(
+            [
+                "Want to see an earnings deep dive on this game like we have already done on Metabomb, Splinterlands and more?",
+                "Add a feedback item here, then ping us on discord to talk it through."
+            ],
+        ),
+        {
+            "_type": "DeepDives",
+            "props": {
+                "gameId": "$.id"
+            }
+        }
     ])
 
 
