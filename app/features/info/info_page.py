@@ -62,6 +62,7 @@ def __volumes_section():
                 Span(format_template("The stats we have for {{ name }} are below.", {
                     "name": "$.name"
                 })),
+                Div(style={"height": "16px"}),
                 Row([
                     Col(
                         "col-12 col-md-6 col-lg-4",
@@ -69,6 +70,13 @@ def __volumes_section():
                             __activity_card()
                         ]
                     ),
+                    Col(
+                        "col-12 col-md-6 col-lg-4",
+                        [
+                            __volume_card()
+                        ]
+                    ),
+
                 ])
             ]
         ),
@@ -114,6 +122,7 @@ def __deep_dives_section():
 def __activity_card():
     return Div(
         context="$.activity",
+        when="$",
         children=[
             Card(
                 children=[
@@ -235,7 +244,128 @@ def __activity_stats():
         ]
     )
 
-
+def __volume_card():
+    return Div(
+        context="$.volume",
+        when="$",        
+        children=[
+            Card(
+                children=[
+                    __volume_stats(),
+                    Hr(),
+                    __volume_chart(),
+                ]
+            )
+        ]
+    )
+    
+def __volume_chart():
+    return Div(
+        style={
+            "marginRight": "-10px",
+            "marginLeft": "-22px",
+            "marginBottom": "-14px",
+            "marginTop": "-20px"
+        },
+        children=[
+            Chart(
+                title="",
+                height=220,
+                type="line",
+                data="$.chart7d.*",
+                card=False,
+                options={
+                    "legend": {
+                        "show": False
+                    },
+                    "chart": {
+                        "zoom": {
+                            "enabled": False,
+                        },
+                        "toolbar": {
+                            "show": False,
+                        },
+                        "stacked": False,
+                        "type": "line"
+                    },
+                    "xaxis": {
+                        "type": "datetime",
+                        "labels": {"show": True}
+                    },
+                    "yaxis": [
+                        {
+                            "labels": {
+                                "show": False,
+                                "formatter": commify("$")
+                            },
+                        },
+                    ],
+                    "labels": ekp_map(
+                        sort_by(
+                            json_array(
+                                "$.chart7d.*"
+                            ),
+                            "$.timestamp_ms"
+                        ), "$.timestamp_ms"
+                    ),
+                    "stroke": {
+                        "width": [4, 4],
+                        "curve": 'smooth',
+                    }
+                },
+                series=[
+                    {
+                        "name": "Volume",
+                        "type": "line",
+                        "data": ekp_map(
+                                sort_by(
+                                    json_array("$.chart7d.*"),
+                                    "$.timestamp_ms"
+                                ),
+                            "$.volume"
+                        ),
+                    },
+                ],
+            )
+        ]
+    )
+def __volume_stats():
+    return Row(
+        class_name="my-1 mx-0",
+        children=[
+            Col(
+                "col-6",
+                [
+                    Span("Token Volume (24h)", "d-block font-small-3"),
+                    Span(
+                        commify("$.volume24h"),
+                        format_template(
+                            "d-block font-small-2 text-{{ color }}",
+                            {
+                                "color": "$.deltaColor"
+                            }
+                        )
+                    ),
+                ]
+            ),
+            Col(
+                "col-6",
+                [
+                    Span("Change (24h)", "d-block font-small-3 text-right"),
+                    Span(
+                        format_percent("$.volumeDelta"),
+                        format_template(
+                            "d-block font-small-2 text-right text-{{ color }}",
+                            {
+                                "color": "$.deltaColor"
+                            }
+                        )
+                    ),
+                ]
+            ),
+        ]
+    )
+    
 def __socials_section():
     return Row(
         class_name="my-1",

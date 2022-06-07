@@ -1,6 +1,5 @@
 from datetime import datetime
 from db.activity_repo import ActivityRepo
-from db.game_repo import GameRepo
 
 
 class ActivityService:

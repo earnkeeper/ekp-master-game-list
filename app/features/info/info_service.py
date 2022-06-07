@@ -1,5 +1,6 @@
 from pprint import pprint
 from app.features.info.activity_service import ActivityService
+from app.features.info.token_volume_service import TokenVolumeService
 from db.game_repo import GameRepo
 from datetime import datetime
 from ekp_sdk.services import CacheService, CoingeckoService
@@ -12,12 +13,14 @@ class InfoService:
         cache_service: CacheService,
         coingecko_service: CoingeckoService,
         game_repo: GameRepo,
+        token_volume_service: TokenVolumeService,
     ):
         self.activity_service = activity_service
         self.cache_service = cache_service
         self.coingecko_service = coingecko_service
         self.game_repo = game_repo
-
+        self.token_volume_service = token_volume_service
+        
     async def get_documents(self, game_id):
         game = self.game_repo.find_one_by_id(game_id)
         
@@ -43,6 +46,7 @@ class InfoService:
             twitter = f'https://twitter.com/{game["twitter"]}'
 
         activity_document = await self.activity_service.get_activity_document(game)
+        volume_document = await self.token_volume_service.get_volume_document(game)
             
         return [
             {
@@ -55,6 +59,7 @@ class InfoService:
                 "discord": game["discord"],
                 "website": game["website"],
                 "activity": activity_document,
-                "statsAvailable": activity_document is not None
+                "volume": volume_document,
+                "statsAvailable": activity_document is not None or volume_document is not None
             }
         ]
