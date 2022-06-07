@@ -3,7 +3,7 @@ from ekp_sdk.ui import (Card, Chart, Col, Column, Container, Datatable, Div,
                         Image, Link, Paragraphs, Row, Span, collection,
                         commify, documents, ekp_map, format_currency,
                         format_mask_address, format_percent, format_template, Hr,
-                        is_busy, json_array, navigate, sort_by, Button, Icon, Tabs)
+                        is_busy, json_array, navigate, sort_by, Button, Icon, Tabs, Timeline, Ul)
 
 
 def page(GAME_INFO_COLLECTION_NAME):
@@ -22,6 +22,7 @@ def page(GAME_INFO_COLLECTION_NAME):
                             __info_section(),
                             __volumes_section(),
                             __deep_dives_section(),
+                            __roadmap_section(),
                             Div([], style={"height": "300px"})
                         ]
                     ),
@@ -244,10 +245,11 @@ def __activity_stats():
         ]
     )
 
+
 def __volume_card():
     return Div(
         context="$.volume",
-        when="$",        
+        when="$",
         children=[
             Card(
                 children=[
@@ -258,7 +260,8 @@ def __volume_card():
             )
         ]
     )
-    
+
+
 def __volume_chart():
     return Div(
         style={
@@ -329,6 +332,8 @@ def __volume_chart():
             )
         ]
     )
+
+
 def __volume_stats():
     return Row(
         class_name="my-1 mx-0",
@@ -338,7 +343,7 @@ def __volume_stats():
                 [
                     Span("Token Volume (24h)", "d-block font-small-3"),
                     Span(
-                        commify("$.volume24h"),
+                        format_currency("$.volume24h", None),
                         format_template(
                             "d-block font-small-2 text-{{ color }}",
                             {
@@ -365,7 +370,8 @@ def __volume_stats():
             ),
         ]
     )
-    
+
+
 def __socials_section():
     return Row(
         class_name="my-1",
@@ -414,3 +420,48 @@ def __icon_link_col(href, icon_name, content):
             )
         ]
     )
+
+
+def __roadmap_section():
+    return Div(
+        children=[
+            Span("Roadmap", "font-medium-5 mt-3 d-block"),
+            Hr(),
+            Div(
+                when="$.roadmap",
+                children=[
+                    Span(
+                        "We have curated game roadmaps into a standard format, so that you can read them easily."
+                    ),
+                    Div(style={"height": "16px"}),
+                    Link(
+                        content="Check here for the official roadmap on the game site.",
+                        href="$.roadmap.officialLink",
+                        external=True,
+                        external_icon=True
+                    ),
+                    Div(style={"height": "24px"}),
+                    Timeline(
+                        events = json_array("$.roadmap.events"),
+                        title = "$.title",
+                        content = Ul(
+                            items="$.items"
+                        )
+                    )
+                ]
+            ),
+            Div(
+                when={"not": "$.roadmap"},
+                children=[
+                    Span(
+                        "We have not fetched the roadmap for this project yet."
+                    ),                    
+                    Div(style={"height": "16px"}),
+                    Span("Want us to add this roadmap? Add a feedback item "),
+                    Link(content="here", href="https://feedback.earnkeeper.io", external=True),
+                    Span(", then ping us on "),
+                    Link(content="discord", href="https://discord.gg/RHnnWBAkes", external=True),
+                    Span(" to let us know."),
+                ]
+            ),
+        ])

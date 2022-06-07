@@ -8,7 +8,7 @@ class TokenVolumeService:
     ):
         self.volume_repo = volume_repo
 
-    async def get_volume_document(self, game):
+    async def get_volume_document(self, game, usd_rate):
             
         records = self.volume_repo.find_by_game_id(game["id"])
 
@@ -26,7 +26,7 @@ class TokenVolumeService:
         for record in records:
             date_timestamp = record["timestamp"]
             ago = latest_date_timestamp - date_timestamp
-            volume = record["volume_usd"]
+            volume = record["volume_usd"] * usd_rate
             
             if volume is None:
                 volume = 0
@@ -55,7 +55,6 @@ class TokenVolumeService:
             document["deltaColor"] = "danger"
         if document["volumeDelta"] > 0:
             document["deltaColor"] = "success"
-            
 
         return document
             

@@ -21,7 +21,7 @@ class InfoService:
         self.game_repo = game_repo
         self.token_volume_service = token_volume_service
         
-    async def get_documents(self, game_id):
+    async def get_documents(self, game_id, currency):
         game = self.game_repo.find_one_by_id(game_id)
         
         now = datetime.now().timestamp()
@@ -40,14 +40,27 @@ class InfoService:
             lambda: self.coingecko_service.get_coin(game_id)
         )
         
+        usd_rate = await self.cache_service.wrap(
+            f"coingecko_usd_{currency['id']}",
+            lambda: self.coingecko_service.get_latest_price("usd-coin", currency["id"])
+        )
+        
         twitter = None
         
         if game["twitter"]:
             twitter = f'https://twitter.com/{game["twitter"]}'
 
         activity_document = await self.activity_service.get_activity_document(game)
-        volume_document = await self.token_volume_service.get_volume_document(game)
-            
+        volume_document = await self.token_volume_service.get_volume_document(game, usd_rate)
+        
+        # roadmap = {
+        #     "officialLink": "https://google.com",
+        #     "events": {
+        #         "title": "Q2 - 2022",
+        #         "items": ["This is a test", "This is another test"]
+        #     }
+        # }
+        
         return [
             {
                 "id": game_id,
@@ -60,6 +73,7 @@ class InfoService:
                 "website": game["website"],
                 "activity": activity_document,
                 "volume": volume_document,
-                "statsAvailable": activity_document is not None or volume_document is not None
+                "statsAvailable": activity_document is not None or volume_document is not None,
+                "roadmap": None
             }
         ]
