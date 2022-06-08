@@ -61,6 +61,8 @@ class InfoService:
         #     }
         # }
         
+        roadmap_document = await self.roadmap_service.get_roadmaps_document(game)
+            
         return [
             {
                 "id": game_id,
@@ -74,6 +76,6 @@ class InfoService:
                 "activity": activity_document,
                 "volume": volume_document,
                 "statsAvailable": activity_document is not None or volume_document is not None,
-                "roadmap": None
+                "roadmap": roadmap_document
             }
         ]
