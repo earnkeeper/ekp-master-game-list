@@ -1,5 +1,6 @@
 from pprint import pprint
 from app.features.info.activity_service import ActivityService
+from app.features.info.roadmap_service import RoadmapService
 from app.features.info.token_volume_service import TokenVolumeService
 from db.game_repo import GameRepo
 from datetime import datetime
@@ -13,12 +14,14 @@ class InfoService:
         cache_service: CacheService,
         coingecko_service: CoingeckoService,
         game_repo: GameRepo,
+        roadmap_service: RoadmapService,
         token_volume_service: TokenVolumeService,
     ):
         self.activity_service = activity_service
         self.cache_service = cache_service
         self.coingecko_service = coingecko_service
         self.game_repo = game_repo
+        self.roadmap_service = roadmap_service
         self.token_volume_service = token_volume_service
         
     async def get_documents(self, game_id, currency):
@@ -52,15 +55,6 @@ class InfoService:
 
         activity_document = await self.activity_service.get_activity_document(game)
         volume_document = await self.token_volume_service.get_volume_document(game, usd_rate)
-        
-        # roadmap = {
-        #     "officialLink": "https://google.com",
-        #     "events": {
-        #         "title": "Q2 - 2022",
-        #         "items": ["This is a test", "This is another test"]
-        #     }
-        # }
-        
         roadmap_document = await self.roadmap_service.get_roadmaps_document(game)
             
         return [
