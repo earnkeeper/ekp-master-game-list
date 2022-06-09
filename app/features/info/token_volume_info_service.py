@@ -1,7 +1,7 @@
 from db.volume_repo import VolumeRepo
 from datetime import datetime
 
-class TokenVolumeService:
+class TokenVolumeInfoService:
     def __init__(
         self,
         volume_repo: VolumeRepo,

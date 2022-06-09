@@ -1,10 +1,10 @@
 import logging
 from decouple import AutoConfig
 from ekp_sdk import BaseContainer
-from app.features.info.activity_service import ActivityService
+from app.features.info.activity_info_service import ActivityInfoService
 from app.features.info.info_controller import InfoController
 from app.features.info.info_service import InfoService
-from app.features.info.token_volume_service import TokenVolumeService
+from app.features.info.token_volume_info_service import TokenVolumeInfoService
 from app.features.stats.activity_stats_service import ActivityStatsService
 from app.features.stats.stats_controller import StatsController
 from db.activity_repo import ActivityRepo
@@ -34,23 +34,19 @@ class AppContainer(BaseContainer):
             mg_client=self.mg_client
         )
 
-        # FEATURES - ACTIVITY
-
-        self.activity_service = ActivityService(
-            activity_repo=self.activity_repo,
-        )
-
-        # FEATURES - TOKEN VOLUME
-
-        self.token_volume_service = TokenVolumeService(
-            volume_repo=self.volume_repo,
-        )
 
         # FEATURES - INFO
 
+        self.activity_info_service = ActivityInfoService(
+            activity_repo=self.activity_repo,
+        )
+
+        self.token_volume_info_service = TokenVolumeInfoService(
+            volume_repo=self.volume_repo,
+        )
         self.info_service = InfoService(
-            activity_service=self.activity_service,
-            token_volume_service=self.token_volume_service,
+            activity_info_service=self.activity_info_service,
+            token_volume_info_service=self.token_volume_info_service,
             cache_service=self.cache_service,
             coingecko_service=self.coingecko_service,
             game_repo=self.game_repo
@@ -64,7 +60,7 @@ class AppContainer(BaseContainer):
         # FEATURES - STATS
 
         self.activity_stats_service = ActivityStatsService(
-            activity_service=self.activity_service,
+            activity_repo=self.activity_repo,
             cache_service=self.cache_service,
             coingecko_service=self.coingecko_service,
             game_repo=self.game_repo,

@@ -1,6 +1,6 @@
 from pprint import pprint
-from app.features.info.activity_service import ActivityService
-from app.features.info.token_volume_service import TokenVolumeService
+from app.features.info.activity_info_service import ActivityInfoService
+from app.features.info.token_volume_info_service import TokenVolumeInfoService
 from db.game_repo import GameRepo
 from datetime import datetime
 from ekp_sdk.services import CacheService, CoingeckoService
@@ -9,17 +9,17 @@ from ekp_sdk.services import CacheService, CoingeckoService
 class InfoService:
     def __init__(
         self,
-        activity_service: ActivityService,
+        activity_info_service: ActivityInfoService,
         cache_service: CacheService,
         coingecko_service: CoingeckoService,
         game_repo: GameRepo,
-        token_volume_service: TokenVolumeService,
+        token_volume_info_service: TokenVolumeInfoService,
     ):
-        self.activity_service = activity_service
+        self.activity_info_service = activity_info_service
         self.cache_service = cache_service
         self.coingecko_service = coingecko_service
         self.game_repo = game_repo
-        self.token_volume_service = token_volume_service
+        self.token_volume_info_service = token_volume_info_service
         
     async def get_documents(self, game_id):
         game = self.game_repo.find_one_by_id(game_id)
@@ -45,8 +45,8 @@ class InfoService:
         if game["twitter"]:
             twitter = f'https://twitter.com/{game["twitter"]}'
 
-        activity_document = await self.activity_service.get_activity_document(game)
-        volume_document = await self.token_volume_service.get_volume_document(game)
+        activity_document = await self.activity_info_service.get_activity_document(game)
+        volume_document = await self.token_volume_info_service.get_volume_document(game)
             
         return [
             {

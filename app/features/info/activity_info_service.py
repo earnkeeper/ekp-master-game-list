@@ -2,7 +2,7 @@ from datetime import datetime
 from db.activity_repo import ActivityRepo
 
 
-class ActivityService:
+class ActivityInfoService:
     def __init__(
         self,
         activity_repo: ActivityRepo,

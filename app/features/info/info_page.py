@@ -1,9 +1,9 @@
 from app.utils.page_title import page_title
-from ekp_sdk.ui import (Card, Chart, Col, Column, Container, Datatable, Div,
-                        Image, Link, Paragraphs, Row, Span, collection,
-                        commify, documents, ekp_map, format_currency,
-                        format_mask_address, format_percent, format_template, Hr,
-                        is_busy, json_array, navigate, sort_by, Button, Icon, Tabs)
+from ekp_sdk.ui import (Button, Card, Chart, Col, Column, Container, Datatable,
+                        Div, Hr, Icon, Image, Link, Paragraphs, Row, Span,
+                        Tabs, commify, ekp_map, format_currency,
+                        format_mask_address, format_percent, format_template,
+                        is_busy, json_array, navigate, sort_by)
 
 
 def page(GAME_INFO_COLLECTION_NAME):
@@ -244,10 +244,11 @@ def __activity_stats():
         ]
     )
 
+
 def __volume_card():
     return Div(
         context="$.volume",
-        when="$",        
+        when="$",
         children=[
             Card(
                 children=[
@@ -258,7 +259,8 @@ def __volume_card():
             )
         ]
     )
-    
+
+
 def __volume_chart():
     return Div(
         style={
@@ -329,6 +331,8 @@ def __volume_chart():
             )
         ]
     )
+
+
 def __volume_stats():
     return Row(
         class_name="my-1 mx-0",
@@ -365,7 +369,8 @@ def __volume_stats():
             ),
         ]
     )
-    
+
+
 def __socials_section():
     return Row(
         class_name="my-1",
