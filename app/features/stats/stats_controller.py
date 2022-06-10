@@ -1,10 +1,11 @@
 from ekp_sdk.services import ClientService
-from ekp_sdk.util import  client_path
+from ekp_sdk.util import client_path
 
 from app.features.stats.activity_stats_service import ActivityStatsService
 from app.features.stats.stats_page import stats_page
 
 ACTIVITY_TABLE_COLLECTION_NAME = "game_stats_activity"
+
 
 class StatsController:
     def __init__(
@@ -17,6 +18,12 @@ class StatsController:
         self.path = 'stats'
 
     async def on_connect(self, sid):
+        await self.client_service.emit_menu(
+            sid,
+            'activity',
+            'Games',
+            self.path
+        )
         await self.client_service.emit_page(
             sid,
             self.path,

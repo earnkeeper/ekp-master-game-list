@@ -47,6 +47,11 @@ def __table_row(ACTIVITY_COLLECTION_NAME):
                 cell=__name_cell
             ),
             Column(
+                id="links",
+                cell=__links_cell,
+                width="140px"
+            ),
+            Column(
                 id="newUsers24h",
                 title="New Users 24h",
                 sortable=True,
@@ -204,9 +209,18 @@ def __chain_image(index):
     return Image(
         when=f"$.chains[{index}]",
         src=switch_case(f"$.chains[{index}]", CHAIN_IMAGE),
-        style={"height": "12px", "marginLeft": "12px", "marginTop": "-4px"}
+        style={"height": "14px", "marginRight": "12px", "marginTop": "-2px"}
     )
 
+
+__links_cell = Row(
+    class_name="ml-0",
+    children=[
+        __icon_link_col("$.website", "cil-globe-alt"),
+        __icon_link_col("$.twitter", "cib-twitter"),
+        __icon_link_col("$.discord", "cib-discord"),
+        __icon_link_col("$.telegram", "cib-telegram"),
+    ])
 
 __name_cell = Row([
 
@@ -214,28 +228,28 @@ __name_cell = Row([
         "col-auto my-auto pr-0",
         [
             Div([
-                Span("$.gameName", "font-medium-1"),
                 __chain_image(0),
                 __chain_image(1),
                 __chain_image(2),
+                Span("$.gameName"),
             ])
         ]
     ),
-    Col(
-        "col-12",
+    # Col(
+    #     "col-12",
 
-    ),
-    Col(
-        "col-12",
-        [
-            Row(
-                class_name="ml-0",
-                children=[
-                    __icon_link_col("$.website", "cil-globe-alt"),
-                    __icon_link_col("$.twitter", "cib-twitter"),
-                    __icon_link_col("$.discord", "cib-discord"),
-                    __icon_link_col("$.telegram", "cib-telegram"),
-                ])
-        ]
-    )
+    # ),
+    # Col(
+    #     "col-12",
+    #     [
+    #         Row(
+    #             class_name="ml-0",
+    #             children=[
+    #                 __icon_link_col("$.website", "cil-globe-alt"),
+    #                 __icon_link_col("$.twitter", "cib-twitter"),
+    #                 __icon_link_col("$.discord", "cib-discord"),
+    #                 __icon_link_col("$.telegram", "cib-telegram"),
+    #             ])
+    #     ]
+    # )
 ])
