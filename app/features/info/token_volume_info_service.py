@@ -14,8 +14,6 @@ class TokenVolumeInfoService:
 
         now = datetime.now().timestamp()
         
-        print(len(records))
-        
         if not len(records):
             return None
         

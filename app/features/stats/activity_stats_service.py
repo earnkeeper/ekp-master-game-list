@@ -49,7 +49,7 @@ class ActivityStatsService:
         now_midnight = get_midnight_utc(now).timestamp()
         now = now.timestamp()
         now_seconds_into_day = now - now_midnight
-        print(now_seconds_into_day)
+
         for record in records:
             game_id = record["game_id"]
 

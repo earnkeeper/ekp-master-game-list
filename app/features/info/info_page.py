@@ -39,7 +39,13 @@ def __info_section():
     return [
         Div([
             Image(
+                when={ "not": "$.banner" },
                 src="https://pbs.twimg.com/profile_banners/1434504204765339652/1651046414/1500x500",
+                style={"width": "70%"}
+            ),
+            Image(
+                when="$.banner",
+                src="$.banner",
                 style={"width": "70%"}
             ),
             Div([], "mb-2"),
@@ -376,9 +382,9 @@ def __socials_section():
         class_name="my-1",
         children=[
             __icon_link_col("$.website", "cil-globe-alt", "Website"),
-            __icon_link_col("$.twitter", "cib-twitter", "Twitter"),
-            __icon_link_col("$.discord", "cib-discord", "Discord"),
+            __icon_link_col("$.twitter", "cib-twitter", commify("$.twitter_followers")),
             __icon_link_col("$.telegram", "cib-telegram", "Telegram"),
+            __icon_link_col("$.discord", "cib-discord", "Discord"),
         ]
     )
 

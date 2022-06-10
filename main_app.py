@@ -47,10 +47,11 @@ class AppContainer(BaseContainer):
         )
         self.info_service = InfoService(
             activity_info_service=self.activity_info_service,
-            token_volume_info_service=self.token_volume_info_service,
             cache_service=self.cache_service,
             coingecko_service=self.coingecko_service,
-            game_repo=self.game_repo
+            game_repo=self.game_repo,
+            token_volume_info_service=self.token_volume_info_service,
+            twitter_client=self.twitter_client,
         )
 
         self.info_controller = InfoController(
