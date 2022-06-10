@@ -10,6 +10,10 @@ def stats_page(ACTIVITY_COLLECTION_NAME):
                     {
                         "label": "User Activity",
                         "children": [activity_tab(ACTIVITY_COLLECTION_NAME)]
+                    },
+                    {
+                        "label": "Token Volume",
+                        "children": []
                     }
                 ]
             )

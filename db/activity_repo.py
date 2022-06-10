@@ -7,7 +7,7 @@ class ActivityRepo:
         mg_client: MgClient
     ):
         self.mg_client = mg_client
-        self.collection = self.mg_client.db['activity']
+        self.collection = self.mg_client.db['activity_v3']
         self.collection.create_index("id", unique=True)
         self.collection.create_index("timestamp")
         self.collection.create_index("game_id")
