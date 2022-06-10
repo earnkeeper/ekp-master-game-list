@@ -1,7 +1,6 @@
 from app.utils.get_midnight_utc import get_midnight_utc
 from db.activity_repo import ActivityRepo
 from db.game_repo import GameRepo
-from ekp_sdk.services import CacheService, CoingeckoService
 from datetime import datetime
 import copy
 
@@ -10,13 +9,9 @@ class ActivityStatsService:
     def __init__(
         self,
         activity_repo: ActivityRepo,
-        cache_service: CacheService,
-        coingecko_service: CoingeckoService,
         game_repo: GameRepo,
     ):
         self.activity_repo = activity_repo
-        self.cache_service = cache_service
-        self.coingecko_service = coingecko_service
         self.game_repo = game_repo
 
     async def get_documents(self):
@@ -54,7 +49,7 @@ class ActivityStatsService:
         now_midnight = get_midnight_utc(now).timestamp()
         now = now.timestamp()
         now_seconds_into_day = now - now_midnight
-
+        print(now_seconds_into_day)
         for record in records:
             game_id = record["game_id"]
 
