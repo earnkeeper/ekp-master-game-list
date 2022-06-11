@@ -4,6 +4,5 @@ class SocialModel(TypedDict):
     id: str
     game_id: str
     timestamp: int
-    platform: str
-    members: int
-    channel_name: str
+    twitter_followers: int
+    telegram_members: int

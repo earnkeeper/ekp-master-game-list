@@ -39,7 +39,7 @@ class InfoService:
                 }
             ]
 
-        banner_url = None
+        banner_url = game.get('banner_url', None)
         price = "Coingecko"
         price_color = "normal"
         telegram_members = "Telegram"
@@ -49,11 +49,10 @@ class InfoService:
 
         if game["twitter"]:
             twitter = f'https://twitter.com/{game["twitter"]}'
-            latest = self.social_repo.find_latest(game_id, "twitter")
+            latest = self.social_repo.find_latest(game_id)
 
             if latest is not None:
-                banner_url = latest.get("banner_image_url", None)
-                twitter_followers = latest.get("members", None)
+                twitter_followers = latest.get("twitter_followers", None)
 
         coingecko_info = await self.cache_service.wrap(
             f"coingecko_info_{game_id}_v2",

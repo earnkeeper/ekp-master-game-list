@@ -43,7 +43,9 @@ class AppContainer(BaseContainer):
 if __name__ == '__main__':
     container = AppContainer()
 
-    logging.basicConfig(level=logging.INFO)
+    logging.basicConfig()
+
+    logging.getLogger().setLevel(logging.INFO)
 
     logging.info("🚀 Application Start")
 

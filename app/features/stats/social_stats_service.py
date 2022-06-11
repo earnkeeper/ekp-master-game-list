@@ -26,7 +26,7 @@ class SocialStatsService:
             if not game["disable"]:
                 games_map[game["id"]] = game
 
-        records = self.social_repo.find_latest_by_game_id("twitter")
+        records = self.social_repo.find_latest_by_game_id()
 
         if not len(records):
             return []
@@ -44,7 +44,7 @@ class SocialStatsService:
             
             game = games_map[game_id]
             
-            members = record['members']
+            twitter_followers = record['twitter_followers']
             
             chains = self.get_chains(game)
             
@@ -52,7 +52,7 @@ class SocialStatsService:
                 "id": game_id,
                 "updated": now,
                 "game_name": game['name'],
-                "twitter_followers": members,
+                "twitter_followers": twitter_followers,
                 "chains": chains
             }
             

@@ -16,7 +16,7 @@ class SocialRepo:
         self.collection.create_index("game_id")
         self.collection.create_index("platform")
 
-    def find_latest_by_game_id(self, platform):
+    def find_latest_by_game_id(self):
         start = time.perf_counter()
 
         results = list(
@@ -27,14 +27,15 @@ class SocialRepo:
                     "$group":
                     {
                         "_id": "$game_id",
-                        "members": {"$last": "$members"}
+                        "twitter_followers": {"$last": "$twitter_followers"},
+                        "telegram_members": {"$last": "$telegram_members"},
                     }
                 }
             ])
         )
 
         logging.info(
-            f"⏱  [SocialRepo.find_latest_by_game_id({platform})] {time.perf_counter() - start:0.3f}s"
+            f"⏱  [SocialRepo.find_latest_by_game_id()] {time.perf_counter() - start:0.3f}s"
         )
 
         if not results or not len(results):
@@ -42,21 +43,20 @@ class SocialRepo:
 
         return results
 
-    def find_latest(self, game_id, platform):
+    def find_latest(self, game_id):
         start = time.perf_counter()
 
         results = list(
             self.collection
             .find({
                 "game_id": game_id,
-                "platform": platform
             })
             .sort('timestamp', -1)
             .limit(1)
         )
 
         logging.info(
-            f"⏱  [SocialRepo.find_latest({game_id}, {platform})] {time.perf_counter() - start:0.3f}s"
+            f"⏱  [SocialRepo.find_latest({game_id})] {time.perf_counter() - start:0.3f}s"
         )
 
         if not results or not len(results):
