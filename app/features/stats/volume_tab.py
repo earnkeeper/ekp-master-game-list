@@ -23,7 +23,7 @@ def __table_row(COLLECTION_NAME):
         class_name="mt-1",
         data=documents(COLLECTION_NAME),
         busy_when=is_busy(collection(COLLECTION_NAME)),
-        default_sort_field_id="newUsersDelta",
+        default_sort_field_id="volumeDelta",
         default_sort_asc=False,
         on_row_clicked=navigate(
             format_template("info/{{ id }}", {

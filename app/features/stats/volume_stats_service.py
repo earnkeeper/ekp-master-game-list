@@ -94,6 +94,15 @@ class VolumeStatsService:
             filter(lambda x: x["volume7d"], grouped_by_game_id.values())
         )
         
+        for document in documents:
+            if not document["volumeDelta"]:
+                continue
+
+            if document["volumeDelta"] < 0:
+                document["deltaColor"] = "danger"
+            if document["volumeDelta"] > 0:
+                document["deltaColor"] = "success"
+                        
         return documents
             
 
