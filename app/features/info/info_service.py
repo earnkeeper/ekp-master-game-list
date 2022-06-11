@@ -38,8 +38,9 @@ class InfoService:
             ]
 
         coingecko_info = await self.cache_service.wrap(
-            f"coingecko_info_{game_id}",
-            lambda: self.coingecko_service.get_coin(game_id)
+            f"coingecko_info_{game_id}_v2",
+            lambda: self.coingecko_service.get_coin(game_id),
+            ex=60
         )
         
         twitter = None
