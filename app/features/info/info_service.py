@@ -43,16 +43,26 @@ class InfoService:
         price = "Coingecko"
         price_color = "normal"
         telegram_members = "Telegram"
+        discord_members = "Discord"
         twitter = None
         twitter_followers = "Twitter"
         description = None
 
+        latest_social_record = self.social_repo.find_latest(game_id)
+        
         if game["twitter"]:
             twitter = f'https://twitter.com/{game["twitter"]}'
-            latest = self.social_repo.find_latest(game_id)
 
-            if latest is not None:
-                twitter_followers = latest.get("twitter_followers", None)
+            if latest_social_record is not None:
+                twitter_followers = latest_social_record.get("twitter_followers", None)
+
+        if game["discord"]:
+            if latest_social_record is not None:
+                discord_members = latest_social_record.get("discord_members", None)
+
+        if game["telegram"]:
+            if latest_social_record is not None:
+                telegram_members = latest_social_record.get("telegram_members", None)
 
         coingecko_info = await self.cache_service.wrap(
             f"coingecko_info_{game_id}_v2",
@@ -61,10 +71,6 @@ class InfoService:
         )
 
         if coingecko_info:
-            telegram_members = map_get(
-                coingecko_info,
-                ["community_data", "telegram_channel_user_count"]
-            )
             description = map_get(coingecko_info, ["description", "en"])
 
             if "market_data" in coingecko_info:
@@ -94,6 +100,7 @@ class InfoService:
                 "banner": banner_url,
                 "twitter_followers": twitter_followers,
                 "telegram_members": telegram_members,
+                "discord_members": discord_members,
                 "description": description,
                 "twitter": twitter,
                 "telegram": game["telegram"] if game["telegram"] and game["telegram"] != "https://t.me/" else None,

@@ -1,3 +1,4 @@
+import logging
 from ekp_sdk.db import MgClient
 from pymongo import UpdateOne
 import time
@@ -52,7 +53,7 @@ class VolumeRepo:
             list(map(lambda model: update_action(model), models))
         )
         
-        print(
+        logging.info(
             f"⏱  [VolumeRepo.save({len(models)})] {time.perf_counter() - start:0.3f}s"
         )
 

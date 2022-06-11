@@ -21,7 +21,8 @@ def page(GAME_INFO_COLLECTION_NAME):
                                 Col(
                                     "col-auto my-auto pr-0",
                                     [
-                                        Icon('chevron-left', size='lg', on_click=navigate_back())
+                                        Icon('chevron-left', size='lg',
+                                             on_click=navigate_back())
                                     ]),
                                 Col(
                                     "col-auto my-auto",
@@ -401,11 +402,21 @@ def __socials_section():
                 "$.price_color"
             ),
             __icon_link_col("$.website", "cil-globe-alt", "Website"),
-            __icon_link_col("$.twitter", "cib-twitter",
-                            commify("$.twitter_followers")),
-            __icon_link_col("$.telegram", "cib-telegram",
-                            commify("$.telegram_members")),
-            __icon_link_col("$.discord", "cib-discord", "Discord"),
+            __icon_link_col(
+                "$.twitter",
+                "cib-twitter",
+                commify("$.twitter_followers")
+            ),
+            __icon_link_col(
+                "$.telegram",
+                "cib-telegram",
+                commify("$.telegram_members")
+            ),
+            __icon_link_col(
+                "$.discord",
+                "cib-discord",
+                commify("$.discord_members")
+            ),
         ]
     )
 

@@ -63,9 +63,6 @@ class SocialStatsService:
     def get_chains(self, game):
         chains = []
         
-        if game["name"] == "Nine Chronicles":
-            print(game)
-            
         if "tokens" not in game:
             return chains
         
