@@ -1,7 +1,7 @@
 from app.features.info.info_page import page
 from app.features.info.info_service import InfoService
 from ekp_sdk.services import ClientService
-from ekp_sdk.util import  client_path
+from ekp_sdk.util import  client_path, client_currency
 
 TABLE_COLLECTION_NAME = "game_info"
 
@@ -30,9 +30,11 @@ class InfoController:
         
         game_id = path.replace(f'{self.path}/', '')
         
+        currency = client_currency(event)
+        
         await self.client_service.emit_busy(sid, TABLE_COLLECTION_NAME)
 
-        table_documents = await self.info_service.get_documents(game_id)
+        table_documents = await self.info_service.get_documents(game_id, currency)
         
         await self.client_service.emit_documents(
             sid,

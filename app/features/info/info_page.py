@@ -17,7 +17,9 @@ def page(GAME_INFO_COLLECTION_NAME):
                     Div(
                         when="$",
                         children=[
-                            Span('$.name', 'font-large-1 d-block'),
+                            Span('$.name', 'font-large-2 d-block'),
+                            Div(style={"marginTop": "-10px"}),
+                            Hr(),
                             __socials_section(),
                             __info_section(),
                             __volumes_section(),
@@ -39,7 +41,7 @@ def __info_section():
     return [
         Div([
             Image(
-                when={ "not": "$.banner" },
+                when={"not": "$.banner"},
                 src="https://pbs.twimg.com/profile_banners/1434504204765339652/1651046414/1500x500",
                 style={"width": "70%"}
             ),
@@ -379,12 +381,60 @@ def __volume_stats():
 
 def __socials_section():
     return Row(
-        class_name="my-1",
+        class_name="mb-2",
         children=[
+            __image_link_col(
+                "$.coingecko", 
+                "https://static.coingecko.com/s/thumbnail-007177f3eca19695592f0b8b0eabbdae282b54154e1be912285c9034ea6cbaf2.png", 
+                "$.price",
+                "$.price_color"
+            ),
             __icon_link_col("$.website", "cil-globe-alt", "Website"),
-            __icon_link_col("$.twitter", "cib-twitter", commify("$.twitter_followers")),
-            __icon_link_col("$.telegram", "cib-telegram", "Telegram"),
+            __icon_link_col("$.twitter", "cib-twitter",
+                            commify("$.twitter_followers")),
+            __icon_link_col("$.telegram", "cib-telegram", commify("$.telegram_members")),
             __icon_link_col("$.discord", "cib-discord", "Discord"),
+        ]
+    )
+
+
+def __image_link_col(href, image_url, content, color):
+    return Col(
+        when=href,
+        class_name="col-auto my-auto pr-2",
+        children=[
+            Link(
+                href=href,
+                external=True,
+                content=Row(
+                    [
+                        Col(
+                            "col-auto my-auto pr-0",
+                            [
+                                Image(
+                                    src=image_url,
+                                    style={"height": "20px", "marginTop": "-2px"}
+                                )
+                            ]
+                        ),
+                        Col(
+                            "col-auto px-0",
+                            [Div([], style={"width": "8px"})]
+                        ),
+                        Col(
+                            "col-auto my-auto px-0",
+                            [
+                                Span(
+                                    content,
+                                    format_template("font-small-3 font-weight-bold text-{{ color }}", {
+                                        "color": color
+                                    })
+                                )
+                            ]
+                        )
+                    ]
+                )
+            )
         ]
     )
 
@@ -404,6 +454,7 @@ def __icon_link_col(href, icon_name, content):
                             [
                                 Icon(
                                     icon_name,
+                                    size='lg'
                                 )
                             ]
                         ),
@@ -416,7 +467,7 @@ def __icon_link_col(href, icon_name, content):
                             [
                                 Span(
                                     content,
-                                    "font-small-2 font-weight-bold"
+                                    "font-small-3 font-weight-bold"
                                 )
                             ]
                         )
