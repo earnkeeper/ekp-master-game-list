@@ -66,7 +66,7 @@ class InfoService:
                 coingecko_info,
                 ["community_data", "telegram_channel_user_count"]
             )
-            description = map_get(coingecko_info, "description", "en")
+            description = map_get(coingecko_info, ["description", "en"])
 
             if "market_data" in coingecko_info:
                 market_data = coingecko_info["market_data"]
