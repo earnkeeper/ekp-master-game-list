@@ -3,7 +3,7 @@ from ekp_sdk.ui import (Button, Card, Chart, Col, Column, Container, Datatable,
                         Div, Hr, Icon, Image, Link, Paragraphs, Row, Span,
                         Tabs, commify, ekp_map, format_currency,
                         format_mask_address, format_percent, format_template,
-                        is_busy, json_array, navigate, sort_by)
+                        is_busy, json_array, navigate, sort_by, navigate_back)
 
 
 def page(GAME_INFO_COLLECTION_NAME):
@@ -17,7 +17,18 @@ def page(GAME_INFO_COLLECTION_NAME):
                     Div(
                         when="$",
                         children=[
-                            Span('$.name', 'font-large-2 d-block'),
+                            Row([
+                                Col(
+                                    "col-auto my-auto pr-0",
+                                    [
+                                        Icon('chevron-left', size='lg', on_click=navigate_back())
+                                    ]),
+                                Col(
+                                    "col-auto my-auto",
+                                    [
+                                        Span('$.name', 'font-large-2 d-block'),
+                                    ])
+                            ]),
                             Div(style={"marginTop": "-10px"}),
                             Hr(),
                             __socials_section(),
@@ -384,15 +395,16 @@ def __socials_section():
         class_name="mb-2",
         children=[
             __image_link_col(
-                "$.coingecko", 
-                "https://static.coingecko.com/s/thumbnail-007177f3eca19695592f0b8b0eabbdae282b54154e1be912285c9034ea6cbaf2.png", 
+                "$.coingecko",
+                "https://static.coingecko.com/s/thumbnail-007177f3eca19695592f0b8b0eabbdae282b54154e1be912285c9034ea6cbaf2.png",
                 "$.price",
                 "$.price_color"
             ),
             __icon_link_col("$.website", "cil-globe-alt", "Website"),
             __icon_link_col("$.twitter", "cib-twitter",
                             commify("$.twitter_followers")),
-            __icon_link_col("$.telegram", "cib-telegram", commify("$.telegram_members")),
+            __icon_link_col("$.telegram", "cib-telegram",
+                            commify("$.telegram_members")),
             __icon_link_col("$.discord", "cib-discord", "Discord"),
         ]
     )
@@ -413,7 +425,8 @@ def __image_link_col(href, image_url, content, color):
                             [
                                 Image(
                                     src=image_url,
-                                    style={"height": "20px", "marginTop": "-2px"}
+                                    style={"height": "20px",
+                                           "marginTop": "-2px"}
                                 )
                             ]
                         ),

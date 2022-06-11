@@ -81,7 +81,7 @@ class InfoService:
                         
         activity_document = await self.activity_info_service.get_activity_document(game)
         volume_document = await self.token_volume_info_service.get_volume_document(game)
-
+        print(game["telegram"])
         return [
             {
                 "id": game_id,
@@ -92,7 +92,7 @@ class InfoService:
                 "telegram_members": telegram_members,
                 "description": coingecko_info["description"]["en"],
                 "twitter": twitter,
-                "telegram": game["telegram"],
+                "telegram": game["telegram"] if game["telegram"] and game["telegram"] != "https://t.me/" else None,
                 "discord": game["discord"],
                 "website": game["website"],
                 "activity": activity_document,
