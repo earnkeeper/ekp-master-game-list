@@ -6,9 +6,11 @@ from app.features.info.info_controller import InfoController
 from app.features.info.info_service import InfoService
 from app.features.info.token_volume_info_service import TokenVolumeInfoService
 from app.features.stats.activity_stats_service import ActivityStatsService
+from app.features.stats.social_stats_service import SocialStatsService
 from app.features.stats.stats_controller import StatsController
 from app.features.stats.volume_stats_service import VolumeStatsService
 from db.activity_repo import ActivityRepo
+from db.social_repo import SocialRepo
 from db.volume_repo import VolumeRepo
 
 
@@ -35,7 +37,9 @@ class AppContainer(BaseContainer):
             mg_client=self.mg_client
         )
 
-
+        self.social_repo = SocialRepo(
+            mg_client=self.mg_client
+        )
         # FEATURES - INFO
 
         self.activity_info_service = ActivityInfoService(
@@ -50,8 +54,8 @@ class AppContainer(BaseContainer):
             cache_service=self.cache_service,
             coingecko_service=self.coingecko_service,
             game_repo=self.game_repo,
+            social_repo=self.social_repo,
             token_volume_info_service=self.token_volume_info_service,
-            twitter_client=self.twitter_client,
         )
 
         self.info_controller = InfoController(
@@ -60,6 +64,11 @@ class AppContainer(BaseContainer):
         )
 
         # FEATURES - STATS
+
+        self.social_stats_service = SocialStatsService(
+            social_repo=self.social_repo,
+            game_repo=self.game_repo,
+        )
 
         self.activity_stats_service = ActivityStatsService(
             activity_repo=self.activity_repo,
@@ -76,6 +85,7 @@ class AppContainer(BaseContainer):
         self.stats_controller = StatsController(
             client_service=self.client_service,
             activity_stats_service=self.activity_stats_service,
+            social_stats_service=self.social_stats_service,
             volume_stats_service=self.volume_stats_service
         )
 

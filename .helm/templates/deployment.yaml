@@ -28,8 +28,6 @@ spec:
               value: '{{ eq .Values.werf.env "staging" | ternary .Values.mongodb.dbName.staging .Values.mongodb.dbName._default }}'
             - name: REDIS_URI
               value: "redis://{{ .Release.Name }}-redis-master"
-            - name: TWITTER_AUTH_TOKEN
-              value: "{{ .Values.twitter.authToken }}"
           ports:
             - containerPort: 3001
               protocol: TCP

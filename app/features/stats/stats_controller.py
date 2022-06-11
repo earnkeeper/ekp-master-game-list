@@ -2,9 +2,11 @@ from ekp_sdk.services import ClientService
 from ekp_sdk.util import client_path, client_query_param
 
 from app.features.stats.activity_stats_service import ActivityStatsService
+from app.features.stats.social_stats_service import SocialStatsService
 from app.features.stats.stats_page import stats_page
 from app.features.stats.volume_stats_service import VolumeStatsService
 
+SOCIAL_TABLE_COLLECTION_NAME = "game_stats_social"
 ACTIVITY_TABLE_COLLECTION_NAME = "game_stats_activity"
 VOLUME_TABLE_COLLECTION_NAME = "game_stats_volume"
 
@@ -14,10 +16,12 @@ class StatsController:
         self,
         client_service: ClientService,
         activity_stats_service: ActivityStatsService,
+        social_stats_service: SocialStatsService,
         volume_stats_service: VolumeStatsService
     ):
         self.client_service = client_service
         self.activity_stats_service = activity_stats_service
+        self.social_stats_service = social_stats_service
         self.volume_stats_service = volume_stats_service
         self.path = 'stats'
         
@@ -32,7 +36,7 @@ class StatsController:
         await self.client_service.emit_page(
             sid,
             self.path,
-            stats_page(ACTIVITY_TABLE_COLLECTION_NAME, VOLUME_TABLE_COLLECTION_NAME)
+            stats_page(ACTIVITY_TABLE_COLLECTION_NAME, VOLUME_TABLE_COLLECTION_NAME, SOCIAL_TABLE_COLLECTION_NAME)
         )
     
     async def on_client_state_changed(self, sid, event):
@@ -50,18 +54,32 @@ class StatsController:
         tab_param = int(tab_param)
         
         if tab_param == 0:
+            await self.client_service.emit_busy(sid, SOCIAL_TABLE_COLLECTION_NAME)
+            
+            social_document = await self.social_stats_service.get_documents()
+            
+            await self.client_service.emit_documents(
+                sid,
+                SOCIAL_TABLE_COLLECTION_NAME,
+                social_document,
+            )
+            
+            await self.client_service.emit_done(sid, SOCIAL_TABLE_COLLECTION_NAME)
+                    
+        if tab_param == 1:
             await self.client_service.emit_busy(sid, ACTIVITY_TABLE_COLLECTION_NAME)
-            activity_documents = await self.activity_stats_service.get_documents()
+            
+            social_document = await self.activity_stats_service.get_documents()
             
             await self.client_service.emit_documents(
                 sid,
                 ACTIVITY_TABLE_COLLECTION_NAME,
-                activity_documents,
+                social_document,
             )
             
             await self.client_service.emit_done(sid, ACTIVITY_TABLE_COLLECTION_NAME)
-                    
-        if tab_param == 1:
+
+        if tab_param == 2:
             await self.client_service.emit_busy(sid, VOLUME_TABLE_COLLECTION_NAME)
 
             volume_documents = await self.volume_stats_service.get_documents()
