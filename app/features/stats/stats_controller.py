@@ -1,5 +1,5 @@
 from ekp_sdk.services import ClientService
-from ekp_sdk.util import client_path
+from ekp_sdk.util import client_path, client_query_param
 
 from app.features.stats.activity_stats_service import ActivityStatsService
 from app.features.stats.stats_page import stats_page
@@ -41,29 +41,35 @@ class StatsController:
         if not path or (path != self.path):
             return
         
-        await self.client_service.emit_busy(sid, ACTIVITY_TABLE_COLLECTION_NAME)
-        await self.client_service.emit_busy(sid, VOLUME_TABLE_COLLECTION_NAME)
+        tab_param = client_query_param(event, "tab")
+        
 
-        # ---------------------------------------------------------
-        
-        activity_documents = await self.activity_stats_service.get_documents()
-        
-        await self.client_service.emit_documents(
-            sid,
-            ACTIVITY_TABLE_COLLECTION_NAME,
-            activity_documents,
-        )
-        
-        await self.client_service.emit_done(sid, ACTIVITY_TABLE_COLLECTION_NAME)
-                
-        # ---------------------------------------------------------        
+        if tab_param is None:
+            tab_param = 0
 
-        volume_documents = await self.volume_stats_service.get_documents()
+        tab_param = int(tab_param)
         
-        await self.client_service.emit_documents(
-            sid,
-            VOLUME_TABLE_COLLECTION_NAME,
-            volume_documents,
-        )
+        if tab_param == 0:
+            await self.client_service.emit_busy(sid, ACTIVITY_TABLE_COLLECTION_NAME)
+            activity_documents = await self.activity_stats_service.get_documents()
+            
+            await self.client_service.emit_documents(
+                sid,
+                ACTIVITY_TABLE_COLLECTION_NAME,
+                activity_documents,
+            )
+            
+            await self.client_service.emit_done(sid, ACTIVITY_TABLE_COLLECTION_NAME)
+                    
+        if tab_param == 1:
+            await self.client_service.emit_busy(sid, VOLUME_TABLE_COLLECTION_NAME)
 
-        await self.client_service.emit_done(sid, VOLUME_TABLE_COLLECTION_NAME)
+            volume_documents = await self.volume_stats_service.get_documents()
+            
+            await self.client_service.emit_documents(
+                sid,
+                VOLUME_TABLE_COLLECTION_NAME,
+                volume_documents,
+            )
+
+            await self.client_service.emit_done(sid, VOLUME_TABLE_COLLECTION_NAME)
