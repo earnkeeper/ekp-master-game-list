@@ -43,6 +43,28 @@ class SocialRepo:
 
         return results
 
+    def find_all_since(self, timestamp):
+        start = time.perf_counter()
+
+        results = list(
+            self.collection
+            .find({
+                "timestamp": {
+                    "$gte": timestamp
+                }
+            })
+            .sort('timestamp')
+        )
+
+        logging.info(
+            f"⏱  [SocialRepo.find_all_by_game_id({timestamp})] {time.perf_counter() - start:0.3f}s"
+        )
+
+        if not results or not len(results):
+            return None
+
+        return results
+    
     def find_latest(self, game_id):
         start = time.perf_counter()
 

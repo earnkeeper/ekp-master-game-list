@@ -54,6 +54,13 @@ def __table_row(COLLECTION_NAME):
                 width="120px",
                 format=commify("$.twitter_followers")
             ),
+            Column(
+                id="chart",
+                title="",
+                width="120px",
+                cell=__chart_cell('$.chart.*')
+            ),
+            
         ]
     )
 
@@ -80,7 +87,7 @@ def __chart_cell(path):
                                 json_array(path),
                                 '$.timestamp',
                             ),
-                            ['$.timestamp_ms', '$.newUsers'],
+                            ['$.timestamp_ms', '$.value'],
                         ),
                     },
                 ],
