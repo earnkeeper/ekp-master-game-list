@@ -318,7 +318,7 @@ def __volume_chart():
                         {
                             "labels": {
                                 "show": False,
-                                "formatter": commify("$")
+                                "formatter": format_currency("$", None)
                             },
                         },
                     ],
@@ -362,7 +362,7 @@ def __volume_stats():
                 [
                     Span("Token Volume (24h)", "d-block font-small-3"),
                     Span(
-                        commify("$.volume24h"),
+                        format_currency("$.volume24h", None),
                         format_template(
                             "d-block font-small-2 text-{{ color }}",
                             {

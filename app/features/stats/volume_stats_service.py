@@ -58,10 +58,8 @@ class VolumeStatsService:
             if volume is None:
                 volume = 0
 
-            game_chain = record["game_chain"]
-            
             if game_id not in grouped_by_game_id:
-                grouped_by_game_id[game_id] = self.create_record(
+                grouped_by_game_id[game_id] = self.__create_record(
                     game_id, 
                     record, 
                     games_map, 
@@ -71,9 +69,6 @@ class VolumeStatsService:
 
             group = grouped_by_game_id[game_id]
 
-            if game_chain not in group["chains"]:
-                group["chains"].append(game_chain)
-                
             if ago < 86400:
                 group["volume24h"] = group["volume24h"] + volume
             elif ago < (2 * 86400):
@@ -106,7 +101,7 @@ class VolumeStatsService:
         return documents
             
 
-    def create_record(self, game_id, record, games_map, now, chart7d_template):
+    def __create_record(self, game_id, record, games_map, now, chart7d_template):
         gameLink = f"https://www.coingecko.com/en/coins/{game_id}"
         
         website = None
@@ -120,13 +115,13 @@ class VolumeStatsService:
             twitter = f'https://twitter.com/{game["twitter"]}'
             discord = game["discord"]
             telegram = game["telegram"]
+            chains = self.__get_game_chains(game)
         
         return {
             "gameId": game_id,
             "gameName": record["game_name"],
-            "chains": [record["game_chain"]],
+            "chains": chains,
             "gameLink": gameLink,
-            "chain": record["game_chain"],
             "volume24h": 0,
             "volume48h": 0,
             "volumeDelta": None,
@@ -139,3 +134,12 @@ class VolumeStatsService:
             "discord": discord,
             "telegram": telegram,
         }        
+        
+    def __get_game_chains(self, game):
+        chains = []
+        
+        for chain in ['bsc', 'eth', 'polygon']:
+            if len(game['tokens'][chain]):
+                chains.append(chain)
+        
+        return chains

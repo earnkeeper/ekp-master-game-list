@@ -55,7 +55,7 @@ def __table_row(COLLECTION_NAME):
                 title="Volume 24h",
                 sortable=True,
                 width="120px",
-                format=commify("$.volume24h")
+                format=format_currency("$.volume24h", None)
             ),
             Column(
                 id="volumeDelta",
@@ -73,7 +73,7 @@ def __table_row(COLLECTION_NAME):
                 id="volume7d",
                 title="Volume 7d",
                 sortable=True,
-                format=commify("$.volume7d"),
+                format=format_currency("$.volume7d", None),
                 width="120px"
             ),
             # Column(
