@@ -70,7 +70,7 @@ class SocialStatsService:
             chart = []
             
             for chart_record in chart_records:
-                if "twitter_followers" not in chart_record:
+                if "twitter_followers" not in chart_record or not chart_record["twitter_followers"]:
                     continue
                 
                 if last_record is None:
