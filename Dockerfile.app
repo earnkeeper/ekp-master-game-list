@@ -7,6 +7,7 @@ RUN pip3 install -r requirements.txt
 
 COPY ./app ./app
 COPY ./db ./db
+COPY ./shared ./shared
 COPY ./static ./static
 COPY ./main_app.py ./main_app.py
 

@@ -6,6 +6,7 @@ COPY requirements.txt requirements.txt
 RUN pip3 install -r requirements.txt
 
 COPY ./db ./db
+COPY ./shared ./shared
 COPY ./sync ./sync
 COPY ./main_sync.py ./main_sync.py
 

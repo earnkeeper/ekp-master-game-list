@@ -1,4 +1,4 @@
-from typing import Dict, List, TypedDict
+from typing import List, TypedDict
 
 class GamePlatformTokens(TypedDict):
     bsc: List[str]
@@ -13,4 +13,4 @@ class GameModel(TypedDict):
     telegram: str
     website: str
     discord: str
-    source: str
+    coin_ids: List[str]

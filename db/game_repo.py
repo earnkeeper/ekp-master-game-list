@@ -1,3 +1,5 @@
+import logging
+import time
 from ekp_sdk.db import MgClient
 from pymongo import UpdateOne
 
@@ -12,22 +14,16 @@ class GameRepo:
         self.collection.create_index("source")
 
     def find_all(self):
-        return list(self.collection.find())
-    
-    def find_by_source(self, source):
-        return list(self.collection.find({ "source": source }))
+        return list(self.collection.find({
+            "disable": False
+        }))
     
     def find_one_by_id(self, id):
         return self.collection.find_one({ "id": id })
     
-    def delete_by_id(self, id):
-        self.collection.delete_many({ "id": id })
+    def upsert(self, game):
+        start = time.perf_counter()
         
-    def save(self, models):
-    
-        def update_action(model):
-            return UpdateOne({ "id": model["id"]}, {"$set": model}, True)
+        self.collection.update_one({ "id": game["id"]}, {"$set": game}, True)
 
-        self.collection.bulk_write(
-            list(map(lambda model: update_action(model), models))
-        )
+        logging.info(f"⏱  [GameRepo.upsert({game['id']})] {time.perf_counter() - start:0.3f}s")

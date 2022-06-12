@@ -6,8 +6,9 @@ from decouple import AutoConfig
 from ekp_sdk import BaseContainer
 
 from db.game_repo import GameRepo
-from sync.coingecko_config_service import CoingeckoConfigService
-from sync.sheets_config_service import SheetsConfigService
+from sync.coingecko_sync_service import CoingeckoSyncService
+from sync.game_sync_service import GameSyncService
+from sync.manual_sync_service import ManualSyncService
 
 
 class AppContainer(BaseContainer):
@@ -26,18 +27,23 @@ class AppContainer(BaseContainer):
 
         # Services
 
-        self.sheets_config_service = SheetsConfigService(
+        self.manual_sync_service = ManualSyncService(
             google_sheets_client=self.google_sheets_client,
-            game_repo = self.game_repo,
             sheet_id=SHEET_ID
         )
 
-        self.coingecko_config_service = CoingeckoConfigService(
+        self.coingecko_sync_service = CoingeckoSyncService(
             coingecko_service=self.coingecko_service,
             cache_service=self.cache_service,
-            game_repo = self.game_repo
         )
 
+        self.game_sync_service = GameSyncService(
+            cache_service=self.cache_service,
+            coingecko_service=self.coingecko_service,
+            coingecko_sync_service=self.coingecko_sync_service,
+            game_repo=self.game_repo,
+            manual_sync_service=self.manual_sync_service,
+        )
 
 
 if __name__ == '__main__':
@@ -52,9 +58,5 @@ if __name__ == '__main__':
     loop = asyncio.get_event_loop()
 
     loop.run_until_complete(
-        container.sheets_config_service.sync_games()
-    )
-    
-    loop.run_until_complete(
-        container.coingecko_config_service.sync_games()
+        container.game_sync_service.sync_games()
     )

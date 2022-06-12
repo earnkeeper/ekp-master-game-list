@@ -1,6 +1,6 @@
 from app.features.info.activity_info_service import ActivityInfoService
 from app.features.info.token_volume_info_service import TokenVolumeInfoService
-from app.utils.map_get import map_get
+from shared.map_get import map_get
 from db.game_repo import GameRepo
 from datetime import datetime
 from ekp_sdk.services import CacheService, CoingeckoService, TwitterClient
@@ -42,10 +42,10 @@ class InfoService:
         banner_url = game.get('banner_url', None)
         price = "Coingecko"
         price_color = "normal"
-        telegram_members = "Telegram"
-        discord_members = "Discord"
+        telegram_members = None
+        discord_members = None
         twitter = None
-        twitter_followers = "Twitter"
+        twitter_followers = None
         description = None
 
         latest_social_record = self.social_repo.find_latest(game_id)
@@ -69,7 +69,16 @@ class InfoService:
             lambda: self.coingecko_service.get_coin(game_id),
             ex=60
         )
-
+        
+        if twitter_followers is None:
+            twitter_followers = "Twitter"
+        
+        if discord_members is None:
+            discord_members = "Discord"
+        
+        if telegram_members is None:
+            telegram_members = "Telegram"
+        
         if coingecko_info:
             description = map_get(coingecko_info, ["description", "en"])
 
@@ -92,6 +101,8 @@ class InfoService:
         activity_document = await self.activity_info_service.get_activity_document(game)
         volume_document = await self.token_volume_info_service.get_volume_document(game)
 
+        telegram = game["telegram"] if (game["telegram"] and game["telegram"] != "https://t.me/") else None
+        
         return [
             {
                 "id": game_id,
@@ -103,7 +114,7 @@ class InfoService:
                 "discord_members": discord_members,
                 "description": description,
                 "twitter": twitter,
-                "telegram": game["telegram"] if game["telegram"] and game["telegram"] != "https://t.me/" else None,
+                "telegram": telegram,
                 "discord": game["discord"],
                 "website": game["website"],
                 "activity": activity_document,
