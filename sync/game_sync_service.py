@@ -59,9 +59,12 @@ class GameSyncService:
                 self.__update_game_field(game, "description", map_get(
                     coin, ["description", "en"]
                 ))
-
+                
                 if chat_url:
                     for chat in chat_url:
+                        if not chat:
+                            continue
+                        
                         if ("discord.com" in chat or "discord.gg" in chat):
                             self.__update_game_field(game, "discord", chat)
                         if "t.me" in chat:
