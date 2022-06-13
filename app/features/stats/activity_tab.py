@@ -49,8 +49,8 @@ def __table_row(ACTIVITY_COLLECTION_NAME):
                 sortable=True,
                 width="120px",
                 cell=change_cell(
-                    commify("$.newUsers24h"), 
-                    "$.newUsersDelta", 
+                    commify("$.newUsers24h"),
+                    "$.newUsersDelta",
                     "$.deltaColor"
                 )
             ),
@@ -61,9 +61,10 @@ def __table_row(ACTIVITY_COLLECTION_NAME):
                 format=commify("$.newUsers7d"),
                 width="120px",
                 cell=change_cell(
-                    commify("$.newUsers7d"), 
-                    "$.newUsers7dDelta", 
+                    commify("$.newUsers7d"),
+                    "$.newUsers7dDelta",
                     "$.delta7dColor"
+
                 )
             ),
             Column(
@@ -74,9 +75,6 @@ def __table_row(ACTIVITY_COLLECTION_NAME):
             ),
         ]
     )
-
-
-
 
 
 def __chart_cell(path):

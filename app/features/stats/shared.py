@@ -5,16 +5,36 @@ from ekp_sdk.ui import (Button, Card, Chart, Col, Column, Container, Datatable,
                         navigate, sort_by, switch_case)
 
 
-def change_cell(value, delta, deltaColor):
+def change_cell(value, delta, deltaColor, icon=None):
+    cols = []
+
+    if icon is not None:
+        cols.append(
+            Col(
+                "col-auto pr-0",
+                [
+                    Icon(icon)
+                ]
+            )
+        )
+    cols.append(
+        Col(
+            "col-auto pr-0",
+            [
+                Span(
+                    value,
+                    format_template("font-medium-1 d-block text-{{ color }}", {
+                        "color": "normal"
+                    })
+                ),
+
+            ]
+        )
+    )
     return Div(
         class_name="mt-2",
         children=[
-            Span(
-                value,
-                format_template("font-medium-1 d-block text-{{ color }}", {
-                    "color": "normal"
-                })
-            ),
+            Row(cols),
             Div(
                 when=delta,
                 children=[
