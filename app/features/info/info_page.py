@@ -55,12 +55,10 @@ def __info_section():
             Image(
                 when={"not": "$.banner"},
                 src="https://pbs.twimg.com/profile_banners/1434504204765339652/1651046414/1500x500",
-                style={"width": "70%"}
             ),
             Image(
                 when="$.banner",
                 src="$.banner",
-                style={"width": "70%"}
             ),
             Div([], "mb-2"),
 
