@@ -1,3 +1,4 @@
+from app.features.stats.shared import change_cell, name_cell
 from app.utils.page_title import page_title
 from ekp_sdk.ui import (Button, Card, Chart, Col, Column, Container, Datatable,
                         Div, Icon, Image, Link, Paragraphs, Row, Span, commify,
@@ -24,8 +25,10 @@ def __table_row(ACTIVITY_COLLECTION_NAME):
         class_name="mt-1",
         data=documents(ACTIVITY_COLLECTION_NAME),
         busy_when=is_busy(collection(ACTIVITY_COLLECTION_NAME)),
-        default_sort_field_id="newUsersDelta",
+        default_sort_field_id="newUsers24h",
         default_sort_asc=False,
+        row_height="70px",
+        show_last_updated=False,
         on_row_clicked=navigate(
             format_template("info/{{ id }}", {
                 "id": "$.gameId"
@@ -33,41 +36,22 @@ def __table_row(ACTIVITY_COLLECTION_NAME):
         ),
         columns=[
             Column(
-                id="chains",
-                searchable=True,
-                width="120px",
-                omit=True,
-            ),
-            Column(
                 id="gameName",
                 title="Game",
-                min_width="300px",
+                min_width="220px",
                 sortable=True,
                 searchable=True,
-                cell=__name_cell
-            ),
-            Column(
-                id="links",
-                cell=__links_cell,
-                width="140px"
+                cell=name_cell("$.gameName")
             ),
             Column(
                 id="newUsers24h",
                 title="New Users 24h",
                 sortable=True,
                 width="120px",
-                format=commify("$.newUsers24h")
-            ),
-            Column(
-                id="newUsersDelta",
-                title="Change 24h",
-                sortable=True,
-                width="120px",
-                cell=Span(
-                    format_percent("$.newUsersDelta", True),
-                    format_template("text-{{ color }}", {
-                        "color": "$.deltaColor"
-                    })
+                cell=change_cell(
+                    commify("$.newUsers24h"), 
+                    "$.newUsersDelta", 
+                    "$.deltaColor"
                 )
             ),
             Column(
@@ -75,26 +59,12 @@ def __table_row(ACTIVITY_COLLECTION_NAME):
                 title="New Users 7d",
                 sortable=True,
                 format=commify("$.newUsers7d"),
-                width="120px"
-            ),
-            # Column(
-            #     id="newUsers14d",
-            #     title="New Users 14d",
-            #     sortable=True,
-            #     format=commify("$.newUsers14d"),
-            #     width="120px"
-            # ),
-            Column(
-                id="newUsers7dDelta",
-                title="Change 7d",
-                sortable=True,
-                cell=Span(
-                    format_percent("$.newUsers7dDelta", True),
-                    format_template("text-{{ color }}", {
-                        "color": "$.delta7dColor"
-                    })
-                ),
-                width="100px"
+                width="120px",
+                cell=change_cell(
+                    commify("$.newUsers7d"), 
+                    "$.newUsers7dDelta", 
+                    "$.delta7dColor"
+                )
             ),
             Column(
                 id="chart7d",
@@ -104,6 +74,9 @@ def __table_row(ACTIVITY_COLLECTION_NAME):
             ),
         ]
     )
+
+
+
 
 
 def __chart_cell(path):
@@ -174,82 +147,3 @@ def __chart_cell(path):
                 }
             )
         ])
-
-
-CHAIN_IMAGE = {
-    "bsc": "https://cryptologos.cc/logos/history/bnb-bnb-logo.svg?v=001",
-    "eth": "https://cryptologos.cc/logos/ethereum-eth-logo.svg?v=022",
-    "polygon": "https://cryptologos.cc/logos/polygon-matic-logo.svg?v=022",
-}
-
-
-def __icon_link_col(href, icon_name):
-    return Col(
-        "col-auto my-auto px-0",
-        [
-            Div(
-                when=href,
-                class_name="mr-1",
-                children=[
-                    Link(
-                        href=href,
-                        external=True,
-                        content=Icon(
-                            icon_name,
-                            size='sm'
-                        )
-                    )
-                ]
-            )
-        ]
-    )
-
-
-def __chain_image(index):
-    return Image(
-        when=f"$.chains[{index}]",
-        src=switch_case(f"$.chains[{index}]", CHAIN_IMAGE),
-        style={"height": "14px", "marginRight": "12px", "marginTop": "-2px"}
-    )
-
-
-__links_cell = Row(
-    class_name="ml-0",
-    children=[
-        __icon_link_col("$.website", "cil-globe-alt"),
-        __icon_link_col("$.twitter", "cib-twitter"),
-        __icon_link_col("$.discord", "cib-discord"),
-        __icon_link_col("$.telegram", "cib-telegram"),
-    ])
-
-__name_cell = Row([
-
-    Col(
-        "col-auto my-auto pr-0",
-        [
-            Div([
-                __chain_image(0),
-                __chain_image(1),
-                __chain_image(2),
-                Span("$.gameName"),
-            ])
-        ]
-    ),
-    # Col(
-    #     "col-12",
-
-    # ),
-    # Col(
-    #     "col-12",
-    #     [
-    #         Row(
-    #             class_name="ml-0",
-    #             children=[
-    #                 __icon_link_col("$.website", "cil-globe-alt"),
-    #                 __icon_link_col("$.twitter", "cib-twitter"),
-    #                 __icon_link_col("$.discord", "cib-discord"),
-    #                 __icon_link_col("$.telegram", "cib-telegram"),
-    #             ])
-    #     ]
-    # )
-])

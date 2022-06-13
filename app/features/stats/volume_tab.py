@@ -1,3 +1,4 @@
+from app.features.stats.shared import change_cell, name_cell
 from app.utils.page_title import page_title
 from ekp_sdk.ui import (Button, Card, Chart, Col, Column, Container, Datatable,
                         Div, Icon, Image, Link, Paragraphs, Row, Span, commify,
@@ -23,13 +24,10 @@ def __table_row(COLLECTION_NAME):
         class_name="mt-1",
         data=documents(COLLECTION_NAME),
         busy_when=is_busy(collection(COLLECTION_NAME)),
-        default_sort_field_id="volumeDelta",
+        default_sort_field_id="volume24h",
         default_sort_asc=False,
-        on_row_clicked=navigate(
-            format_template("info/{{ id }}", {
-                "id": "$.gameId"
-            })
-        ),
+        show_last_updated=False,
+        row_height="70px",
         columns=[
             Column(
                 id="chains",
@@ -40,61 +38,25 @@ def __table_row(COLLECTION_NAME):
             Column(
                 id="gameName",
                 title="Game",
-                min_width="300px",
+                min_width="220px",
                 sortable=True,
                 searchable=True,
-                cell=__name_cell
-            ),
-            Column(
-                id="links",
-                cell=__links_cell,
-                width="140px"
+                cell=name_cell("$.gameName")
             ),
             Column(
                 id="volume24h",
                 title="Volume 24h",
                 sortable=True,
-                width="120px",
-                format=format_currency("$.volume24h", None)
-            ),
-            Column(
-                id="volumeDelta",
-                title="Change 24h",
-                sortable=True,
-                width="120px",
-                cell=Span(
-                    format_percent("$.volumeDelta", True),
-                    format_template("text-{{ color }}", {
-                        "color": "$.deltaColor"
-                    })
-                )
+                width="150px",
+                cell=change_cell(format_currency("$.volume24h", None), "$.volumeDelta", "$.deltaColor")
             ),
             Column(
                 id="volume7d",
                 title="Volume 7d",
                 sortable=True,
-                format=format_currency("$.volume7d", None),
-                width="120px"
+                width="150px",                
+                cell=change_cell(format_currency("$.volume7d", None), "$.volume7dDelta", "$.delta7dColor"),
             ),
-            # Column(
-            #     id="newUsers14d",
-            #     title="Volume 14d",
-            #     sortable=True,
-            #     format=commify("$.newUsers14d"),
-            #     width="120px"
-            # ),
-            # Column(
-            #     id="volume7dDelta",
-            #     title="Change 7d",
-            #     sortable=True,
-            #     cell=Span(
-            #         format_percent("$.newUsers7dDelta", True),
-            #         format_template("text-{{ color }}", {
-            #             "color": "$.delta7dColor"
-            #         })
-            #     ),
-            #     width="100px"
-            # ),
             Column(
                 id="chart7d",
                 title="7d History",
@@ -175,80 +137,3 @@ def __chart_cell(path):
         ])
 
 
-CHAIN_IMAGE = {
-    "bsc": "https://cryptologos.cc/logos/history/bnb-bnb-logo.svg?v=001",
-    "eth": "https://cryptologos.cc/logos/ethereum-eth-logo.svg?v=022",
-    "polygon": "https://cryptologos.cc/logos/polygon-matic-logo.svg?v=022",
-}
-
-
-def __icon_link_col(href, icon_name):
-    return Col(
-        "col-auto my-auto px-0",
-        [
-            Div(
-                when=href,
-                class_name="mr-1",
-                children=[
-                    Link(
-                        href=href,
-                        external=True,
-                        content=Icon(
-                            icon_name,
-                            size='sm'
-                        )
-                    )
-                ]
-            )
-        ]
-    )
-
-
-def __chain_image(index):
-    return Image(
-        when=f"$.chains[{index}]",
-        src=switch_case(f"$.chains[{index}]", CHAIN_IMAGE),
-        style={"height": "14px", "marginRight": "12px", "marginTop": "-2px"}
-    )
-
-
-__links_cell = Row(
-    class_name="ml-0",
-    children=[
-        __icon_link_col("$.website", "cil-globe-alt"),
-        __icon_link_col("$.twitter", "cib-twitter"),
-        __icon_link_col("$.discord", "cib-discord"),
-        __icon_link_col("$.telegram", "cib-telegram"),
-    ])
-
-__name_cell = Row([
-
-    Col(
-        "col-auto my-auto pr-0",
-        [
-            Div([
-                __chain_image(0),
-                __chain_image(1),
-                __chain_image(2),
-                Span("$.gameName"),
-            ])
-        ]
-    ),
-    # Col(
-    #     "col-12",
-
-    # ),
-    # Col(
-    #     "col-12",
-    #     [
-    #         Row(
-    #             class_name="ml-0",
-    #             children=[
-    #                 __icon_link_col("$.website", "cil-globe-alt"),
-    #                 __icon_link_col("$.twitter", "cib-twitter"),
-    #                 __icon_link_col("$.discord", "cib-discord"),
-    #                 __icon_link_col("$.telegram", "cib-telegram"),
-    #             ])
-    #     ]
-    # )
-])

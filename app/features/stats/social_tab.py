@@ -26,14 +26,8 @@ def __table_row(COLLECTION_NAME):
         busy_when=is_busy(collection(COLLECTION_NAME)),
         default_sort_field_id="twitter_followers",
         default_sort_asc=False,
-        # default_view="grid",
         show_last_updated=False,
         row_height="70px",
-        # grid_view={
-        #     "tileWidth": [12, 12, 12, 12],
-        #     "tile": ,
-        #     "containerClassName": "p-0",
-        # },
         columns=[
             Column(
                 id="game",
@@ -42,23 +36,9 @@ def __table_row(COLLECTION_NAME):
                 searchable=True,
                 min_width="220px"
             ),
-            # Column(
-            #     id="chains",
-            #     searchable=True,
-            #     width="120px",
-            #     omit=True,
-            # ),
-            # Column(
-            #     id="game_name",
-            #     title="Game",
-            #     min_width="300px",
-            #     sortable=True,
-            #     searchable=True,
-            #     cell=__name_cell
-            # ),
             Column(
                 id="twitter_followers",
-                title="Twitter Followers",
+                title="Followers",
                 sortable=True,
                 width="160px",
                 cell=__twitter_followers_cell
