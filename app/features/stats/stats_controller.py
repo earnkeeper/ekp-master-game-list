@@ -1,3 +1,4 @@
+import asyncio
 from ekp_sdk.services import ClientService
 from ekp_sdk.util import client_path, client_query_param
 
@@ -53,7 +54,9 @@ class StatsController:
 
         tab_param = int(tab_param)
         
-        if tab_param == 0:
+        
+        # if tab_param == 0:
+        async def update_socials():
             await self.client_service.emit_busy(sid, SOCIAL_TABLE_COLLECTION_NAME)
             
             social_document = await self.social_stats_service.get_documents()
@@ -66,7 +69,8 @@ class StatsController:
             
             await self.client_service.emit_done(sid, SOCIAL_TABLE_COLLECTION_NAME)
                     
-        if tab_param == 1:
+        # if tab_param == 1:
+        async def update_activity():
             await self.client_service.emit_busy(sid, ACTIVITY_TABLE_COLLECTION_NAME)
             
             social_document = await self.activity_stats_service.get_documents()
@@ -79,7 +83,8 @@ class StatsController:
             
             await self.client_service.emit_done(sid, ACTIVITY_TABLE_COLLECTION_NAME)
 
-        if tab_param == 2:
+        # if tab_param == 2:
+        async def update_volumes():
             await self.client_service.emit_busy(sid, VOLUME_TABLE_COLLECTION_NAME)
 
             volume_documents = await self.volume_stats_service.get_documents()
@@ -91,3 +96,7 @@ class StatsController:
             )
 
             await self.client_service.emit_done(sid, VOLUME_TABLE_COLLECTION_NAME)
+        
+        futures = [update_socials(), update_activity(), update_volumes()]
+        
+        await asyncio.gather(*futures)
