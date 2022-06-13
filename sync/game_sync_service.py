@@ -56,6 +56,9 @@ class GameSyncService:
                 ))
 
                 chat_url = map_get(coin, ["links", "chat_url"])
+                self.__update_game_field(game, "description", map_get(
+                    coin, ["description", "en"]
+                ))
 
                 if chat_url:
                     for chat in chat_url:

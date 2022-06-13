@@ -79,6 +79,8 @@ class InfoService:
         if telegram_members is None:
             telegram_members = "Telegram"
         
+        description = game.get("description", None)
+        
         if coingecko_info:
             description = map_get(coingecko_info, ["description", "en"])
 

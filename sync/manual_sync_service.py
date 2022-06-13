@@ -14,7 +14,7 @@ class ManualSyncService:
     def get_games(self):
         rows = self.google_sheets_client.get_range(
             self.sheet_id,
-            "manual!A2:J"
+            "manual!A2:M"
         )
 
         games = []
@@ -31,16 +31,18 @@ class ManualSyncService:
             eth_tokens = self.__get_tokens_from(row, 5)
             polygon_tokens = self.__get_tokens_from(row, 6)
 
+
             if not coin_ids:
                 coin_ids = [game_id]
             else:
                 coin_ids = self.__split_new_lines(coin_ids)
 
-            twitter = self.__get_value_from(row, 6)
-            telegram = self.__get_value_from(row, 7)
-            website = self.__get_value_from(row, 8)
-            discord = self.__get_value_from(row, 9)
-
+            twitter = self.__get_value_from(row, 7)
+            telegram = self.__get_value_from(row, 8)
+            website = self.__get_value_from(row, 9)
+            discord = self.__get_value_from(row, 10)
+            description = self.__get_value_from(row, 12)
+            
             games.append({
                 "id": game_id,
                 "disable": disable,
@@ -55,6 +57,7 @@ class ManualSyncService:
                 "telegram": telegram,
                 "website": website,
                 "discord": discord,
+                "description": description
             })
 
         return games

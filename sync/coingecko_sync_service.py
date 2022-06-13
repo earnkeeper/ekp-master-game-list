@@ -37,6 +37,7 @@ class CoingeckoSyncService:
                 "telegram": None,
                 "website": None,
                 "discord": None,
+                "description": None
             })
 
         return games
