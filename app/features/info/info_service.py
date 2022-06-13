@@ -64,11 +64,13 @@ class InfoService:
             if latest_social_record is not None:
                 telegram_members = latest_social_record.get("telegram_members", None)
 
-        coingecko_info = await self.cache_service.wrap(
-            f"coingecko_info_{game_id}_v2",
-            lambda: self.coingecko_service.get_coin(game_id),
-            ex=60
-        )
+        # coingecko_info = await self.cache_service.wrap(
+        #     f"coingecko_info_{game_id}_v2",
+        #     lambda: self.coingecko_service.get_coin(game_id),
+        #     ex=60
+        # )
+        
+        coingecko_info = None
         
         if twitter_followers is None:
             twitter_followers = "Twitter"
