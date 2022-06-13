@@ -145,6 +145,7 @@ class VolumeStatsService:
             chains = self.__get_game_chains(game)
 
         return {
+            "id": game_id,
             "gameId": game_id,
             "gameName": record["game_name"],
             "chains": chains,
