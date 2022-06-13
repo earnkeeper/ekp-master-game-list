@@ -42,7 +42,32 @@ class SocialRepo:
             return None
 
         return results
+    
+    def find_chart_by_game_id(self):
+        start = time.perf_counter()
 
+        results = list(
+            self.collection
+            .aggregate([
+                {"$sort": {"timestamp": 1}},
+                {
+                    "$group":
+                    {
+                        "_id": { "game_id": "$game_id", "date_timestamp": "$date_timestamp" },
+                        "value": {"$last": "$twitter_followers"}
+                    }
+                }
+            ])
+        )
+
+        logging.info(
+            f"⏱  [SocialRepo.find_chart_by_game_id()] {time.perf_counter() - start:0.3f}s"
+        )
+
+        if not results or not len(results):
+            return None
+
+        return results
     def find_all_since(self, timestamp):
         start = time.perf_counter()
 

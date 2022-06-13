@@ -26,33 +26,42 @@ def __table_row(COLLECTION_NAME):
         busy_when=is_busy(collection(COLLECTION_NAME)),
         default_sort_field_id="twitter_followers",
         default_sort_asc=False,
-        on_row_clicked=navigate(
-            format_template("info/{{ id }}", {
-                "id": "$.id"
-            })
-        ),
+        # default_view="grid",
+        show_last_updated=False,
+        row_height="70px",
+        # grid_view={
+        #     "tileWidth": [12, 12, 12, 12],
+        #     "tile": ,
+        #     "containerClassName": "p-0",
+        # },
         columns=[
             Column(
-                id="chains",
+                id="game",
+                cell=__name_cell,
+                compact=True,
                 searchable=True,
-                width="120px",
-                omit=True,
+                min_width="220px"
             ),
-            Column(
-                id="game_name",
-                title="Game",
-                min_width="300px",
-                sortable=True,
-                searchable=True,
-                cell=__name_cell
-            ),
+            # Column(
+            #     id="chains",
+            #     searchable=True,
+            #     width="120px",
+            #     omit=True,
+            # ),
+            # Column(
+            #     id="game_name",
+            #     title="Game",
+            #     min_width="300px",
+            #     sortable=True,
+            #     searchable=True,
+            #     cell=__name_cell
+            # ),
             Column(
                 id="twitter_followers",
-                title="Followers",
+                title="Twitter Followers",
                 sortable=True,
-                right=True,
-                width="120px",
-                format=commify("$.twitter_followers")
+                width="160px",
+                cell=__twitter_followers_cell
             ),
             Column(
                 id="chart",
@@ -60,7 +69,7 @@ def __table_row(COLLECTION_NAME):
                 width="120px",
                 cell=__chart_cell('$.chart.*')
             ),
-            
+
         ]
     )
 
@@ -164,51 +173,175 @@ def __icon_link_col(href, icon_name):
     )
 
 
-def __chain_image(index):
+def __chain_image(index, height="14px"):
     return Image(
         when=f"$.chains[{index}]",
         src=switch_case(f"$.chains[{index}]", CHAIN_IMAGE),
-        style={"height": "14px", "marginRight": "12px", "marginTop": "-2px"}
+        style={"height": height, "marginRight": "12px", "marginTop": "-2px"}
     )
 
 
-__links_cell = Row(
-    class_name="ml-0",
+__twitter_followers_cell = Div(
+    class_name="mt-2",
     children=[
-        __icon_link_col("$.website", "cil-globe-alt"),
-        __icon_link_col("$.twitter", "cib-twitter"),
-        __icon_link_col("$.discord", "cib-discord"),
-        __icon_link_col("$.telegram", "cib-telegram"),
+        Row([
+            Col("col-auto my-auto", [Icon("cib-twitter")]),
+            Col(
+                "col-auto pl-0 my-auto",
+                [
+                    Span(
+                        commify(
+                            "$.twitter_followers"
+                        ),
+                        "font-medium-1 d-block"
+                    ),
+
+                ]
+            )
+        ]),
+        Div(
+            when="$.change_24h",
+            children=[
+                Span(
+                    "+",
+                    format_template("font-small-2 text-{{ color }}", {
+                        "color": "$.change_24h_color"
+                    }),
+                    when="$.twitter_plus"
+                ),
+                Span(
+                    commify("$.change_24h"),
+                    format_template("font-small-2 text-{{ color }}", {
+                        "color": "$.change_24h_color"
+                    })
+                ),
+                Span(
+                    format_template(" ( {{ pc }} )", {"pc": format_percent(
+                        "$.change_24h_pc", showPlus=True, decimals=2)}),
+                    format_template("font-small-2 text-{{ color }}", {
+                        "color": "$.change_24h_color"
+                    })
+                ),
+            ]),
+
     ])
 
-__name_cell = Row([
+__name_cell = Div(
+    children=[
+        Div(style={"height": "24px"}),
+        Link(
+            href=format_template("/game/all/info/{{ id }}", {
+                "id": "$.id"
+            }),
+            content="$.game_name",
+            class_name="font-medium-2 d-block"
+        ),
+        Div(
+            style={"marginTop": "0px",
+                   "paddingLeft": "0px"},
+            children=[
+                __chain_image(0, "14px"),
+                __chain_image(1, "14px"),
+                __chain_image(2, "14px"),
 
-    Col(
-        "col-auto my-auto pr-0",
-        [
-            Div([
-                __chain_image(0),
-                __chain_image(1),
-                __chain_image(2),
-                Span("$.game_name"),
-            ])
-        ]
-    ),
-    # Col(
-    #     "col-12",
+            ]
+        ),
+        Div(style={"height": "8px"}),
+    ])
 
-    # ),
-    # Col(
-    #     "col-12",
-    #     [
-    #         Row(
-    #             class_name="ml-0",
-    #             children=[
-    #                 __icon_link_col("$.website", "cil-globe-alt"),
-    #                 __icon_link_col("$.twitter", "cib-twitter"),
-    #                 __icon_link_col("$.discord", "cib-discord"),
-    #                 __icon_link_col("$.telegram", "cib-telegram"),
-    #             ])
-    #     ]
-    # )
-])
+
+# __name_cell = Div(
+#     style={"position": "relative", "height": "80px", "width": "600px"},
+#     children=[
+#         Div(
+#             style={
+#                 "position": "absolute",
+#                 "top": 0,
+#                 "left": 0,
+#                 "width": "140px",
+#                 "height": "80px",
+#                 "background": format_template("url({{{ bg }}})", {
+#                     "bg": "$.banner_url"
+#                 }),
+#                 "backgroundRepeat": "no-repeat",
+#                 "backgroundSize": "cover",
+#                 "zIndex": 1,
+#             },
+#         ),
+#         Div(
+#             class_name="left-to-right-fade",
+#             style={
+#                 "position": "absolute",
+#                 "top": 0,
+#                 "left": 0,
+#                 "zIndex": 2,
+#                 "width": "140px",
+#                 "height": "80px",
+#             },
+#         ),
+#         Div(
+#             style={
+#                 "position": "absolute",
+#                 "top": 0,
+#                 "left": 0,
+#                 "zIndex": 3,
+#                 "width": "100%",
+#             },
+#             children=[
+#                 Div(
+#                     children=[Row([
+#                         Col(
+#                             "col-auto pl-2",
+#                             [
+#                                 Div(style={"height": "8px"}),
+#                                 Row([
+#                                     Col(
+#                                         "col-auto pr-0",
+#                                         [
+#                                             Div(
+#                                                 style={
+#                                                     "marginRight": "6px",
+#                                                 },
+#                                                 children=[
+#                                                     Icon(
+#                                                         "cib-twitter",
+#                                                         size="sm"
+#                                                     )
+#                                                 ]),
+
+#                                         ]
+#                                     ),
+#                                     Col(
+#                                         "col-auto pl-0",
+#                                         [
+#                                             Span(
+#                                                 commify(
+#                                                     "$.twitter_followers"
+#                                                 ),
+#                                                 "font-small-2 text-normal"
+#                                             )
+#                                         ]
+#                                     )
+#                                 ]),
+#                                 Span(
+#                                     "$.game_name",
+#                                     "font-medium-4 d-block text-primary"
+#                                 ),
+#                                 Div(
+#                                     style={"marginTop": "-4px",
+#                                            "paddingLeft": "0px"},
+#                                     children=[
+#                                         __chain_image(0, "10px"),
+#                                         __chain_image(1, "10px"),
+#                                         __chain_image(2, "10px"),
+
+#                                     ]
+#                                 ),
+#                                 Div(style={"height": "8px"}),
+#                             ]
+#                         ),
+#                     ])]
+#                 )
+#             ]
+#         ),
+#     ])
