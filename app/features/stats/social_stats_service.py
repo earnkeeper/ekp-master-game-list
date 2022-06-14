@@ -145,8 +145,6 @@ class SocialStatsService:
                 "twitter_plus": twitter_plus,
             }
             
-            print(document['profile_image_url'])
-            
             documents.append(document)
 
         return documents

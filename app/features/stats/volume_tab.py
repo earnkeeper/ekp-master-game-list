@@ -51,12 +51,25 @@ def __table_row(COLLECTION_NAME):
                 cell=change_cell(format_currency("$.volume24h", None), "$.volumeDelta", "$.deltaColor")
             ),
             Column(
+                id="volumeDelta",
+                title="Volume 24h %",
+                sortable=True,
+                omit=True,
+            ),
+            Column(
                 id="volume7d",
                 title="Volume 7d",
                 sortable=True,
                 width="150px",                
                 cell=change_cell(format_currency("$.volume7d", None), "$.volume7dDelta", "$.delta7dColor"),
             ),
+            Column(
+                id="volume7dDelta",
+                title="Volume 7d %",
+                sortable=True,
+                omit=True,
+            ),
+            
             Column(
                 id="chart7d",
                 title="7d History",

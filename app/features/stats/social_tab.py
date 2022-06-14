@@ -30,10 +30,12 @@ def __table_row(COLLECTION_NAME):
         row_height="70px",
         columns=[
             Column(
-                id="game",
+                id="game_name",
+                title="Game",
                 cell=__name_cell,
                 compact=True,
                 searchable=True,
+                sortable=True,
                 min_width="220px"
             ),
             Column(
@@ -48,6 +50,18 @@ def __table_row(COLLECTION_NAME):
                 title="",
                 width="120px",
                 cell=__chart_cell('$.chart.*')
+            ),
+            Column(
+                id="change_24h",
+                title="New Followers",
+                sortable=True,
+                omit=True
+            ),
+            Column(
+                id="change_24h_pc",
+                title="New Followers %",
+                sortable=True,
+                omit=True
             ),
 
         ]

@@ -55,11 +55,17 @@ def __table_row(ACTIVITY_COLLECTION_NAME):
                 )
             ),
             Column(
+                id="newUsersDelta",
+                title="New Users 24h %",
+                sortable=True,
+                omit=True,
+            ),            
+            Column(
                 id="newUsers7d",
                 title="New Users 7d",
                 sortable=True,
                 format=commify("$.newUsers7d"),
-                width="120px",
+                width="110px",
                 cell=change_cell(
                     commify("$.newUsers7d"),
                     "$.newUsers7dDelta",
@@ -67,6 +73,12 @@ def __table_row(ACTIVITY_COLLECTION_NAME):
 
                 )
             ),
+            Column(
+                id="newUsers7dDelta",
+                title="New Users 7d %",
+                sortable=True,
+                omit=True,
+            ),            
             Column(
                 id="chart7d",
                 title="7d History",
