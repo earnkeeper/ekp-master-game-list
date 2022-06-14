@@ -107,7 +107,8 @@ class InfoService:
         volume_document = await self.token_volume_info_service.get_volume_document(game)
 
         telegram = game["telegram"] if (game["telegram"] and game["telegram"] != "https://t.me/") else None
-        
+        if telegram and not telegram.startswith("http"):
+            telegram = f"https://t.me/{telegram}"
         return [
             {
                 "id": game_id,
