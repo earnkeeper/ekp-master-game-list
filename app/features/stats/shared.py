@@ -69,27 +69,39 @@ def chain_image(index, height):
 
 
 def name_cell(name):
-    return Div(
+    return Row(
         children=[
-            Div(style={"height": "24px"}),
-            Link(
-                href=format_template("/game/all/info/{{ id }}", {
-                    "id": "$.id"
-                }),
-                content=name,
-                class_name="font-medium-2 d-block"
-            ),
-            Div(
-                style={"marginTop": "0px",
-                       "paddingLeft": "0px"},
-                children=[
-                    chain_image(0, "14px"),
-                    chain_image(1, "14px"),
-                    chain_image(2, "14px"),
-
+            Col(
+                "col-auto pr-0 my-auto",
+                [
+                    Image(src="$.profile_image_url", style={
+                        "height": "32px", "width": "32px", "marginTop": "18px"}, rounded=True)
                 ]
             ),
-            Div(style={"height": "8px"}),
+            Col(
+                "",
+                [
+                    Div(style={"height": "24px"}),
+                    Link(
+                        href=format_template("/game/all/info/{{ id }}", {
+                            "id": "$.id"
+                        }),
+                        content=name,
+                        class_name="font-medium-2 d-block"
+                    ),
+                    Div(
+                        style={"marginTop": "0px",
+                               "paddingLeft": "0px"},
+                        children=[
+                            chain_image(0, "14px"),
+                            chain_image(1, "14px"),
+                            chain_image(2, "14px"),
+
+                        ]
+                    ),
+                    Div(style={"height": "8px"}),
+                ]
+            ),
         ])
 
 

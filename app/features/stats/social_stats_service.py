@@ -138,12 +138,15 @@ class SocialStatsService:
                 "chains": chains,
                 "chart": chart,
                 "banner_url": game.get('banner_url', None),
+                "profile_image_url": game.get('profile_image_url', None),
                 "change_24h": change_24h,
                 "change_24h_pc": change_24h_pc,
                 "change_24h_color": change_24h_color,
                 "twitter_plus": twitter_plus,
             }
-
+            
+            print(document['profile_image_url'])
+            
             documents.append(document)
 
         return documents

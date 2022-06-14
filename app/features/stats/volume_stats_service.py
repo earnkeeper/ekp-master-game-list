@@ -135,7 +135,8 @@ class VolumeStatsService:
         telegram = None
 
         chains = []
-
+        profile_image_url = None
+        
         if game_id in games_map:
             game = games_map[game_id]
             website = game["website"]
@@ -143,11 +144,13 @@ class VolumeStatsService:
             discord = game["discord"]
             telegram = game["telegram"]
             chains = self.__get_game_chains(game)
+            profile_image_url = game.get('profile_image_url', None)
 
         return {
             "id": game_id,
             "gameId": game_id,
             "gameName": record["game_name"],
+            "profile_image_url": profile_image_url,
             "chains": chains,
             "gameLink": gameLink,
             "volume24h": 0,

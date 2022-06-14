@@ -140,20 +140,23 @@ class ActivityStatsService:
         twitter = None
         discord = None
         telegram = None
-
+        profile_image_url = None
+        
         if id in games_map:
             game = games_map[id]
             website = game["website"]
             twitter = f'https://twitter.com/{game["twitter"]}'
             discord = game["discord"]
             telegram = game["telegram"]
-
+            profile_image_url = game.get('profile_image_url', None)
+            
         return {
             "id": id,
             "gameId": record["game_id"],
             "gameName": record["game_name"],
             "gameLink": gameLink,
             "chains": [record["game_chain"]],
+            "profile_image_url": profile_image_url,            
             "newUsers24h": 0,
             "newUsers48h": 0,
             "newUsersDelta": None,

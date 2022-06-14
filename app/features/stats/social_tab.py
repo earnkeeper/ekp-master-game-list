@@ -206,122 +206,37 @@ __twitter_followers_cell = Div(
 
     ])
 
-__name_cell = Div(
+__name_cell = Row(
     children=[
-        Div(style={"height": "24px"}),
-        Link(
-            href=format_template("/game/all/info/{{ id }}", {
-                "id": "$.id"
-            }),
-            content="$.game_name",
-            class_name="font-medium-2 d-block"
-        ),
-        Div(
-            style={"marginTop": "0px",
-                   "paddingLeft": "0px"},
-            children=[
-                __chain_image(0, "14px"),
-                __chain_image(1, "14px"),
-                __chain_image(2, "14px"),
-
+        Col(
+            "col-auto pr-0 my-auto",
+            [
+                Image(src="$.profile_image_url", style={"height": "32px", "width": "32px", "marginTop": "18px"}, rounded=True)
             ]
         ),
-        Div(style={"height": "8px"}),
+        Col(
+            "",
+            [
+                Div(style={"height": "24px"}),
+                Link(
+                    href=format_template("/game/all/info/{{ id }}", {
+                        "id": "$.id"
+                    }),
+                    content="$.game_name",
+                    class_name="font-medium-2 d-block"
+                ),
+                Div(
+                    style={"marginTop": "0px",
+                           "paddingLeft": "0px"},
+                    children=[
+                        __chain_image(0, "14px"),
+                        __chain_image(1, "14px"),
+                        __chain_image(2, "14px"),
+
+                    ]
+                ),
+                Div(style={"height": "8px"}),
+
+            ]
+        )
     ])
-
-
-# __name_cell = Div(
-#     style={"position": "relative", "height": "80px", "width": "600px"},
-#     children=[
-#         Div(
-#             style={
-#                 "position": "absolute",
-#                 "top": 0,
-#                 "left": 0,
-#                 "width": "140px",
-#                 "height": "80px",
-#                 "background": format_template("url({{{ bg }}})", {
-#                     "bg": "$.banner_url"
-#                 }),
-#                 "backgroundRepeat": "no-repeat",
-#                 "backgroundSize": "cover",
-#                 "zIndex": 1,
-#             },
-#         ),
-#         Div(
-#             class_name="left-to-right-fade",
-#             style={
-#                 "position": "absolute",
-#                 "top": 0,
-#                 "left": 0,
-#                 "zIndex": 2,
-#                 "width": "140px",
-#                 "height": "80px",
-#             },
-#         ),
-#         Div(
-#             style={
-#                 "position": "absolute",
-#                 "top": 0,
-#                 "left": 0,
-#                 "zIndex": 3,
-#                 "width": "100%",
-#             },
-#             children=[
-#                 Div(
-#                     children=[Row([
-#                         Col(
-#                             "col-auto pl-2",
-#                             [
-#                                 Div(style={"height": "8px"}),
-#                                 Row([
-#                                     Col(
-#                                         "col-auto pr-0",
-#                                         [
-#                                             Div(
-#                                                 style={
-#                                                     "marginRight": "6px",
-#                                                 },
-#                                                 children=[
-#                                                     Icon(
-#                                                         "cib-twitter",
-#                                                         size="sm"
-#                                                     )
-#                                                 ]),
-
-#                                         ]
-#                                     ),
-#                                     Col(
-#                                         "col-auto pl-0",
-#                                         [
-#                                             Span(
-#                                                 commify(
-#                                                     "$.twitter_followers"
-#                                                 ),
-#                                                 "font-small-2 text-normal"
-#                                             )
-#                                         ]
-#                                     )
-#                                 ]),
-#                                 Span(
-#                                     "$.game_name",
-#                                     "font-medium-4 d-block text-primary"
-#                                 ),
-#                                 Div(
-#                                     style={"marginTop": "-4px",
-#                                            "paddingLeft": "0px"},
-#                                     children=[
-#                                         __chain_image(0, "10px"),
-#                                         __chain_image(1, "10px"),
-#                                         __chain_image(2, "10px"),
-
-#                                     ]
-#                                 ),
-#                                 Div(style={"height": "8px"}),
-#                             ]
-#                         ),
-#                     ])]
-#                 )
-#             ]
-#         ),
-#     ])
