@@ -35,7 +35,6 @@ def __table_row(COLLECTION_NAME):
                 min_width="400px",
                 searchable=True,
                 sortable=True,
-                min_width="220px"
             ),
             Column(
                 id="twitter_followers",
