@@ -33,6 +33,8 @@ def __table_row(COLLECTION_NAME):
                 id="game_name",
                 title="Game",
                 min_width="400px",
+                cell=__name_cell,
+                compact=True,                
                 searchable=True,
                 sortable=True,
             ),
