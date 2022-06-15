@@ -237,7 +237,8 @@ __name_cell = Row(
                         "id": "$.id"
                     }),
                     content="$.game_name",
-                    class_name="font-medium-2 d-block"
+                    class_name="font-medium-2 d-block",
+                    external_icon=True
                 ),
                 Div(
                     style={"marginTop": "0px",

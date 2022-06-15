@@ -29,11 +29,6 @@ def __table_row(ACTIVITY_COLLECTION_NAME):
         default_sort_asc=False,
         row_height="70px",
         show_last_updated=False,
-        on_row_clicked=navigate(
-            format_template("info/{{ id }}", {
-                "id": "$.gameId"
-            })
-        ),
         columns=[
             Column(
                 id="gameName",

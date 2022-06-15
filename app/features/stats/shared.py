@@ -87,7 +87,8 @@ def name_cell(name):
                             "id": "$.id"
                         }),
                         content=name,
-                        class_name="font-medium-2 d-block"
+                        class_name="font-medium-2 d-block",
+                        external_icon=True
                     ),
                     Div(
                         style={"marginTop": "0px",
