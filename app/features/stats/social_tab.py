@@ -24,7 +24,7 @@ def __table_row(COLLECTION_NAME):
         class_name="mt-1",
         data=documents(COLLECTION_NAME),
         busy_when=is_busy(collection(COLLECTION_NAME)),
-        default_sort_field_id="twitter_followers",
+        default_sort_field_id="change_24h",
         default_sort_asc=False,
         show_last_updated=False,
         row_height="70px",
