@@ -38,7 +38,7 @@ def __table_row(COLLECTION_NAME):
             Column(
                 id="gameName",
                 title="Game",
-                min_width="220px",
+                min_width="400px",
                 sortable=True,
                 searchable=True,
                 cell=name_cell("$.gameName")

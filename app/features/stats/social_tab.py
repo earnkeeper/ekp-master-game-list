@@ -32,8 +32,8 @@ def __table_row(COLLECTION_NAME):
             Column(
                 id="game_name",
                 title="Game",
-                cell=__name_cell,
-                compact=True,
+                min_width="400px",
+                sortable=True,
                 searchable=True,
                 sortable=True,
                 min_width="220px"
