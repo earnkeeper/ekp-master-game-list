@@ -38,7 +38,6 @@ class InfoController:
 
         table_documents = await self.info_service.get_documents(game_id, currency)
 
-        pprint(table_documents)
         await self.client_service.emit_documents(
             sid,
             TABLE_COLLECTION_NAME,

@@ -4,6 +4,7 @@ from ekp_sdk import BaseContainer
 from app.features.info.activity_info_service import ActivityInfoService
 from app.features.info.info_controller import InfoController
 from app.features.info.info_service import InfoService
+from app.features.info.token_price_info_service import TokenPriceInfoService
 from app.features.info.token_volume_info_service import TokenVolumeInfoService
 from app.features.stats.activity_stats_service import ActivityStatsService
 from app.features.stats.social_stats_service import SocialStatsService
@@ -54,6 +55,11 @@ class AppContainer(BaseContainer):
         self.token_volume_info_service = TokenVolumeInfoService(
             volume_repo=self.volume_repo,
         )
+
+        self.token_price_info_service = TokenPriceInfoService(
+            price_repo=self.price_repo
+        )
+
         self.info_service = InfoService(
             activity_info_service=self.activity_info_service,
             cache_service=self.cache_service,
@@ -61,7 +67,8 @@ class AppContainer(BaseContainer):
             game_repo=self.game_repo,
             social_repo=self.social_repo,
             token_volume_info_service=self.token_volume_info_service,
-            price_repo=self.price_repo
+            price_repo=self.price_repo,
+            token_price_info_service=self.token_price_info_service
         )
 
         self.info_controller = InfoController(

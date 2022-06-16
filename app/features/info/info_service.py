@@ -1,4 +1,7 @@
+from pprint import pprint
+
 from app.features.info.activity_info_service import ActivityInfoService
+from app.features.info.token_price_info_service import TokenPriceInfoService
 from app.features.info.token_volume_info_service import TokenVolumeInfoService
 from db.price_repo import PriceRepo
 from shared.map_get import map_get
@@ -19,6 +22,7 @@ class InfoService:
         social_repo: SocialRepo,
         price_repo: PriceRepo,
         token_volume_info_service: TokenVolumeInfoService,
+        token_price_info_service: TokenPriceInfoService
     ):
         self.activity_info_service = activity_info_service
         self.cache_service = cache_service
@@ -27,6 +31,7 @@ class InfoService:
         self.social_repo = social_repo
         self.price_repo = price_repo
         self.token_volume_info_service = token_volume_info_service
+        self.token_price_info_service = token_price_info_service
 
     async def get_documents(self, game_id, currency):
         game = self.game_repo.find_one_by_id(game_id)
@@ -108,6 +113,9 @@ class InfoService:
 
         activity_document = await self.activity_info_service.get_activity_document(game)
         volume_document = await self.token_volume_info_service.get_volume_document(game)
+        price_document = await self.token_price_info_service.get_price_document(game)
+
+        # pprint(price_document)
 
         telegram = game["telegram"] if (game["telegram"] and game["telegram"] != "https://t.me/") else None
         if telegram and not telegram.startswith("http"):
@@ -128,6 +136,7 @@ class InfoService:
                 "website": game["website"],
                 "activity": activity_document,
                 "volume": volume_document,
+                "price_doc": price_document,
                 "coingecko": f"https://www.coingecko.com/en/coins/{game['id']}" if price else None,
                 "statsAvailable": activity_document is not None or volume_document is not None,
                 "fiat_symbol": currency['symbol'],
