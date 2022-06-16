@@ -306,7 +306,7 @@ def __socials_chart():
                 },
                 series=[
                     {
-                        "name": "Twitter followers",
+                        "name": "Twitter Followers",
                         "type": "line",
                         "data": ekp_map(
                             sort_by(
@@ -366,7 +366,7 @@ def __socials_stats():
             Col(
                 "col-6",
                 [
-                    Span("Twitter followers (24h)", "d-block font-small-3"),
+                    Span("Twitter Followers (24h)", "d-block font-small-3"),
                     Span(
                         commify("$.change_24h"),
                         format_template(
