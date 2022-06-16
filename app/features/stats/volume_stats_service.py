@@ -9,11 +9,11 @@ from db.volume_repo import VolumeRepo
 
 class VolumeStatsService:
     def __init__(
-        self,
-        volume_repo: VolumeRepo,
-        cache_service: CoingeckoService,
-        coingecko_service: CoingeckoService,
-        game_repo: GameRepo,
+            self,
+            volume_repo: VolumeRepo,
+            cache_service: CoingeckoService,
+            coingecko_service: CoingeckoService,
+            game_repo: GameRepo,
     ):
         self.volume_repo = volume_repo
         self.cache_service = cache_service
@@ -42,7 +42,7 @@ class VolumeStatsService:
         chart7d_template = {}
 
         for i in range(7):
-            chart_timestamp = latest_date_timestamp - 86400 * (6-i)
+            chart_timestamp = latest_date_timestamp - 86400 * (6 - i)
             chart7d_template[chart_timestamp] = {
                 "timestamp": chart_timestamp,
                 "timestamp_ms": chart_timestamp * 1000,
@@ -57,9 +57,12 @@ class VolumeStatsService:
         now_seconds_into_day = now - now_midnight
 
         for record in records:
+
+            if record['timestamp'] < 0:
+                continue
+
             game_id = record["game_id"]
             date_timestamp = record["timestamp"]
-
 
             if game_id not in grouped_by_game_id:
                 grouped_by_game_id[game_id] = self.__create_record(
@@ -98,11 +101,11 @@ class VolumeStatsService:
 
             if group["volume14d"] > 0:
                 group["volume7dDelta"] = (
-                    group["volume7d"] - group["volume14d"]) * 100 / group["volume14d"]
+                                                 group["volume7d"] - group["volume14d"]) * 100 / group["volume14d"]
 
             if group["volume48h"] > 0:
                 group["volumeDelta"] = (
-                    group["volume24h"] - group["volume48h"]) * 100 / group["volume48h"]
+                                               group["volume24h"] - group["volume48h"]) * 100 / group["volume48h"]
 
             if date_timestamp in group["chart7d"]:
                 group["chart7d"][date_timestamp]["volume"] = volume
@@ -136,7 +139,7 @@ class VolumeStatsService:
 
         chains = []
         profile_image_url = None
-        
+
         if game_id in games_map:
             game = games_map[game_id]
             website = game["website"]

@@ -39,7 +39,7 @@ class SocialRepo:
         )
 
         if not results or not len(results):
-            return None
+            return []
 
         return results
     
@@ -65,7 +65,7 @@ class SocialRepo:
         )
 
         if not results or not len(results):
-            return None
+            return []
 
         return results
     def find_all_since(self, timestamp):
@@ -86,7 +86,7 @@ class SocialRepo:
         )
 
         if not results or not len(results):
-            return None
+            return []
 
         return results
     
@@ -107,7 +107,7 @@ class SocialRepo:
         )
 
         if not results or not len(results):
-            return None
+            return []
         
         return results[0]
     
