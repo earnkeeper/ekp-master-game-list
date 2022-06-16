@@ -28,6 +28,8 @@ spec:
                   value: "{{ .Values.sheets.credentialsFile }}"
                 - name: REDIS_URI
                   value: "redis://{{ .Release.Name }}-redis-master"
+                - name: PROXY_URI
+                  value: "{{ .Values.proxy.uri }}"
               volumeMounts:
                 - name: secret-files
                   mountPath: "/app/secret"
