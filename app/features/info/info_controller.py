@@ -1,3 +1,5 @@
+from pprint import pprint
+
 from app.features.info.info_page import page
 from app.features.info.info_service import InfoService
 from ekp_sdk.services import ClientService
@@ -35,7 +37,8 @@ class InfoController:
         await self.client_service.emit_busy(sid, TABLE_COLLECTION_NAME)
 
         table_documents = await self.info_service.get_documents(game_id, currency)
-        
+
+        pprint(table_documents)
         await self.client_service.emit_documents(
             sid,
             TABLE_COLLECTION_NAME,

@@ -1,5 +1,6 @@
 from app.features.info.activity_info_service import ActivityInfoService
 from app.features.info.token_volume_info_service import TokenVolumeInfoService
+from db.price_repo import PriceRepo
 from shared.map_get import map_get
 from db.game_repo import GameRepo
 from datetime import datetime
@@ -16,6 +17,7 @@ class InfoService:
         coingecko_service: CoingeckoService,
         game_repo: GameRepo,
         social_repo: SocialRepo,
+        price_repo: PriceRepo,
         token_volume_info_service: TokenVolumeInfoService,
     ):
         self.activity_info_service = activity_info_service
@@ -23,6 +25,7 @@ class InfoService:
         self.coingecko_service = coingecko_service
         self.game_repo = game_repo
         self.social_repo = social_repo
+        self.price_repo = price_repo
         self.token_volume_info_service = token_volume_info_service
 
     async def get_documents(self, game_id, currency):
@@ -40,8 +43,8 @@ class InfoService:
             ]
 
         banner_url = game.get('banner_url', None)
-        price = "Coingecko"
-        price_color = "normal"
+        # price = "Coingecko"
+        # price_color = "normal"
         telegram_members = None
         discord_members = None
         twitter = None
@@ -64,11 +67,28 @@ class InfoService:
             if latest_social_record is not None:
                 telegram_members = latest_social_record.get("telegram_members", None)
 
-        # coingecko_info = await self.cache_service.wrap(
-        #     f"coingecko_info_{game_id}_v2",
-        #     lambda: self.coingecko_service.get_coin(game_id),
-        #     ex=60
-        # )
+        price_records = self.price_repo.find_by_game_id(game["id"])
+
+        price_records.sort(key=lambda record: record['timestamp'])
+
+        price = None
+        price_change = None
+        price_change_pc = None
+        price_color = "normal"
+
+        if len(price_records):
+            current_price = price_records[-1]["price_usd"]
+            price = f'{currency["symbol"]} {float("%.3g" % current_price)}'
+
+            if len(price_records) > 1:
+                yesterday_price = price_records[-2]["price_usd"]
+                price_change = current_price - yesterday_price
+                price_change_pc = price_change * 100 / yesterday_price
+                price += f' (+{price_change_pc} %)' if price_change_pc > 0 else f' ({price_change_pc} %)'
+                if price_change_pc > 0:
+                    price_color = "success"
+                if price_change_pc < 0:
+                    price_color = "danger"
         
         coingecko_info = None
         
@@ -83,25 +103,7 @@ class InfoService:
         
         description = game.get("description", None)
 
-        if coingecko_info:
-            if not description:
-                description = map_get(coingecko_info, ["description", "en"])
 
-            if "market_data" in coingecko_info:
-                market_data = coingecko_info["market_data"]
-                if "current_price" in market_data:
-                    current_price = market_data["current_price"]
-                    if currency["id"] in current_price and current_price[currency["id"]]:
-                        price = f'{currency["symbol"]} {float("%.3g" % current_price[currency["id"]])}'
-                if "price_change_percentage_24h" in market_data and market_data["price_change_percentage_24h"]:
-                    price_change_percentage_24h = market_data["price_change_percentage_24h"]
-                    price_change_percentage_24h = round(
-                        price_change_percentage_24h, 1)
-                    price += f' (+{price_change_percentage_24h} %)' if price_change_percentage_24h > 0 else f' ({price_change_percentage_24h} %)'
-                    if price_change_percentage_24h > 0:
-                        price_color = "success"
-                    if price_change_percentage_24h < 0:
-                        price_color = "danger"
 
         activity_document = await self.activity_info_service.get_activity_document(game)
         volume_document = await self.token_volume_info_service.get_volume_document(game)

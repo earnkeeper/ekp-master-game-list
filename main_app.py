@@ -10,6 +10,7 @@ from app.features.stats.social_stats_service import SocialStatsService
 from app.features.stats.stats_controller import StatsController
 from app.features.stats.volume_stats_service import VolumeStatsService
 from db.activity_repo import ActivityRepo
+from db.price_repo import PriceRepo
 from db.social_repo import SocialRepo
 from db.volume_repo import VolumeRepo
 
@@ -30,6 +31,10 @@ class AppContainer(BaseContainer):
         )
 
         self.volume_repo = VolumeRepo(
+            mg_client=self.mg_client
+        )
+
+        self.price_repo = PriceRepo(
             mg_client=self.mg_client
         )
 
@@ -56,6 +61,7 @@ class AppContainer(BaseContainer):
             game_repo=self.game_repo,
             social_repo=self.social_repo,
             token_volume_info_service=self.token_volume_info_service,
+            price_repo=self.price_repo
         )
 
         self.info_controller = InfoController(
