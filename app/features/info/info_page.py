@@ -552,7 +552,7 @@ def __socials_section():
 def __image_link_col(href, image_url, content, color):
     return Col(
         when=href,
-        class_name="col-auto my-auto pr-2",
+        class_name="col-auto my-auto pr-2 pb-1",
         children=[
             Link(
                 href=href,
@@ -594,7 +594,7 @@ def __image_link_col(href, image_url, content, color):
 def __icon_link_col(href, icon_name, content):
     return Col(
         when=href,
-        class_name="col-auto my-auto pr-2",
+        class_name="col-auto my-auto pr-2 pb-1",
         children=[
             Link(
                 href=href,

@@ -40,17 +40,11 @@ class TokenPriceInfoService:
                 document["price7dcount"] = document["price7dcount"] + 1
 
             if document["price48h"] > 0:
-                print(f"price24h is {document['price24h']}")
-                print(f"price48h is {document['price48h']}")
                 document["priceDelta"] = (document["price24h"] - document["price48h"]) * 100 / document["price48h"]
 
             if date_timestamp in document["chart7d"]:
                 document["chart7d"][date_timestamp]["price"] = price
 
-        # if document["price7d"] and document["price24h"]:
-        #     print(f"price24h is {document['price24h']}")
-        #     print(f"price7d is {document['price7d']}")
-        #     document["priceDelta"] = (document["price24h"]) * 100 / document["price7d"]
 
         document["deltaColor"] = "normal"
 
