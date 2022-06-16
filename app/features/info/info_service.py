@@ -84,6 +84,7 @@ class InfoService:
                 yesterday_price = price_records[-2]["price_usd"]
                 price_change = current_price - yesterday_price
                 price_change_pc = price_change * 100 / yesterday_price
+                price_change_pc = round(price_change_pc, 2)
                 price += f' (+{price_change_pc} %)' if price_change_pc > 0 else f' ({price_change_pc} %)'
                 if price_change_pc > 0:
                     price_color = "success"
@@ -127,7 +128,7 @@ class InfoService:
                 "website": game["website"],
                 "activity": activity_document,
                 "volume": volume_document,
-                "coingecko": f"https://www.coingecko.com/en/coins/{game['id']}" if coingecko_info else None,
+                "coingecko": f"https://www.coingecko.com/en/coins/{game['id']}" if price else None,
                 "statsAvailable": activity_document is not None or volume_document is not None,
                 "fiat_symbol": currency['symbol'],
                 "price": price,
