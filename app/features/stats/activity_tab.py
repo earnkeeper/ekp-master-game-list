@@ -28,7 +28,8 @@ def __table_row(ACTIVITY_COLLECTION_NAME):
         default_sort_field_id="newUsers24h",
         default_sort_asc=False,
         row_height="70px",
-        show_last_updated=False,
+        show_export=False,
+        show_last_updated=True,
         columns=[
             Column(
                 id="gameName",

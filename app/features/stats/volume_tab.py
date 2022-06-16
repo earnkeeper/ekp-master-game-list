@@ -26,7 +26,8 @@ def __table_row(COLLECTION_NAME):
         busy_when=is_busy(collection(COLLECTION_NAME)),
         default_sort_field_id="volume24h",
         default_sort_asc=False,
-        show_last_updated=False,
+        show_export=False,
+        show_last_updated=True,
         row_height="70px",
         columns=[
             Column(

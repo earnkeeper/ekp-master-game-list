@@ -107,7 +107,7 @@ class SocialRepo:
         )
 
         if not results or not len(results):
-            return []
+            return None
         
         return results[0]
     
