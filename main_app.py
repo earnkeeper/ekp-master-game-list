@@ -54,6 +54,7 @@ class AppContainer(BaseContainer):
         )
 
         self.social_followers_info_service = SocialFollowersInfoService(
+            game_repo=self.game_repo,
             social_repo=self.social_repo
         )
 

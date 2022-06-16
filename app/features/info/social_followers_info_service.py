@@ -1,106 +1,131 @@
 from datetime import datetime
 from app.utils.get_midnight_utc import get_midnight_utc
 from db.social_repo import SocialRepo
+from db.game_repo import GameRepo
 
 
 class SocialFollowersInfoService:
     def __init__(
             self,
+            game_repo: GameRepo,
             social_repo: SocialRepo,
     ):
+        self.game_repo = game_repo
         self.social_repo = social_repo
 
-    async def get_social_info_document(self, game):
+    async def get_social_document(self, game):
+        game_id = game['id']
 
-        records = self.social_repo.find_by_game_id(game["id"])
+        latest_record = self.social_repo.find_latest_for_game_id(game_id)
 
-        if not len(records):
+        if not latest_record:
             return None
 
-        now = datetime.now()
-        now_midnight = get_midnight_utc(now).timestamp()
-        now = now.timestamp()
-        now_seconds_into_day = now - now_midnight
+        daily_chart_records = self.social_repo.find_chart_for_game_id(game_id)
 
-        latest_date_timestamp = records[len(records) - 1]["timestamp"]
-        today = get_midnight_utc(
-            datetime.fromtimestamp(latest_date_timestamp)
-        ).timestamp()
+        grouped_by_day = {}
 
-        document = self.__create_record(game, now, today)
+        for chart_record in daily_chart_records:
+            date_timestamp = str(chart_record["_id"])
+            grouped_by_day[date_timestamp] = chart_record["value"]
 
-        for record in records:
-            date_timestamp = record["timestamp"]
+        all = self.social_repo.find_all_since_for_game_id(1655056950, game_id)
 
-            midnight = get_midnight_utc(
-                datetime.fromtimestamp(date_timestamp)
-            ).timestamp()
+        now = datetime.now().timestamp()
 
-            ago = today - midnight
+        twitter_followers = latest_record['twitter_followers']
 
-            twitter_followers = record["twitter_followers"]
+        chart_records = all
 
-            if midnight == now_midnight:
-                twitter_followers = int(twitter_followers * 86400 / now_seconds_into_day)
+        chart_records.sort(key=lambda x: x['timestamp'])
 
-            if ago == 0:
-                document["twitter_followers24h"] = document["twitter_followers24h"] + twitter_followers
-            elif ago == 86400:
-                document["twitter_followers48h"] = document["twitter_followers48h"] + twitter_followers
+        last_record = None
 
-            if ago < (86400 * 6):
-                document["twitter_followers7d"] += twitter_followers
-            elif ago < (86400 * 13):
-                document["twitter_followers14d"] += twitter_followers
+        chart = []
 
-            if document["twitter_followers48h"] > 0:
-                document["twitter_followersDelta"] = (
-                                                    document["twitter_followers24h"] - document["twitter_followers48h"]) * 100 / document[
-                                                "twitter_followers48h"]
+        for chart_record in chart_records:
+            if "twitter_followers" not in chart_record or not chart_record["twitter_followers"]:
+                continue
 
-            if document["twitter_followers14d"] > 0:
-                document["twitter_followers7dDelta"] = (
-                                                      document["twitter_followers7d"] - document["twitter_followers14d"]) * 100 / \
-                                              document["twitter_followers14d"]
+            if last_record is None:
+                last_record = chart_record
+                continue
 
-            if midnight in document["chart7d"]:
-                document["chart7d"][midnight]["twitterFollowers"] += twitter_followers
+            chart.append({
+                "timestamp_ms": chart_record["timestamp"] * 1000,
+                "value": chart_record["twitter_followers"] - last_record["twitter_followers"]
+            })
 
-        if document["twitter_followersDelta"] < 0:
-            document["deltaColor"] = "danger"
-        if document["twitter_followersDelta"] > 0:
-            document["deltaColor"] = "success"
+            last_record = chart_record
 
-        if document["twitter_followers7dDelta"] < 0:
-            document["delta7dColor"] = "danger"
-        if document["twitter_followers7dDelta"] > 0:
-            document["delta7dColor"] = "success"
+        game_daily_chart_records = []
 
+        change_24h = None
+        change_24h_pc = None
+
+        for key in grouped_by_day.keys():
+            game_daily_chart_records.append({
+                "date_timestamp": key,
+                "value": grouped_by_day[key]
+            })
+
+        if len(game_daily_chart_records) > 1 and twitter_followers:
+            game_daily_chart_records.sort(
+                key=lambda x: int(x['date_timestamp'])
+            )
+            
+            today_value = game_daily_chart_records[
+                len(game_daily_chart_records) - 1
+            ]["value"]
+            
+            yesterday_value = game_daily_chart_records[
+                len(game_daily_chart_records) - 2
+            ]["value"]
+            
+            change_24h = today_value - yesterday_value
+
+            change_24h_pc = round(change_24h * 100 / twitter_followers, 3)
+
+        change_24h_color = "normal"
+
+        twitter_plus = None
+
+        if change_24h is not None:
+            if change_24h > 0:
+                change_24h_color = "success"
+                twitter_plus = True
+
+            if change_24h < 0:
+                change_24h_color = "danger"
+
+        document = {
+            "id": game_id,
+            "updated": now,
+            "game_name": game['name'],
+            "twitter_followers": twitter_followers,
+            "chart": chart,
+            "banner_url": game.get('banner_url', None),
+            "change_24h": change_24h,
+            "change_24h_pc": change_24h_pc,
+            "change_24h_color": change_24h_color,
+            "twitter_plus": twitter_plus,
+        }
+        
         return document
 
-    def __create_record(self, game, now, today):
 
-        chart7d_template = {}
+    def get_chains(self, game):
+        chains = []
 
-        for i in range(7):
-            chart_timestamp = today - 86400 * (6 - i)
-            chart7d_template[chart_timestamp] = {
-                "timestamp": chart_timestamp,
-                "timestamp_ms": chart_timestamp * 1000,
-                "twitterFollowers": 0,
-            }
+        if "tokens" not in game:
+            return chains
 
-        return {
-            "gameId": game["id"],
-            "gameName": game["name"],
-            "twitter_followers24h": 0,
-            "twitter_followers48h": 0,
-            "twitter_followersDelta": 0,
-            "twitter_followers7d": 0,
-            "twitter_followers14d": 0,
-            "twitter_followers7dDelta": 0,
-            "updated": now,
-            "chart7d": chart7d_template,
-            "deltaColor": "normal",
-            "delta7dColor": "normal",
-        }
+        tokens = game['tokens']
+
+        chain_names = ['bsc', 'eth', 'polygon']
+
+        for chain_name in chain_names:
+            if chain_name in tokens and len(tokens[chain_name]) and tokens[chain_name][0]:
+                chains.append(chain_name)
+
+        return chains

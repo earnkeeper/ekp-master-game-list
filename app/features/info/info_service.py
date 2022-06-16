@@ -99,8 +99,6 @@ class InfoService:
                 if price_change_pc < 0:
                     price_color = "danger"
 
-        coingecko_info = None
-
         if twitter_followers is None:
             twitter_followers = "Twitter"
 
@@ -112,14 +110,10 @@ class InfoService:
 
         description = game.get("description", None)
 
-
-
         activity_document = await self.activity_info_service.get_activity_document(game)
         volume_document = await self.token_volume_info_service.get_volume_document(game)
         price_document = await self.token_price_info_service.get_price_document(game)
-        social_followers_document = await self.social_followers_info_service.get_social_info_document(game)
-
-        # pprint(price_document)
+        social_document = await self.social_followers_info_service.get_social_document(game)
 
         telegram = game["telegram"] if (game["telegram"] and game["telegram"] != "https://t.me/") else None
         if telegram and not telegram.startswith("http"):
@@ -140,7 +134,7 @@ class InfoService:
                 "website": game["website"],
                 "activity": activity_document,
                 "volume": volume_document,
-                "social": social_followers_document,
+                "social": social_document,
                 "price_doc": price_document,
                 "coingecko": f"https://www.coingecko.com/en/coins/{game['id']}" if price else None,
                 "statsAvailable": activity_document is not None or volume_document is not None,

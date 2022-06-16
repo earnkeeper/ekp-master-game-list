@@ -263,7 +263,7 @@ def __socials_chart():
                 title="",
                 height=220,
                 type="line",
-                data="$.chart7d.*",
+                data="$.chart.*",
                 card=False,
                 options={
                     "legend": {
@@ -294,7 +294,7 @@ def __socials_chart():
                     "labels": ekp_map(
                         sort_by(
                             json_array(
-                                "$.chart7d.*"
+                                "$.chart.*"
                             ),
                             "$.timestamp_ms"
                         ), "$.timestamp_ms"
@@ -310,10 +310,10 @@ def __socials_chart():
                         "type": "line",
                         "data": ekp_map(
                             sort_by(
-                                json_array("$.chart7d.*"),
+                                json_array("$.chart.*"),
                                 "$.timestamp_ms"
                             ),
-                            "$.twitterFollowers"
+                            "$.value"
                         ),
                     },
                 ],
@@ -368,11 +368,11 @@ def __socials_stats():
                 [
                     Span("Twitter followers (24h)", "d-block font-small-3"),
                     Span(
-                        commify("$.twitter_followers24h"),
+                        commify("$.change_24h"),
                         format_template(
                             "d-block font-small-2 text-{{ color }}",
                             {
-                                "color": "$.deltaColor"
+                                "color": "$.change_24h_color"
                             }
                         )
                     ),
@@ -383,11 +383,11 @@ def __socials_stats():
                 [
                     Span("Change (24h)", "d-block font-small-3 text-right"),
                     Span(
-                        format_percent("$.twitter_followersDelta"),
+                        format_percent("$.change_24h_pc"),
                         format_template(
                             "d-block font-small-2 text-right text-{{ color }}",
                             {
-                                "color": "$.deltaColor"
+                                "color": "$.change_24h_color"
                             }
                         )
                     ),

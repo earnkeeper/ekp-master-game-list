@@ -26,9 +26,9 @@ class SocialStatsService:
             if not game["disable"]:
                 games_map[game["id"]] = game
 
-        game_records = self.social_repo.find_latest_by_game_id()
+        game_records = self.social_repo.find_latest_group_by_game_id()
 
-        daily_chart_records = self.social_repo.find_chart_by_game_id()
+        daily_chart_records = self.social_repo.find_charts_group_by_game_id()
 
         grouped_by_day = {}
 
