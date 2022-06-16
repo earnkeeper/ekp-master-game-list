@@ -1,6 +1,7 @@
 from pprint import pprint
 
 from app.features.info.activity_info_service import ActivityInfoService
+from app.features.info.social_followers_info_service import SocialFollowersInfoService
 from app.features.info.token_price_info_service import TokenPriceInfoService
 from app.features.info.token_volume_info_service import TokenVolumeInfoService
 from db.price_repo import PriceRepo
@@ -22,7 +23,8 @@ class InfoService:
         social_repo: SocialRepo,
         price_repo: PriceRepo,
         token_volume_info_service: TokenVolumeInfoService,
-        token_price_info_service: TokenPriceInfoService
+        token_price_info_service: TokenPriceInfoService,
+        social_followers_info_service: SocialFollowersInfoService
     ):
         self.activity_info_service = activity_info_service
         self.cache_service = cache_service
@@ -32,6 +34,7 @@ class InfoService:
         self.price_repo = price_repo
         self.token_volume_info_service = token_volume_info_service
         self.token_price_info_service = token_price_info_service
+        self.social_followers_info_service = social_followers_info_service
 
     async def get_documents(self, game_id, currency):
         game = self.game_repo.find_one_by_id(game_id)
@@ -57,7 +60,7 @@ class InfoService:
         description = None
 
         latest_social_record = self.social_repo.find_latest(game_id)
-        
+
         if game["twitter"]:
             twitter = f'https://twitter.com/{game["twitter"]}'
 
@@ -95,18 +98,18 @@ class InfoService:
                     price_color = "success"
                 if price_change_pc < 0:
                     price_color = "danger"
-        
+
         coingecko_info = None
-        
+
         if twitter_followers is None:
             twitter_followers = "Twitter"
-        
+
         if discord_members is None:
             discord_members = "Discord"
-        
+
         if telegram_members is None:
             telegram_members = "Telegram"
-        
+
         description = game.get("description", None)
 
 
@@ -114,6 +117,7 @@ class InfoService:
         activity_document = await self.activity_info_service.get_activity_document(game)
         volume_document = await self.token_volume_info_service.get_volume_document(game)
         price_document = await self.token_price_info_service.get_price_document(game)
+        social_followers_document = await self.social_followers_info_service.get_social_info_document(game)
 
         # pprint(price_document)
 
@@ -136,6 +140,7 @@ class InfoService:
                 "website": game["website"],
                 "activity": activity_document,
                 "volume": volume_document,
+                "social": social_followers_document,
                 "price_doc": price_document,
                 "coingecko": f"https://www.coingecko.com/en/coins/{game['id']}" if price else None,
                 "statsAvailable": activity_document is not None or volume_document is not None,

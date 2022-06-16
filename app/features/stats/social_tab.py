@@ -40,7 +40,7 @@ def __table_row(COLLECTION_NAME):
                 sortable=True,
             ),
             Column(
-                id="twitter_followers",
+                id="twitterFollowers",
                 title="Followers",
                 sortable=True,
                 width="160px",

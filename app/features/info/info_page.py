@@ -85,6 +85,12 @@ def __volumes_section():
                     Col(
                         "col-12 col-md-6 col-lg-4",
                         [
+                            __socials_card()
+                        ]
+                    ),
+                    Col(
+                        "col-12 col-md-6 col-lg-4",
+                        [
                             __activity_card()
                         ]
                     ),
@@ -158,6 +164,20 @@ def __activity_card():
         ]
     )
 
+def __socials_card():
+    return Div(
+        context="$.social",
+        when="$",
+        children=[
+            Card(
+                children=[
+                    __socials_stats(),
+                    Hr(),
+                    __socials_chart(),
+                ]
+            )
+        ]
+    )
 
 def __activity_chart():
     return Div(
@@ -230,6 +250,77 @@ def __activity_chart():
         ]
     )
 
+def __socials_chart():
+    return Div(
+        style={
+            "marginRight": "-10px",
+            "marginLeft": "-22px",
+            "marginBottom": "-14px",
+            "marginTop": "-20px"
+        },
+        children=[
+            Chart(
+                title="",
+                height=220,
+                type="line",
+                data="$.chart7d.*",
+                card=False,
+                options={
+                    "legend": {
+                        "show": False
+                    },
+                    "chart": {
+                        "zoom": {
+                            "enabled": False,
+                        },
+                        "toolbar": {
+                            "show": False,
+                        },
+                        "stacked": False,
+                        "type": "line"
+                    },
+                    "xaxis": {
+                        "type": "datetime",
+                        "labels": {"show": True}
+                    },
+                    "yaxis": [
+                        {
+                            "labels": {
+                                "show": False,
+                                "formatter": commify("$")
+                            },
+                        },
+                    ],
+                    "labels": ekp_map(
+                        sort_by(
+                            json_array(
+                                "$.chart7d.*"
+                            ),
+                            "$.timestamp_ms"
+                        ), "$.timestamp_ms"
+                    ),
+                    "stroke": {
+                        "width": [4, 4],
+                        "curve": 'smooth',
+                    }
+                },
+                series=[
+                    {
+                        "name": "Twitter followers",
+                        "type": "line",
+                        "data": ekp_map(
+                            sort_by(
+                                json_array("$.chart7d.*"),
+                                "$.timestamp_ms"
+                            ),
+                            "$.twitterFollowers"
+                        ),
+                    },
+                ],
+            )
+        ]
+    )
+
 
 def __activity_stats():
     return Row(
@@ -256,6 +347,43 @@ def __activity_stats():
                     Span("Change (24h)", "d-block font-small-3 text-right"),
                     Span(
                         format_percent("$.newUsersDelta"),
+                        format_template(
+                            "d-block font-small-2 text-right text-{{ color }}",
+                            {
+                                "color": "$.deltaColor"
+                            }
+                        )
+                    ),
+                ]
+            ),
+        ]
+    )
+
+def __socials_stats():
+    return Row(
+        class_name="my-1 mx-0",
+        children=[
+            Col(
+                "col-6",
+                [
+                    Span("Twitter followers (24h)", "d-block font-small-3"),
+                    Span(
+                        commify("$.twitter_followers24h"),
+                        format_template(
+                            "d-block font-small-2 text-{{ color }}",
+                            {
+                                "color": "$.deltaColor"
+                            }
+                        )
+                    ),
+                ]
+            ),
+            Col(
+                "col-6",
+                [
+                    Span("Change (24h)", "d-block font-small-3 text-right"),
+                    Span(
+                        format_percent("$.twitter_followersDelta"),
                         format_template(
                             "d-block font-small-2 text-right text-{{ color }}",
                             {

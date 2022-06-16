@@ -16,6 +16,9 @@ class SocialRepo:
         self.collection.create_index("game_id")
         self.collection.create_index("platform")
 
+    def find_by_game_id(self, game_id):
+        return list(self.collection.find({ "game_id": game_id }))
+
     def find_latest_by_game_id(self):
         start = time.perf_counter()
 
@@ -42,7 +45,7 @@ class SocialRepo:
             return []
 
         return results
-    
+
     def find_chart_by_game_id(self):
         start = time.perf_counter()
 
@@ -89,7 +92,7 @@ class SocialRepo:
             return []
 
         return results
-    
+
     def find_latest(self, game_id):
         start = time.perf_counter()
 
@@ -108,9 +111,9 @@ class SocialRepo:
 
         if not results or not len(results):
             return None
-        
+
         return results[0]
-    
+
     def save(self, models):
         start = time.perf_counter()
 
