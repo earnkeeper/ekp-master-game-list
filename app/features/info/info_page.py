@@ -728,7 +728,11 @@ def __price_stats():
                 [
                     Span("Token Price (24h)", "d-block font-small-3"),
                     Span(
-                        format_currency("$.price24h", None),
+                        # format_currency("$.volume24h", None),
+                        format_template(" {{ fiat_symbol }} {{ price }}", {
+                                        "price": "$.price24h",
+                                        "fiat_symbol": "$.fiat_symbol"
+                        }),
                         format_template(
                             "d-block font-small-2 text-{{ color }}",
                             {

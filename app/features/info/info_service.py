@@ -117,7 +117,7 @@ class InfoService:
 
         activity_document = await self.activity_info_service.get_activity_document(game)
         volume_document = await self.token_volume_info_service.get_volume_document(game, rate)
-        price_document = await self.token_price_info_service.get_price_document(game, rate)
+        price_document = await self.token_price_info_service.get_price_document(game, rate, currency['symbol'])
         social_document = await self.social_followers_info_service.get_social_document(game)
         media_documents = await self.media_info_service.get_media_documents(game)
 
