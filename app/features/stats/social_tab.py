@@ -33,13 +33,13 @@ def __table_row(COLLECTION_NAME):
             Column(
                 id="game_name",
                 title="Game",
-                min_width="400px",
+                min_width="270px",
                 cell=name_cell("$.game_name"),
                 searchable=True,
                 sortable=True,
             ),
             Column(
-                id="twitterFollowers",
+                id="twitter_followers",
                 title="Followers",
                 sortable=True,
                 width="160px",
