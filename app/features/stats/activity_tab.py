@@ -27,7 +27,6 @@ def __table_row(ACTIVITY_COLLECTION_NAME):
         busy_when=is_busy(collection(ACTIVITY_COLLECTION_NAME)),
         default_sort_field_id="newUsers24h",
         default_sort_asc=False,
-        row_height="70px",
         show_export=False,
         show_last_updated=True,
         columns=[

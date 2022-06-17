@@ -1,3 +1,4 @@
+from app.features.stats.shared import name_cell
 from app.utils.page_title import page_title
 from ekp_sdk.ui import (Button, Card, Chart, Col, Column, Container, Datatable,
                         Div, Icon, Image, Link, Paragraphs, Row, Span, commify,
@@ -28,14 +29,12 @@ def __table_row(COLLECTION_NAME):
         default_sort_asc=False,
         show_export=False,
         show_last_updated=True,
-        row_height="70px",
         columns=[
             Column(
                 id="game_name",
                 title="Game",
                 min_width="400px",
-                cell=__name_cell,
-                compact=True,                
+                cell=name_cell("$.game_name"),
                 searchable=True,
                 sortable=True,
             ),
@@ -177,10 +176,9 @@ def __chain_image(index, height="14px"):
 
 
 __twitter_followers_cell = Div(
-    class_name="mt-2",
     children=[
         Row([
-            Col("col-auto my-auto", [Icon("cib-twitter")]),
+            Col("col-auto my-auto", [Icon("cib-twitter", size='sm')]),
             Col(
                 "col-auto pl-0 my-auto",
                 [
@@ -188,7 +186,7 @@ __twitter_followers_cell = Div(
                         commify(
                             "$.twitter_followers"
                         ),
-                        "font-medium-1 d-block"
+                        "font-small-2 d-block"
                     ),
 
                 ]
@@ -199,21 +197,21 @@ __twitter_followers_cell = Div(
             children=[
                 Span(
                     "+",
-                    format_template("font-small-2 text-{{ color }}", {
+                    format_template("font-small-1 text-{{ color }}", {
                         "color": "$.change_24h_color"
                     }),
                     when="$.twitter_plus"
                 ),
                 Span(
                     commify("$.change_24h"),
-                    format_template("font-small-2 text-{{ color }}", {
+                    format_template("font-small-1 text-{{ color }}", {
                         "color": "$.change_24h_color"
                     })
                 ),
                 Span(
                     format_template(" ( {{ pc }} )", {"pc": format_percent(
                         "$.change_24h_pc", showPlus=True, decimals=2)}),
-                    format_template("font-small-2 text-{{ color }}", {
+                    format_template("font-small-1 text-{{ color }}", {
                         "color": "$.change_24h_color"
                     })
                 ),
@@ -226,7 +224,8 @@ __name_cell = Row(
         Col(
             "col-auto pr-0 my-auto",
             [
-                Image(src="$.profile_image_url", style={"height": "32px", "width": "32px", "marginTop": "18px"}, rounded=True)
+                Image(src="$.profile_image_url", style={
+                      "height": "32px", "width": "32px", "marginTop": "18px"}, rounded=True)
             ]
         ),
         Col(

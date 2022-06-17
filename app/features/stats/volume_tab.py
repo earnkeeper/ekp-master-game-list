@@ -28,7 +28,6 @@ def __table_row(COLLECTION_NAME):
         default_sort_asc=False,
         show_export=False,
         show_last_updated=True,
-        row_height="70px",
         columns=[
             Column(
                 id="chains",

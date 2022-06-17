@@ -23,7 +23,7 @@ def change_cell(value, delta, deltaColor, icon=None):
             [
                 Span(
                     value,
-                    format_template("font-medium-1 d-block text-{{ color }}", {
+                    format_template("font-small-2 d-block text-{{ color }}", {
                         "color": "normal"
                     })
                 ),
@@ -32,7 +32,6 @@ def change_cell(value, delta, deltaColor, icon=None):
         )
     )
     return Div(
-        class_name="mt-2",
         children=[
             Row(cols),
             Div(
@@ -44,7 +43,7 @@ def change_cell(value, delta, deltaColor, icon=None):
                             delta,
                             showPlus=True,
                         ),
-                        format_template("font-small-2 text-{{ color }}", {
+                        format_template("font-small-1 text-{{ color }}", {
                             "color": deltaColor
                         })
                     ),
@@ -74,33 +73,35 @@ def name_cell(name):
             Col(
                 "col-auto pr-0 my-auto",
                 [
-                    Image(src="$.profile_image_url", style={
-                        "height": "32px", "width": "32px", "marginTop": "18px"}, rounded=True)
+                    Image(
+                        src="$.profile_image_url",
+                        style={
+                            "height": "24px",
+                            "width": "24px",
+                        },
+                        rounded=True)
                 ]
             ),
             Col(
-                "",
+                "my-auto",
                 [
-                    Div(style={"height": "24px"}),
                     Link(
                         href=format_template("/game/all/info/{{ id }}", {
                             "id": "$.id"
                         }),
                         content=name,
-                        class_name="font-medium-2 d-block",
+                        class_name="d-block",
                         external_icon=True
                     ),
                     Div(
-                        style={"marginTop": "0px",
+                        style={"marginTop": "-4px",
                                "paddingLeft": "0px"},
                         children=[
-                            chain_image(0, "14px"),
-                            chain_image(1, "14px"),
-                            chain_image(2, "14px"),
-
+                            chain_image(0, "10px"),
+                            chain_image(1, "10px"),
+                            chain_image(2, "10px"),
                         ]
                     ),
-                    Div(style={"height": "8px"}),
                 ]
             ),
         ])
