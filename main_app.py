@@ -18,6 +18,7 @@ from db.volume_repo import VolumeRepo
 
 
 from db.game_repo import GameRepo
+from db.youtube_repo import YoutubeRepo
 
 
 class AppContainer(BaseContainer):
@@ -41,6 +42,10 @@ class AppContainer(BaseContainer):
         )
 
         self.game_repo = GameRepo(
+            mg_client=self.mg_client
+        )
+
+        self.youtube_repo = YoutubeRepo(
             mg_client=self.mg_client
         )
 
@@ -88,6 +93,7 @@ class AppContainer(BaseContainer):
         self.social_stats_service = SocialStatsService(
             social_repo=self.social_repo,
             game_repo=self.game_repo,
+            youtube_repo=self.youtube_repo
         )
 
         self.activity_stats_service = ActivityStatsService(

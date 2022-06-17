@@ -6,6 +6,7 @@ from datetime import datetime
 import copy
 
 from db.social_repo import SocialRepo
+from db.youtube_repo import YoutubeRepo
 
 
 class SocialStatsService:
@@ -13,9 +14,11 @@ class SocialStatsService:
         self,
         social_repo: SocialRepo,
         game_repo: GameRepo,
+        youtube_repo: YoutubeRepo
     ):
         self.social_repo = social_repo
         self.game_repo = game_repo
+        self.youtube_repo = youtube_repo
 
     async def get_documents(self):
         games = self.game_repo.find_all()
@@ -130,6 +133,9 @@ class SocialStatsService:
                 if change_24h < 0:
                     change_24h_color = "danger"
 
+            top_10_video_infos = self.youtube_repo.find_videos_by_game_name(game)
+
+
             document = {
                 "id": game_id,
                 "updated": now,
@@ -137,6 +143,7 @@ class SocialStatsService:
                 "twitter_followers": twitter_followers,
                 "chains": chains,
                 "chart": chart,
+                "youtube_videos_info": top_10_video_infos,
                 "banner_url": game.get('banner_url', None),
                 "profile_image_url": game.get('profile_image_url', None),
                 "change_24h": change_24h,
@@ -144,7 +151,7 @@ class SocialStatsService:
                 "change_24h_color": change_24h_color,
                 "twitter_plus": twitter_plus,
             }
-            
+
             documents.append(document)
 
         return documents

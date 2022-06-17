@@ -20,8 +20,18 @@ class YoutubeRepo:
     def find_all(self):
         return list(self.collection.find())
 
-    def find_one_by_id(self, id):
-        return self.collection.find_one({"id": id})
+    def find_videos_by_game_name(self, game_name):
+        results = list(
+            self.collection
+                .find({"game_name": game_name})
+                .limit(10)
+        )
+
+        if not len(results):
+            return []
+
+        return results
+
 
     def delete_records(self):
         self.collection.delete_many({})
