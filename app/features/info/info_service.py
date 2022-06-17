@@ -87,9 +87,11 @@ class InfoService:
         price_change_pc = None
         price_color = "normal"
 
+        rate = await self.coingecko_service.get_latest_price('usd-coin', currency["id"])
+
         if len(price_records):
             current_price = price_records[-1]["price_usd"]
-            price = f'{currency["symbol"]} {float("%.3g" % current_price)}'
+            price = f'{currency["symbol"]} {float("%.3g" % (current_price * rate))}'
 
             if len(price_records) > 1:
                 yesterday_price = price_records[-2]["price_usd"]
@@ -114,8 +116,8 @@ class InfoService:
         description = game.get("description", None)
 
         activity_document = await self.activity_info_service.get_activity_document(game)
-        volume_document = await self.token_volume_info_service.get_volume_document(game)
-        price_document = await self.token_price_info_service.get_price_document(game)
+        volume_document = await self.token_volume_info_service.get_volume_document(game, rate)
+        price_document = await self.token_price_info_service.get_price_document(game, rate)
         social_document = await self.social_followers_info_service.get_social_document(game)
         media_documents = await self.media_info_service.get_media_documents(game)
 

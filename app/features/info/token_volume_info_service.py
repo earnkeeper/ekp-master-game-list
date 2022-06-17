@@ -1,3 +1,5 @@
+from ekp_sdk.services import CoingeckoService
+
 from db.volume_repo import VolumeRepo
 from datetime import datetime
 
@@ -8,8 +10,8 @@ class TokenVolumeInfoService:
     ):
         self.volume_repo = volume_repo
 
-    async def get_volume_document(self, game):
-            
+    async def get_volume_document(self, game, rate):
+
         records = self.volume_repo.find_by_game_id(game["id"])
 
         now = datetime.now().timestamp()
@@ -30,19 +32,19 @@ class TokenVolumeInfoService:
                 volume = 0
 
             if ago < 86400:
-                document["volume24h"] = document["volume24h"] + volume
+                document["volume24h"] = (document["volume24h"] + volume) * rate
             elif ago < (2 * 86400):
-                document["volume48h"] = document["volume48h"] + volume
+                document["volume48h"] = (document["volume48h"] + volume) * rate
                 
             if ago < (86400 * 7):
-                document["volume7d"] = document["volume7d"] + volume
+                document["volume7d"] = (document["volume7d"] + volume) * rate
                 document["volume7dcount"] = document["volume7dcount"] + 1
 
             if document["volume48h"] > 0:
                 document["volumeDelta"] = (document["volume24h"] - document["volume48h"]) * 100 / document["volume48h"]
 
             if date_timestamp in document["chart7d"]:
-                document["chart7d"][date_timestamp]["volume"] = volume
+                document["chart7d"][date_timestamp]["volume"] = volume * rate
 
         if document["volume7d"] and document["volume24h"]:
             document["volumeDelta"] = (document["volume24h"]) * 100 / document["volume7d"]

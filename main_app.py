@@ -69,7 +69,7 @@ class AppContainer(BaseContainer):
         )
 
         self.token_price_info_service = TokenPriceInfoService(
-            price_repo=self.price_repo
+            price_repo=self.price_repo,
         )
 
         self.media_info_service = MediaInfoService(
