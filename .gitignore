@@ -170,3 +170,4 @@ nodemon.json
 clear-values.yaml
 records.csv
 secret/**/*
+testing.py

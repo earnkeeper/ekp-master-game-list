@@ -5,6 +5,10 @@ image: sync
 dockerfile: Dockerfile.sync
 context: .
 ---
+image: youtube_sync
+dockerfile: Dockerfile.youtube_sync
+context: .
+---
 image: app
 dockerfile: Dockerfile.app
 context: .

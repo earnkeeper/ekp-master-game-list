@@ -6,6 +6,7 @@ from datetime import datetime
 import copy
 
 from db.social_repo import SocialRepo
+from db.youtube_repo import YoutubeRepo
 
 
 class SocialStatsService:
@@ -130,6 +131,8 @@ class SocialStatsService:
                 if change_24h < 0:
                     change_24h_color = "danger"
 
+
+
             document = {
                 "id": game_id,
                 "updated": now,
@@ -144,7 +147,7 @@ class SocialStatsService:
                 "change_24h_color": change_24h_color,
                 "twitter_plus": twitter_plus,
             }
-            
+
             documents.append(document)
 
         return documents

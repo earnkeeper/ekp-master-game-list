@@ -34,6 +34,7 @@ def page(GAME_INFO_COLLECTION_NAME):
                             Hr(),
                             __socials_section(),
                             __info_section(),
+                            __media_section(),
                             __volumes_section(),
                             __deep_dives_section(),
                             Div([], style={"height": "300px"})
@@ -67,6 +68,33 @@ def __info_section():
     ]
 
 
+def __media_section():
+    return Div([
+        Div(
+            children=[
+                Span("Media", "font-medium-5 mt-3 d-block"),
+                Hr(),
+                Span(
+                    "We search the web for the best content for Play To Earn games, focusing on gameplay, economy health and earning potential.",
+                    "font-small-2"
+                ),
+            ]),
+        Div(
+            children=[
+                Div(style={"height": "16px"}),
+                {
+                    "_type": "Scroller",
+                    "props": {
+                        "data": json_array("$.media.*"),
+                        "tileSchema": __media_card()
+                    }
+                },
+            ]
+        ),
+
+    ])
+
+
 def __volumes_section():
     return Div([
         Span("Volumes and Stats", "font-medium-5 mt-3 d-block"),
@@ -75,11 +103,16 @@ def __volumes_section():
             when="$.statsAvailable",
             children=[
                 Span(
-                    "We collect volume statistics for hundreds of games to show you were users are spending their time."),
+                    "We collect volume statistics for hundreds of games to show you were users are spending their time.",
+                    "font-small-2"
+                ),
                 Div(style={"height": "8px"}),
-                Span(format_template("The stats we have for {{ name }} are below.", {
-                    "name": "$.name"
-                })),
+                Span(
+                    format_template("The stats we have for {{ name }} are below.", {
+                        "name": "$.name"
+                    }),
+                    "font-small-2"
+                ),
                 Div(style={"height": "16px"}),
                 Row([
                     Col(
@@ -125,28 +158,95 @@ def __volumes_section():
 
 
 def __deep_dives_section():
-    return Div([
-        Span("Deep Dives", "font-medium-5 mt-3 d-block"),
-        Hr(),
-        Span("Want to see an earnings deep dive on this game like we have already done on "),
-        Link(content="Metabomb", href="/game/metabomb"),
-        Span(", "),
-        Link(content="Thetan Arena", href="/game/thetan-arena"),
-        Span(" and more?"),
-        Div(style={"height": "8px"}),
-        Span("Add a feedback item "),
-        Link(content="here", href="https://feedback.earnkeeper.io", external=True),
-        Span(", then ping us on "),
-        Link(content="discord", href="https://discord.gg/RHnnWBAkes", external=True),
-        Span(" to talk it through."),
-        Div(style={"height": "24px"}),
-        {
-            "_type": "DeepDives",
-            "props": {
-                "gameId": "$.id"
+    return Div(
+        class_name="font-small-2",
+        children=[
+            Span("Deep Dives", "font-medium-5 mt-3 d-block"),
+            Hr(),
+            Span(
+                "Want to see an earnings deep dive on this game like we have already done on "
+            ),
+            Link(content="Metabomb", href="/game/metabomb"),
+            Span(", "),
+            Link(content="Thetan Arena", href="/game/thetan-arena"),
+            Span(" and more?"),
+            Div(style={"height": "8px"}),
+            Span("Add a feedback item "),
+            Link(content="here", href="https://feedback.earnkeeper.io", external=True),
+            Span(", then ping us on "),
+            Link(content="discord",
+                 href="https://discord.gg/RHnnWBAkes", external=True),
+            Span(" to talk it through."),
+            Div(style={"height": "24px"}),
+            {
+                "_type": "DeepDives",
+                "props": {
+                    "gameId": "$.id"
+                }
             }
-        }
-    ])
+        ])
+
+
+def __media_card():
+    return Div(
+        style={"width": "320px"},
+        children=[
+            Div(
+                children=[
+                    Image(
+                        src="$.thumbnail",
+                        style={"height": "200px", "width": "100%"}
+                    ),
+                ]
+            ),
+            Div(
+                class_name="pl-1 pr-2 pt-1",
+                children=[
+                    Link(
+                        class_name="font-small-3",
+                        href="$.link",
+                        external=True,
+                        content="$.title",
+                    ),
+                ]
+            ),
+            Div(
+                class_name="ml-1 mr-2 mt-1 mb-2",
+                children=[
+                    Row(
+                        children=[
+                            Col(
+                                class_name="col-auto",
+                                children=[
+                                    Icon(
+                                        "calendar",
+                                        size='sm',
+                                        style={
+                                            "marginRight": "6px"
+                                        }
+                                    ),
+                                    Span("$.publish_time", "font-small-2")
+                                ]
+                            ),
+                            Col(
+                                class_name="col-auto",
+                                children=[
+                                    Icon(
+                                        "eye",
+                                        size='sm',
+                                        style={
+                                            "marginRight": "6px"
+                                        }
+                                    ),
+                                    Span("$.view_count", "font-small-2")
+                                ]
+                            )
+                        ]
+                    )
+                ]
+            )
+        ]
+    )
 
 
 def __activity_card():
@@ -164,6 +264,7 @@ def __activity_card():
         ]
     )
 
+
 def __socials_card():
     return Div(
         context="$.social",
@@ -178,6 +279,7 @@ def __socials_card():
             )
         ]
     )
+
 
 def __activity_chart():
     return Div(
@@ -216,10 +318,11 @@ def __activity_chart():
                         {
                             "labels": {
                                 "show": False,
-                                "formatter": commify("$")
+                                "formatter": commify("$"),
                             },
                         },
                     ],
+                    "colors": ["#F76D00"],
                     "labels": ekp_map(
                         sort_by(
                             json_array(
@@ -239,10 +342,10 @@ def __activity_chart():
                         "name": "New Users",
                         "type": "line",
                         "data": ekp_map(
-                                sort_by(
-                                    json_array("$.chart7d.*"),
-                                    "$.timestamp_ms"
-                                ),
+                            sort_by(
+                                json_array("$.chart7d.*"),
+                                "$.timestamp_ms"
+                            ),
                             "$.newUsers"
                         ),
                     },
@@ -250,6 +353,7 @@ def __activity_chart():
             )
         ]
     )
+
 
 def __socials_chart():
     return Div(
@@ -288,10 +392,11 @@ def __socials_chart():
                         {
                             "labels": {
                                 "show": False,
-                                "formatter": commify("$")
+                                "formatter": commify("$"),
                             },
                         },
                     ],
+                    "colors": ["#F76D00"],                    
                     "labels": ekp_map(
                         sort_by(
                             json_array(
@@ -303,7 +408,7 @@ def __socials_chart():
                     "stroke": {
                         "width": [4, 4],
                         "curve": 'smooth',
-                        "colors": ["#F76D00"]                        
+                        "colors": ["#F76D00"]
                     }
                 },
                 series=[
@@ -361,6 +466,7 @@ def __activity_stats():
         ]
     )
 
+
 def __socials_stats():
     return Row(
         class_name="my-1 mx-0",
@@ -413,6 +519,7 @@ def __volume_card():
             )
         ]
     )
+
 
 def __price_card():
     return Div(
@@ -467,10 +574,11 @@ def __volume_chart():
                         {
                             "labels": {
                                 "show": False,
-                                "formatter": format_currency("$", None)
+                                "formatter": commify("$")
                             },
                         },
                     ],
+                    "colors": ["#F76D00"],                    
                     "labels": ekp_map(
                         sort_by(
                             json_array(
@@ -482,7 +590,7 @@ def __volume_chart():
                     "stroke": {
                         "width": [4, 4],
                         "curve": 'smooth',
-                        "colors": ["#F76D00"]                        
+                        "colors": ["#F76D00"]
                     }
                 },
                 series=[
@@ -490,10 +598,10 @@ def __volume_chart():
                         "name": "Volume",
                         "type": "line",
                         "data": ekp_map(
-                                sort_by(
-                                    json_array("$.chart7d.*"),
-                                    "$.timestamp_ms"
-                                ),
+                            sort_by(
+                                json_array("$.chart7d.*"),
+                                "$.timestamp_ms"
+                            ),
                             "$.volume"
                         ),
                     },
@@ -501,6 +609,7 @@ def __volume_chart():
             )
         ]
     )
+
 
 def __price_chart():
     return Div(
@@ -539,10 +648,11 @@ def __price_chart():
                         {
                             "labels": {
                                 "show": False,
-                                "formatter": format_template(" $ {{ price }}", { "price": "$" }),
+                                "formatter": "$",
                             },
                         },
                     ],
+                    "colors": ["#F76D00"],                    
                     "labels": ekp_map(
                         sort_by(
                             json_array(
@@ -622,7 +732,11 @@ def __price_stats():
                 [
                     Span("Token Price (24h)", "d-block font-small-3"),
                     Span(
-                        format_template(" $ {{ price }}", { "price": "$.price24h" }),
+                        # format_currency("$.volume24h", None),
+                        format_template(" {{ fiat_symbol }} {{ price }}", {
+                                        "price": "$.price24h",
+                                        "fiat_symbol": "$.fiat_symbol"
+                                        }),
                         format_template(
                             "d-block font-small-2 text-{{ color }}",
                             {

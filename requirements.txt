@@ -1,1 +1,2 @@
 ekp_sdk==0.7.10
+youtube-search-python==1.6.5

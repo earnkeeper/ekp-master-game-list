@@ -1,3 +1,5 @@
+from ekp_sdk.services import CoingeckoService
+
 from db.price_repo import PriceRepo
 from datetime import datetime
 
@@ -9,7 +11,7 @@ class TokenPriceInfoService:
     ):
         self.price_repo = price_repo
 
-    async def get_price_document(self, game):
+    async def get_price_document(self, game, rate, fiat_symbol):
 
         records = self.price_repo.find_by_game_id(game["id"])
 
@@ -31,27 +33,29 @@ class TokenPriceInfoService:
                 price = 0
 
             if ago < 86400:
-                document["price24h"] = document["price24h"] + price
+                document["price24h"] = (document["price24h"] + price) * rate
             elif ago < (2 * 86400):
-                document["price48h"] = document["price48h"] + price
+                document["price48h"] = (document["price48h"] + price) * rate
 
             if ago < (86400 * 7):
-                document["price7d"] = document["price7d"] + price
+                document["price7d"] = (document["price7d"] + price) * rate
                 document["price7dcount"] = document["price7dcount"] + 1
 
             if document["price48h"] > 0:
                 document["priceDelta"] = (document["price24h"] - document["price48h"]) * 100 / document["price48h"]
 
             if date_timestamp in document["chart7d"]:
-                document["chart7d"][date_timestamp]["price"] = float("%.3g" % price)
+                document["chart7d"][date_timestamp]["price"] = float("%.3g" % (price * rate))
 
-        document["price24h"] = float("%.3g" % document["price24h"])
+        document["price24h"] = float("%.3g" % (document["price24h"] * rate))
         document["deltaColor"] = "normal"
 
         if document["priceDelta"] < 0:
             document["deltaColor"] = "danger"
         if document["priceDelta"] > 0:
             document["deltaColor"] = "success"
+
+        document["fiat_symbol"] = fiat_symbol
 
         return document
 
