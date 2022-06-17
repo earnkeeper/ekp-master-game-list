@@ -141,9 +141,11 @@ class ActivityStatsService:
         discord = None
         telegram = None
         profile_image_url = None
+        name = record["game_name"]
         
         if id in games_map:
             game = games_map[id]
+            name = game['name']
             website = game["website"]
             twitter = f'https://twitter.com/{game["twitter"]}'
             discord = game["discord"]
@@ -153,7 +155,7 @@ class ActivityStatsService:
         return {
             "id": id,
             "gameId": record["game_id"],
-            "gameName": record["game_name"],
+            "gameName": name,
             "gameLink": gameLink,
             "chains": [record["game_chain"]],
             "profile_image_url": profile_image_url,            
