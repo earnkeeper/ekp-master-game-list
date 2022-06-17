@@ -318,10 +318,11 @@ def __activity_chart():
                         {
                             "labels": {
                                 "show": False,
-                                "formatter": commify("$")
+                                "formatter": commify("$"),
                             },
                         },
                     ],
+                    "colors": ["#F76D00"],
                     "labels": ekp_map(
                         sort_by(
                             json_array(
@@ -391,10 +392,11 @@ def __socials_chart():
                         {
                             "labels": {
                                 "show": False,
-                                "formatter": commify("$")
+                                "formatter": commify("$"),
                             },
                         },
                     ],
+                    "colors": ["#F76D00"],                    
                     "labels": ekp_map(
                         sort_by(
                             json_array(
@@ -572,10 +574,11 @@ def __volume_chart():
                         {
                             "labels": {
                                 "show": False,
-                                "formatter": format_currency("$", None)
+                                "formatter": commify("$")
                             },
                         },
                     ],
+                    "colors": ["#F76D00"],                    
                     "labels": ekp_map(
                         sort_by(
                             json_array(
@@ -645,10 +648,11 @@ def __price_chart():
                         {
                             "labels": {
                                 "show": False,
-                                "formatter": format_template(" $ {{ price }}", {"price": "$"}),
+                                "formatter": "$",
                             },
                         },
                     ],
+                    "colors": ["#F76D00"],                    
                     "labels": ekp_map(
                         sort_by(
                             json_array(
@@ -732,7 +736,7 @@ def __price_stats():
                         format_template(" {{ fiat_symbol }} {{ price }}", {
                                         "price": "$.price24h",
                                         "fiat_symbol": "$.fiat_symbol"
-                        }),
+                                        }),
                         format_template(
                             "d-block font-small-2 text-{{ color }}",
                             {

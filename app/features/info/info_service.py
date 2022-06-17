@@ -68,15 +68,18 @@ class InfoService:
             twitter = f'https://twitter.com/{game["twitter"]}'
 
             if latest_social_record is not None:
-                twitter_followers = latest_social_record.get("twitter_followers", None)
+                twitter_followers = latest_social_record.get(
+                    "twitter_followers", None)
 
         if game["discord"]:
             if latest_social_record is not None:
-                discord_members = latest_social_record.get("discord_members", None)
+                discord_members = latest_social_record.get(
+                    "discord_members", None)
 
         if game["telegram"]:
             if latest_social_record is not None:
-                telegram_members = latest_social_record.get("telegram_members", None)
+                telegram_members = latest_social_record.get(
+                    "telegram_members", None)
 
         price_records = self.price_repo.find_by_game_id(game["id"])
 
@@ -87,7 +90,15 @@ class InfoService:
         price_change_pc = None
         price_color = "normal"
 
-        rate = await self.coingecko_service.get_latest_price('usd-coin', currency["id"])
+        rate = 1
+
+        if currency["id"] != "usd":
+            rate = await self.cache_service.wrap(
+                f"coingecko_price_usd_{currency['id']}",
+                lambda: self.coingecko_service.get_latest_price(
+                    'usd-coin', currency["id"]),
+                ex=3600
+            )
 
         if len(price_records):
             current_price = price_records[-1]["price_usd"]
@@ -121,8 +132,8 @@ class InfoService:
         social_document = await self.social_followers_info_service.get_social_document(game)
         media_documents = await self.media_info_service.get_media_documents(game)
 
-
-        telegram = game["telegram"] if (game["telegram"] and game["telegram"] != "https://t.me/") else None
+        telegram = game["telegram"] if (
+            game["telegram"] and game["telegram"] != "https://t.me/") else None
         if telegram and not telegram.startswith("http"):
             telegram = f"https://t.me/{telegram}"
         return [
