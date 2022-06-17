@@ -231,6 +231,7 @@ def __activity_chart():
                     "stroke": {
                         "width": [4, 4],
                         "curve": 'smooth',
+                        "colors": ["#F76D00"]
                     }
                 },
                 series=[
@@ -302,6 +303,7 @@ def __socials_chart():
                     "stroke": {
                         "width": [4, 4],
                         "curve": 'smooth',
+                        "colors": ["#F76D00"]                        
                     }
                 },
                 series=[
@@ -480,6 +482,7 @@ def __volume_chart():
                     "stroke": {
                         "width": [4, 4],
                         "curve": 'smooth',
+                        "colors": ["#F76D00"]                        
                     }
                 },
                 series=[
@@ -536,7 +539,7 @@ def __price_chart():
                         {
                             "labels": {
                                 "show": False,
-                                "formatter": format_currency("$", None)
+                                "formatter": format_template(" $ {{ price }}", { "price": "$" }),
                             },
                         },
                     ],
@@ -551,6 +554,7 @@ def __price_chart():
                     "stroke": {
                         "width": [4, 4],
                         "curve": 'smooth',
+                        "colors": ["#F76D00"]
                     }
                 },
                 series=[
@@ -618,7 +622,7 @@ def __price_stats():
                 [
                     Span("Token Price (24h)", "d-block font-small-3"),
                     Span(
-                        format_currency("$.price24h", None),
+                        format_template(" $ {{ price }}", { "price": "$.price24h" }),
                         format_template(
                             "d-block font-small-2 text-{{ color }}",
                             {

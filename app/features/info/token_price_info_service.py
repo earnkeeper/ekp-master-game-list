@@ -43,9 +43,9 @@ class TokenPriceInfoService:
                 document["priceDelta"] = (document["price24h"] - document["price48h"]) * 100 / document["price48h"]
 
             if date_timestamp in document["chart7d"]:
-                document["chart7d"][date_timestamp]["price"] = price
+                document["chart7d"][date_timestamp]["price"] = float("%.3g" % price)
 
-
+        document["price24h"] = float("%.3g" % document["price24h"])
         document["deltaColor"] = "normal"
 
         if document["priceDelta"] < 0:
