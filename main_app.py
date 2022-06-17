@@ -4,6 +4,7 @@ from ekp_sdk import BaseContainer
 from app.features.info.activity_info_service import ActivityInfoService
 from app.features.info.info_controller import InfoController
 from app.features.info.info_service import InfoService
+from app.features.info.media_info_service import MediaInfoService
 from app.features.info.social_followers_info_service import SocialFollowersInfoService
 from app.features.info.token_price_info_service import TokenPriceInfoService
 from app.features.info.token_volume_info_service import TokenVolumeInfoService
@@ -71,6 +72,10 @@ class AppContainer(BaseContainer):
             price_repo=self.price_repo
         )
 
+        self.media_info_service = MediaInfoService(
+            youtube_repo=self.youtube_repo
+        )
+
         self.info_service = InfoService(
             activity_info_service=self.activity_info_service,
             cache_service=self.cache_service,
@@ -80,7 +85,8 @@ class AppContainer(BaseContainer):
             token_volume_info_service=self.token_volume_info_service,
             price_repo=self.price_repo,
             token_price_info_service=self.token_price_info_service,
-            social_followers_info_service=self.social_followers_info_service
+            social_followers_info_service=self.social_followers_info_service,
+            media_info_service=self.media_info_service
         )
 
         self.info_controller = InfoController(
@@ -93,7 +99,6 @@ class AppContainer(BaseContainer):
         self.social_stats_service = SocialStatsService(
             social_repo=self.social_repo,
             game_repo=self.game_repo,
-            youtube_repo=self.youtube_repo
         )
 
         self.activity_stats_service = ActivityStatsService(

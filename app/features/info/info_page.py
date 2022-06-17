@@ -35,6 +35,7 @@ def page(GAME_INFO_COLLECTION_NAME):
                             __socials_section(),
                             __info_section(),
                             __volumes_section(),
+                            __media_section(),
                             __deep_dives_section(),
                             Div([], style={"height": "300px"})
                         ]
@@ -65,6 +66,29 @@ def __info_section():
             Span("$.description", "new-line d-block"),
         ])
     ]
+
+
+def __media_section():
+    return Div([
+        Span("Media", "font-medium-5 mt-3 d-block"),
+        Hr(),
+        Div(
+            children=[
+                Span(
+                    "We search the web for the best content for Play To Earn games, focusing on gameplay, economy health and earning potential."),
+                Div(style={"height": "16px"}),
+                Row([
+                    Col(
+                        "col-12 col-md-6 col-lg-4",
+                        [
+                            __media_card()
+                        ]
+                    ),
+                ])
+            ]
+        ),
+
+    ])
 
 
 def __volumes_section():
@@ -149,6 +173,63 @@ def __deep_dives_section():
     ])
 
 
+def __media_card():
+    return Div(
+        context="$.media.*",
+        when="$",
+        children=[
+            Card(
+                children=[
+                    Div(
+                        class_name="ml-1 mr-2 mt-1",
+                        children=[
+                            Image(
+                                src="$.thumbnail"
+                            ),
+                        ]
+                    ),
+                    Div(
+                        class_name="ml-1 mr-2 mt-1",
+                        children=[
+                            Link(
+                                class_name="font-small-3",
+                                href="$.link",
+                                external=True,
+                                # external_icon=True,
+                                content="$.title",
+                            ),
+                        ]
+                    ),
+                    Div(
+                        class_name="ml-1 mr-2 mt-1 mb-2",
+                        children=[
+                            Row(
+                                children=[
+                                    Col(
+                                        class_name="col-auto",
+                                        children=[
+                                            Icon("calendar", size='sm', style={"marginRight": "6px"}),
+                                            Span("$.publish_time")
+                                        ]
+                                    ),
+                                    Col(
+                                        class_name="col-auto",
+                                        children=[
+                                            Icon("eye", size='sm', style={"marginRight": "6px"}),
+                                            Span("$.view_count")
+                                        ]
+                                    )
+                                ]
+                            )
+                        ]
+                    )
+
+                ]
+            )
+        ]
+    )
+
+
 def __activity_card():
     return Div(
         context="$.activity",
@@ -164,6 +245,7 @@ def __activity_card():
         ]
     )
 
+
 def __socials_card():
     return Div(
         context="$.social",
@@ -178,6 +260,7 @@ def __socials_card():
             )
         ]
     )
+
 
 def __activity_chart():
     return Div(
@@ -239,10 +322,10 @@ def __activity_chart():
                         "name": "New Users",
                         "type": "line",
                         "data": ekp_map(
-                                sort_by(
-                                    json_array("$.chart7d.*"),
-                                    "$.timestamp_ms"
-                                ),
+                            sort_by(
+                                json_array("$.chart7d.*"),
+                                "$.timestamp_ms"
+                            ),
                             "$.newUsers"
                         ),
                     },
@@ -250,6 +333,7 @@ def __activity_chart():
             )
         ]
     )
+
 
 def __socials_chart():
     return Div(
@@ -303,7 +387,7 @@ def __socials_chart():
                     "stroke": {
                         "width": [4, 4],
                         "curve": 'smooth',
-                        "colors": ["#F76D00"]                        
+                        "colors": ["#F76D00"]
                     }
                 },
                 series=[
@@ -361,6 +445,7 @@ def __activity_stats():
         ]
     )
 
+
 def __socials_stats():
     return Row(
         class_name="my-1 mx-0",
@@ -413,6 +498,7 @@ def __volume_card():
             )
         ]
     )
+
 
 def __price_card():
     return Div(
@@ -482,7 +568,7 @@ def __volume_chart():
                     "stroke": {
                         "width": [4, 4],
                         "curve": 'smooth',
-                        "colors": ["#F76D00"]                        
+                        "colors": ["#F76D00"]
                     }
                 },
                 series=[
@@ -490,10 +576,10 @@ def __volume_chart():
                         "name": "Volume",
                         "type": "line",
                         "data": ekp_map(
-                                sort_by(
-                                    json_array("$.chart7d.*"),
-                                    "$.timestamp_ms"
-                                ),
+                            sort_by(
+                                json_array("$.chart7d.*"),
+                                "$.timestamp_ms"
+                            ),
                             "$.volume"
                         ),
                     },
@@ -501,6 +587,7 @@ def __volume_chart():
             )
         ]
     )
+
 
 def __price_chart():
     return Div(
@@ -539,7 +626,7 @@ def __price_chart():
                         {
                             "labels": {
                                 "show": False,
-                                "formatter": format_template(" $ {{ price }}", { "price": "$" }),
+                                "formatter": format_template(" $ {{ price }}", {"price": "$"}),
                             },
                         },
                     ],
@@ -622,7 +709,7 @@ def __price_stats():
                 [
                     Span("Token Price (24h)", "d-block font-small-3"),
                     Span(
-                        format_template(" $ {{ price }}", { "price": "$.price24h" }),
+                        format_template(" $ {{ price }}", {"price": "$.price24h"}),
                         format_template(
                             "d-block font-small-2 text-{{ color }}",
                             {

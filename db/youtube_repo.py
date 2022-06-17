@@ -16,14 +16,14 @@ class YoutubeRepo:
         self.collection.create_index("view_count")
         self.collection.create_index("publish_time")
 
-
     def find_all(self):
         return list(self.collection.find())
 
     def find_videos_by_game_name(self, game_name):
         results = list(
             self.collection
-                .find({"game_name": game_name})
+                .find({"game_name": game_name},
+                      {"_id": False})
                 .limit(10)
         )
 
@@ -31,7 +31,6 @@ class YoutubeRepo:
             return []
 
         return results
-
 
     def delete_records(self):
         self.collection.delete_many({})

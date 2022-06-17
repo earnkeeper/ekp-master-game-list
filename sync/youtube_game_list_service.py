@@ -37,7 +37,7 @@ class YoutubeSyncService:
         return {
             "id": video['id'],
             "game_name": game_name,
-            "title": video['accessibility']['title'],
+            "title": video['title'].replace('\n', ''),
             "video_description": video['descriptionSnippet'][0]['text'] if video['descriptionSnippet'] else None,
             "thumbnail": video['thumbnails'][0]['url'],
             "view_count": video['viewCount']['text'],
