@@ -728,8 +728,7 @@ def __price_stats():
                 [
                     Span("Token Price (24h)", "d-block font-small-3"),
                     Span(
-                        format_template(" $ {{ price }}", {
-                                        "price": "$.price24h"}),
+                        format_currency("$.price24h", None),
                         format_template(
                             "d-block font-small-2 text-{{ color }}",
                             {
