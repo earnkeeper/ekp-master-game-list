@@ -23,6 +23,9 @@ class YoutubeRepo:
     def find_one_by_id(self, id):
         return self.collection.find_one({"id": id})
 
+    def delete_records(self):
+        self.collection.delete_many({})
+
     def save(self, videos):
         start = time.perf_counter()
 

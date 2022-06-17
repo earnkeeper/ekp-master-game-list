@@ -14,6 +14,8 @@ class YoutubeSyncService:
         self.youtube_repo = youtube_repo
 
     async def sync_youtube_games_info(self):
+        self.youtube_repo.delete_records()
+
         games = self.game_repo.find_all()
 
         for game in games:

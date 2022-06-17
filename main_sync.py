@@ -1,3 +1,4 @@
+
 import asyncio
 import logging
 
@@ -5,11 +6,9 @@ from decouple import AutoConfig
 from ekp_sdk import BaseContainer
 
 from db.game_repo import GameRepo
-from db.youtube_repo import YoutubeRepo
 from sync.coingecko_sync_service import CoingeckoSyncService
 from sync.game_sync_service import GameSyncService
 from sync.manual_sync_service import ManualSyncService
-from sync.youtube_game_list_service import YoutubeSyncService
 
 
 class AppContainer(BaseContainer):
@@ -24,10 +23,6 @@ class AppContainer(BaseContainer):
 
         self.game_repo = GameRepo(
             mg_client=self.mg_client,
-        )
-
-        self.youtube_repo = YoutubeRepo(
-            mg_client=self.mg_client
         )
 
         # Services
@@ -50,11 +45,6 @@ class AppContainer(BaseContainer):
             manual_sync_service=self.manual_sync_service,
         )
 
-        self.youtube_sync_service = YoutubeSyncService(
-            game_repo=self.game_repo,
-            youtube_repo=self.youtube_repo
-        )
-
 
 if __name__ == '__main__':
     container = AppContainer()
@@ -67,9 +57,6 @@ if __name__ == '__main__':
 
     loop = asyncio.get_event_loop()
 
-    # loop.run_until_complete(
-    #     container.game_sync_service.sync_games()
-    # )
     loop.run_until_complete(
-        container.youtube_sync_service.sync_youtube_games_info()
+        container.game_sync_service.sync_games()
     )
