@@ -1,7 +1,7 @@
 apiVersion: batch/v1
 kind: CronJob
 metadata:
-  name: youtube_sync
+  name: youtube-sync
 spec:
   schedule: "0 0 * * *"
   concurrencyPolicy: Forbid
@@ -10,7 +10,7 @@ spec:
       template:
         metadata:
           labels:
-            app: youtube_sync
+            app: youtube-sync
         spec:
           restartPolicy: Never
           containers:
