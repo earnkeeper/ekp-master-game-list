@@ -29,57 +29,57 @@ def __table_row(COLLECTION_NAME):
         default_sort_asc=False,
         show_export=False,
         show_last_updated=True,
-        filters=[
-            {
-                "columnId": 'change_24h',
-                "title": 'New Followers 24h',
-                "type": 'radio',
-                "allowCustomOption": True,
-                "options": [
-                    {
-                        "label": 'All',
-                    },
-                    {
-                        "label": '> 50',
-                        "query": '> 50',
-                    },
+        # filters=[
+        #     {
+        #         "columnId": 'change_24h',
+        #         "title": 'New Followers 24h',
+        #         "type": 'radio',
+        #         "allowCustomOption": True,
+        #         "options": [
+        #             {
+        #                 "label": 'All',
+        #             },
+        #             {
+        #                 "label": '> 50',
+        #                 "query": '> 50',
+        #             },
 
-                ],
-            },
-            {
-                "columnId": 'change_24h_pc',
-                "title": 'New Followers 24h %',
-                "type": 'radio',
-                "allowCustomOption": True,
-                "options": [
-                    {
-                        "label": 'All',
-                    },
-                    {
-                        "label": '> 0.1',
-                        "query": '> 0.1',
-                    },
+        #         ],
+        #     },
+        #     {
+        #         "columnId": 'change_24h_pc',
+        #         "title": 'New Followers 24h %',
+        #         "type": 'radio',
+        #         "allowCustomOption": True,
+        #         "options": [
+        #             {
+        #                 "label": 'All',
+        #             },
+        #             {
+        #                 "label": '> 0.1',
+        #                 "query": '> 0.1',
+        #             },
 
-                ],
-            },
-            {
-                "columnId": 'twitter_followers',
-                "title": 'Total Followers',
-                "type": 'radio',
-                "allowCustomOption": True,
-                "options": [
-                    {
-                        "label": 'All',
-                    },
-                    {
-                        "label": '> 10,000',
-                        "query": '> 10000',
-                    },
+        #         ],
+        #     },
+        #     {
+        #         "columnId": 'twitter_followers',
+        #         "title": 'Total Followers',
+        #         "type": 'radio',
+        #         "allowCustomOption": True,
+        #         "options": [
+        #             {
+        #                 "label": 'All',
+        #             },
+        #             {
+        #                 "label": '> 10,000',
+        #                 "query": '> 10000',
+        #             },
 
-                ],
-            },
+        #         ],
+        #     },
 
-        ],
+        # ],
         columns=[
             Column(
                 id="game_name",
