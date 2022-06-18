@@ -31,7 +31,7 @@ class SocialStatsService:
 
         documents_map = {}
 
-        last_record = None
+        last_records = {}
 
         for record in records:
             if record["value"] is None:
@@ -56,7 +56,9 @@ class SocialStatsService:
 
             document["twitter_followers"] = record["value"]
 
-            if last_record is not None:
+            if game_id in last_records:
+                last_record = last_records[game_id]
+                                
                 document["change_24h"] = record["value"] - last_record["value"]
 
                 if (last_record["value"]):
@@ -76,7 +78,7 @@ class SocialStatsService:
                 if document["change_24h"] < 0:
                     document["change_24h_color"] = "danger"
 
-            last_record = record
+            last_records[game_id] = record
 
         return list(documents_map.values())
 

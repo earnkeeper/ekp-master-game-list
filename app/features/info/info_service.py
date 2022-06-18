@@ -54,8 +54,6 @@ class InfoService:
             ]
 
         banner_url = game.get('banner_url', None)
-        # price = "Coingecko"
-        # price_color = "normal"
         telegram_members = None
         discord_members = None
         twitter = None
