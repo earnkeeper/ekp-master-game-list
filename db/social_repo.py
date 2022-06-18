@@ -96,25 +96,64 @@ class SocialRepo:
 
         return results
 
-    def find_charts_group_by_game_id(self):
+    def group_by_date(self, game_id):
         start = time.perf_counter()
 
         results = list(
             self.collection
             .aggregate([
-                {"$sort": {"timestamp": 1}},
+                {
+                    "$match": {
+                        "date_timestamp": {"$exists": True},
+                        "twitter_followers": {
+                            "$exists": True,
+                            "$ne": None
+                        },
+                        "game_id": game_id,
+                    }
+                },
+                {"$sort": {"date_timestamp": 1}},
                 {
                     "$group":
                     {
-                        "_id": {"game_id": "$game_id", "date_timestamp": "$date_timestamp"},
-                        "value": {"$last": "$twitter_followers"}
+                        "_id": "$date_timestamp",
+                        "value": {"$avg": "$twitter_followers"}
                     }
                 }
             ])
         )
 
         logging.info(
-            f"⏱  [SocialRepo.find_chart_by_game_id()] {time.perf_counter() - start:0.3f}s"
+            f"⏱  [SocialRepo.group_by_game_id_and_date()] {time.perf_counter() - start:0.3f}s"
+        )
+
+        if not results or not len(results):
+            return []
+
+        return results
+    
+    def group_by_game_id_and_date(self):
+        start = time.perf_counter()
+
+        results = list(
+            self.collection
+            .aggregate([
+                {
+                    "$match": {"date_timestamp": {"$exists": True}}
+                },
+                {"$sort": {"date_timestamp": 1}},
+                {
+                    "$group":
+                    {
+                        "_id": {"game_id": "$game_id", "date_timestamp": "$date_timestamp"},
+                        "value": {"$avg": "$twitter_followers"}
+                    }
+                }
+            ])
+        )
+
+        logging.info(
+            f"⏱  [SocialRepo.group_by_game_id_and_date()] {time.perf_counter() - start:0.3f}s"
         )
 
         if not results or not len(results):

@@ -1,5 +1,4 @@
 from datetime import datetime
-from app.utils.get_midnight_utc import get_midnight_utc
 from db.social_repo import SocialRepo
 from db.game_repo import GameRepo
 
@@ -14,118 +13,62 @@ class SocialFollowersInfoService:
         self.social_repo = social_repo
 
     async def get_social_document(self, game):
-        game_id = game['id']
+        records = self.social_repo.group_by_date(game['id'])
 
-        latest_record = self.social_repo.find_latest_for_game_id(game_id)
-
-        if not latest_record:
-            return None
-
-        daily_chart_records = self.social_repo.find_chart_for_game_id(game_id)
-
-        grouped_by_day = {}
-
-        for chart_record in daily_chart_records:
-            date_timestamp = str(chart_record["_id"])
-            grouped_by_day[date_timestamp] = chart_record["value"]
-
-        all = self.social_repo.find_all_since_for_game_id(1655056950, game_id)
+        records.sort(key=lambda record: record["_id"])
 
         now = datetime.now().timestamp()
 
-        twitter_followers = latest_record['twitter_followers']
-
-        chart_records = all
-
-        chart_records.sort(key=lambda x: x['timestamp'])
+        document = self.__create_document(game, now)
 
         last_record = None
 
-        chart = []
-
-        for chart_record in chart_records:
-            if "twitter_followers" not in chart_record or not chart_record["twitter_followers"]:
+        for record in records:
+            if record["value"] is None:
                 continue
+                
+            date_timestamp = record["_id"]
 
-            if last_record is None:
-                last_record = chart_record
-                continue
+            document["twitter_followers"] = record["value"]
 
-            chart.append({
-                "timestamp_ms": chart_record["timestamp"] * 1000,
-                "value": chart_record["twitter_followers"] - last_record["twitter_followers"]
-            })
+            if last_record is not None:
+                document["change_24h"] = record["value"] - last_record["value"]
 
-            last_record = chart_record
+                if (last_record["value"]):
+                    document["change_24h_pc"] = (
+                        record["value"] - last_record["value"]) / last_record["value"]
 
-        game_daily_chart_records = []
+                document["chart"].append({
+                    "timestamp_ms": date_timestamp * 1000,
+                    "value": document["change_24h"]
+                })
 
-        change_24h = None
-        change_24h_pc = None
+                document["twitter_plus"] = False
 
-        for key in grouped_by_day.keys():
-            game_daily_chart_records.append({
-                "date_timestamp": key,
-                "value": grouped_by_day[key]
-            })
+                if document["change_24h"] > 0:
+                    document["change_24h_color"] = "success"
+                    document["twitter_plus"] = True
+                if document["change_24h"] < 0:
+                    document["change_24h_color"] = "danger"
 
-        if len(game_daily_chart_records) > 1 and twitter_followers:
-            game_daily_chart_records.sort(
-                key=lambda x: int(x['date_timestamp'])
-            )
-            
-            today_value = game_daily_chart_records[
-                len(game_daily_chart_records) - 1
-            ]["value"]
-            
-            yesterday_value = game_daily_chart_records[
-                len(game_daily_chart_records) - 2
-            ]["value"]
-            
-            change_24h = today_value - yesterday_value
+            last_record = record
 
-            change_24h_pc = round(change_24h * 100 / twitter_followers, 3)
-
-        change_24h_color = "normal"
-
-        twitter_plus = None
-
-        if change_24h is not None:
-            if change_24h > 0:
-                change_24h_color = "success"
-                twitter_plus = True
-
-            if change_24h < 0:
-                change_24h_color = "danger"
-
-        document = {
-            "id": game_id,
-            "updated": now,
-            "game_name": game['name'],
-            "twitter_followers": twitter_followers,
-            "chart": chart,
-            "banner_url": game.get('banner_url', None),
-            "change_24h": change_24h,
-            "change_24h_pc": change_24h_pc,
-            "change_24h_color": change_24h_color,
-            "twitter_plus": twitter_plus,
-        }
-        
         return document
 
 
-    def get_chains(self, game):
-        chains = []
+    def __create_document(self, game, now):
+        document = {
+            "id": game['id'],
+            "updated": now,
+            "game_name": game['name'],
+            "twitter_followers": None,
+            "chart": [],
+            "banner_url": game.get('banner_url', None),
+            "change_24h": 0,
+            "change_24h_pc": 0,
+            "change_24h_color": "normal",
+            "twitter_plus": False,
+        }
 
-        if "tokens" not in game:
-            return chains
+        return document
 
-        tokens = game['tokens']
-
-        chain_names = ['bsc', 'eth', 'polygon']
-
-        for chain_name in chain_names:
-            if chain_name in tokens and len(tokens[chain_name]) and tokens[chain_name][0]:
-                chains.append(chain_name)
-
-        return chains
