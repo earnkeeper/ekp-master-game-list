@@ -29,7 +29,8 @@ class AppContainer(BaseContainer):
 
         self.youtube_sync_service = YoutubeSyncService(
             game_repo=self.game_repo,
-            youtube_repo=self.youtube_repo
+            youtube_repo=self.youtube_repo,
+            cache_service=self.cache_service
         )
 
 
