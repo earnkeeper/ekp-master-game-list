@@ -218,6 +218,46 @@ def __media_card():
                             Col(
                                 class_name="col-auto",
                                 children=[
+                                    # Icon(
+                                    #     "user",
+                                    #     size='sm',
+                                    #     style={
+                                    #         "marginRight": "6px"
+                                    #     }
+                                    # ),
+                                    Span("$.channel_name", "font-small-3")
+                                ]
+                            ),
+                            Col(
+                                class_name="col-auto",
+                                children=[
+                                    Icon(
+                                        "users",
+                                        size='sm',
+                                        style={
+                                            "marginRight": "6px"
+                                        }
+                                    ),
+                                    Span(
+                                        format_template(
+                                                        "{{ subscribers_count }} subs",
+                                                        {"subscribers_count": "$.subscribers_count"}
+                                                        )
+                                        , "font-small-2")
+                                ]
+                            )
+                        ]
+                    )
+                ]
+            ),
+            Div(
+                class_name="ml-1 mr-2 mt-1 mb-2",
+                children=[
+                    Row(
+                        children=[
+                            Col(
+                                class_name="col-auto",
+                                children=[
                                     Icon(
                                         "calendar",
                                         size='sm',
@@ -396,7 +436,7 @@ def __socials_chart():
                             },
                         },
                     ],
-                    "colors": ["#F76D00"],                    
+                    "colors": ["#F76D00"],
                     "labels": ekp_map(
                         sort_by(
                             json_array(
@@ -578,7 +618,7 @@ def __volume_chart():
                             },
                         },
                     ],
-                    "colors": ["#F76D00"],                    
+                    "colors": ["#F76D00"],
                     "labels": ekp_map(
                         sort_by(
                             json_array(
@@ -652,7 +692,7 @@ def __price_chart():
                             },
                         },
                     ],
-                    "colors": ["#F76D00"],                    
+                    "colors": ["#F76D00"],
                     "labels": ekp_map(
                         sort_by(
                             json_array(
@@ -734,9 +774,9 @@ def __price_stats():
                     Span(
                         # format_currency("$.volume24h", None),
                         format_template(" {{ fiat_symbol }} {{ price }}", {
-                                        "price": "$.price24h",
-                                        "fiat_symbol": "$.fiat_symbol"
-                                        }),
+                            "price": "$.price24h",
+                            "fiat_symbol": "$.fiat_symbol"
+                        }),
                         format_template(
                             "d-block font-small-2 text-{{ color }}",
                             {

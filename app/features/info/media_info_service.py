@@ -1,3 +1,5 @@
+from pprint import pprint
+
 from db.youtube_repo import YoutubeRepo
 
 
@@ -13,5 +15,6 @@ class MediaInfoService:
 
         top_10_video_info = self.youtube_repo.find_videos_by_game_name(game_name)
 
+        # pprint(top_10_video_info)
         return top_10_video_info
 

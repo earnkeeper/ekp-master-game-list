@@ -1,7 +1,7 @@
 import logging
 from db.game_repo import GameRepo
 from db.youtube_repo import YoutubeRepo
-from youtubesearchpython import *
+from youtubesearchpython import VideosSearch, Channel
 
 
 class YoutubeSyncService:
@@ -28,12 +28,20 @@ class YoutubeSyncService:
         videos_list = VideosSearch(game_name, limit=10).result()['result']
         videos = []
         for video in videos_list:
-            document = await self.get_single_video_info(video, game_name)
+            channel = None
+            try:
+                channel = Channel.get(video['channel']['id'])
+            except Exception as e:
+                print(video['channel']['name'])
+                print(video['channel']['id'])
+                print(e)
+                pass
+            document = await self.get_single_video_info(video, game_name, channel)
             videos.append(document)
 
         return videos
 
-    async def get_single_video_info(self, video, game_name):
+    async def get_single_video_info(self, video, game_name, channel):
         return {
             "id": video['id'],
             "game_name": game_name,
@@ -43,6 +51,8 @@ class YoutubeSyncService:
             "view_count": video['viewCount']['text'],
             "duration": video['duration'],
             "publish_time": video['publishedTime'],
+            "channel_name": video['channel']['name'],
+            "subscribers_count": channel['subscribers']['simpleText'].replace("subscribers", "subs") if channel else None,
             "link": video['link']
 
         }
