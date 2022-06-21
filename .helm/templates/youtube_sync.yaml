@@ -26,6 +26,8 @@ spec:
                   value: "redis://{{ .Release.Name }}-redis-master"
                 - name: PROXY_URI
                   value: "{{ .Values.proxy.uri }}"
+                - name: YOUTUBE_API_KEY
+                  value: "{{ .Values.youtube.apiKey }}"
               volumeMounts:
                 - name: secret-files
                   mountPath: "/app/secret"
