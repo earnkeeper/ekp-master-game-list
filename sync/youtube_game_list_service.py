@@ -25,6 +25,9 @@ class YoutubeSyncService:
 
         for game in games:
             game_name = game['name']
+            if game['youtube_game_name']:
+                game_name = game['youtube_game_name']
+
             videos = await self.get_youtube_game_videos_info(game_name=game_name)
 
             self.youtube_repo.save(videos)
@@ -39,7 +42,6 @@ class YoutubeSyncService:
             # print(e)
             pass
         return channel_subs if channel_subs else "0"
-
 
     async def get_youtube_game_videos_info(self, game_name):
         videos_list = VideosSearch(game_name, limit=10).result()['result']

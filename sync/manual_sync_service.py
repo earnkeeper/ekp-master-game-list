@@ -42,7 +42,8 @@ class ManualSyncService:
             website = self.__get_value_from(row, 9)
             discord = self.__get_value_from(row, 10)
             description = self.__get_value_from(row, 12)
-            
+            youtube_game_name = self.__get_value_from(row, 13)
+
             games.append({
                 "id": game_id,
                 "disable": disable,
@@ -57,7 +58,8 @@ class ManualSyncService:
                 "telegram": telegram,
                 "website": website,
                 "discord": discord,
-                "description": description
+                "description": description,
+                "youtube_game_name": youtube_game_name
             })
 
         return games
