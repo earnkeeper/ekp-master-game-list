@@ -30,7 +30,7 @@ class YoutubeSyncService:
         
         games = self.game_repo.find_all()
         
-        today_timestamp = get_midnight_utc(datetime.now()).timestamp()
+        today_timestamp = get_midnight_utc(datetime.datetime.now()).timestamp()
 
         game_ids_with_videos_today = self.youtube_repo.find_game_ids_with_videos_today(today_timestamp)
 

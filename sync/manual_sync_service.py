@@ -42,7 +42,7 @@ class ManualSyncService:
             website = self.__get_value_from(row, 9)
             discord = self.__get_value_from(row, 10)
             description = self.__get_value_from(row, 12)
-            youtube_game_name = self.__get_value_from(row, 13)
+            youtube_search_query = self.__get_value_from(row, 13)
 
             games.append({
                 "id": game_id,
@@ -59,7 +59,7 @@ class ManualSyncService:
                 "website": website,
                 "discord": discord,
                 "description": description,
-                "youtube_game_name": youtube_game_name
+                "youtube_search_query": youtube_search_query
             })
 
         return games

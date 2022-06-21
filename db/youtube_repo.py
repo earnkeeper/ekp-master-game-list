@@ -50,6 +50,15 @@ class YoutubeRepo:
                 results
             )
         )
+
+    def delete_where_timestamp_before(self, midnight):
+        self.collection.delete_many(
+            {
+                "date_timestamp": {
+                    "$lte": midnight
+                }
+            }
+        )
         
     def find_videos_by_game_name(self, game_name):
         results = list(
