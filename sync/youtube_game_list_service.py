@@ -1,5 +1,6 @@
 import logging
 import datetime
+import time
 from pprint import pprint
 
 import isodate
@@ -7,7 +8,6 @@ from ekp_sdk.services import CacheService
 
 from db.game_repo import GameRepo
 from db.youtube_repo import YoutubeRepo
-from youtubesearchpython import VideosSearch, Channel
 
 from shared.youtube_api_service import YoutubeApiService
 
@@ -73,26 +73,8 @@ class YoutubeSyncService:
             "thumbnail": video['snippet']['thumbnails']['default']['url'],
             "view_count": video['statistics']['viewCount'],
             "duration": str(datetime.timedelta(seconds=isodate.parse_duration('PT12M23S').total_seconds())),
-            "publish_time": datetime.datetime.strftime(
-                datetime.datetime.strptime(video['snippet']['publishedAt'], "%Y-%m-%dT%H:%M:%SZ"), format="%Y-%m-%d"),
+            "publish_time": int(time.mktime(datetime.datetime.strptime(video['snippet']['publishedAt'], "%Y-%m-%dT%H:%M:%SZ").timetuple())),
             "channel_name": video['snippet']['channelTitle'],
             "subscribers_count": channel_subs,
             "link": f"https://www.youtube.com/watch?v={video['id']}"
-
         }
-
-    # async def get_single_video_info(self, video, game_name, channel_subs):
-    #     return {
-    #         "id": video['id'],
-    #         "game_name": game_name,
-    #         "title": video['title'].replace('\n', ''),
-    #         "video_description": video['descriptionSnippet'][0]['text'] if video['descriptionSnippet'] else None,
-    #         "thumbnail": video['thumbnails'][0]['url'],
-    #         "view_count": video['viewCount']['text'],
-    #         "duration": video['duration'],
-    #         "publish_time": video['publishedTime'],
-    #         "channel_name": video['channel']['name'],
-    #         "subscribers_count": channel_subs,
-    #         "link": video['link']
-    #
-    #     }
