@@ -19,7 +19,7 @@ class AppContainer(BaseContainer):
 
         SHEET_ID = config("SHEET_ID")
 
-        # DB
+
 
         self.game_repo = GameRepo(
             mg_client=self.mg_client,

@@ -3,9 +3,11 @@ import logging
 
 from decouple import AutoConfig
 from ekp_sdk import BaseContainer
+from ekp_sdk.services import RestClient
 
 from db.game_repo import GameRepo
 from db.youtube_repo import YoutubeRepo
+from shared.youtube_api_service import YoutubeApiService
 from sync.youtube_game_list_service import YoutubeSyncService
 
 
@@ -15,7 +17,22 @@ class AppContainer(BaseContainer):
 
         super().__init__(config)
 
+        PROXY_URI = config("PROXY_URI")
+
+        YOUTUBE_API_KEY = config("YOUTUBE_API_KEY")
+
         # DB
+
+        self.rest_client = RestClient(
+            proxy_uri=PROXY_URI
+        )
+
+        # DB
+
+        self.youtube_api_service = YoutubeApiService(
+            api_key=YOUTUBE_API_KEY,
+            rest_client=self.rest_client
+        )
 
         self.game_repo = GameRepo(
             mg_client=self.mg_client,
@@ -30,7 +47,8 @@ class AppContainer(BaseContainer):
         self.youtube_sync_service = YoutubeSyncService(
             game_repo=self.game_repo,
             youtube_repo=self.youtube_repo,
-            cache_service=self.cache_service
+            cache_service=self.cache_service,
+            youtube_api_service=self.youtube_api_service
         )
 
 
