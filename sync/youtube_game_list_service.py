@@ -70,7 +70,7 @@ class YoutubeSyncService:
             "game_name": game_name,
             "title": video['snippet']['title'],
             "video_description": video['snippet']['description'] if video['snippet']['description'] else None,
-            "thumbnail": video['snippet']['thumbnails']['default']['url'],
+            "thumbnail": video['snippet']['thumbnails']['medium']['url'],
             "view_count": video['statistics']['viewCount'],
             "duration": str(datetime.timedelta(seconds=isodate.parse_duration('PT12M23S').total_seconds())),
             "publish_time": int(time.mktime(datetime.datetime.strptime(video['snippet']['publishedAt'], "%Y-%m-%dT%H:%M:%SZ").timetuple())),
