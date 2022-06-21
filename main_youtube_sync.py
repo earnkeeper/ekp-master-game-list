@@ -17,22 +17,9 @@ class AppContainer(BaseContainer):
 
         super().__init__(config)
 
-        PROXY_URI = config("PROXY_URI")
-
         YOUTUBE_API_KEY = config("YOUTUBE_API_KEY")
 
         # DB
-
-        self.rest_client = RestClient(
-            proxy_uri=PROXY_URI
-        )
-
-        # DB
-
-        self.youtube_api_service = YoutubeApiService(
-            api_key=YOUTUBE_API_KEY,
-            rest_client=self.rest_client
-        )
 
         self.game_repo = GameRepo(
             mg_client=self.mg_client,
@@ -43,6 +30,11 @@ class AppContainer(BaseContainer):
         )
 
         # Services
+
+        self.youtube_api_service = YoutubeApiService(
+            api_key=YOUTUBE_API_KEY,
+            rest_client=self.rest_client
+        )
 
         self.youtube_sync_service = YoutubeSyncService(
             game_repo=self.game_repo,
