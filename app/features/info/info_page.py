@@ -76,7 +76,6 @@ def __media_section():
                 Hr(),
                 Span(
                     "We search the web for the best content for Play To Earn games, focusing on gameplay, economy health and earning potential.",
-                    "font-small-2"
                 ),
             ]),
         Div(
@@ -104,14 +103,12 @@ def __volumes_section():
             children=[
                 Span(
                     "We collect volume statistics for hundreds of games to show you were users are spending their time.",
-                    "font-small-2"
                 ),
                 Div(style={"height": "8px"}),
                 Span(
                     format_template("The stats we have for {{ name }} are below.", {
                         "name": "$.name"
                     }),
-                    "font-small-2"
                 ),
                 Div(style={"height": "16px"}),
                 Row([
@@ -159,7 +156,6 @@ def __volumes_section():
 
 def __deep_dives_section():
     return Div(
-        class_name="font-small-2",
         children=[
             Span("Deep Dives", "font-medium-5 mt-3 d-block"),
             Hr(),
