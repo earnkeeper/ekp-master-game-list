@@ -1,6 +1,7 @@
 
 from datetime import datetime
 from app.utils.get_chains import get_chains
+from app.utils.proxy_image import proxy_image
 
 from db.game_repo import GameRepo
 from db.social_repo import SocialRepo
@@ -92,8 +93,7 @@ class SocialStatsService:
             "twitter_followers": 0,
             "chains": chains,
             "chart": [],
-            "banner_url": game.get('banner_url', None),
-            "profile_image_url": game.get('profile_image_url', None),
+            "profile_image_url": proxy_image(game.get('profile_image_url', None)),
             "change_24h": 0,
             "change_24h_pc": 0,
             "change_24h_color": "normal",

@@ -21,6 +21,22 @@ from db.volume_repo import VolumeRepo
 from db.game_repo import GameRepo
 from db.youtube_repo import YoutubeRepo
 
+from aiohttp import ClientSession, web
+
+async def image_handler(req: web.Request):
+    url = req.query.get("url", None)
+
+    if not url:
+        return web.HTTPNotFound()
+
+    async with ClientSession() as session:
+        async with await session.get(url) as res:
+            if res.status != 200:
+                return web.HTTPNotFound()
+
+            img_raw = await res.read()
+
+    return web.Response(body=img_raw, content_type='image/jpeg')
 
 class AppContainer(BaseContainer):
     def __init__(self):
@@ -28,6 +44,12 @@ class AppContainer(BaseContainer):
 
         super().__init__(config)
 
+        # Image Proxy
+        
+        self.client_service.app.add_routes([
+            web.get('/image', image_handler)
+        ])
+        
         # DB
 
         self.activity_repo = ActivityRepo(

@@ -1,4 +1,5 @@
 from shared.get_midnight_utc import get_midnight_utc
+from app.utils.proxy_image import proxy_image
 from db.game_repo import GameRepo
 from ekp_sdk.services import CacheService, CoingeckoService
 from datetime import datetime
@@ -153,7 +154,7 @@ class VolumeStatsService:
             "id": game_id,
             "gameId": game_id,
             "gameName": record["game_name"],
-            "profile_image_url": profile_image_url,
+            "profile_image_url": proxy_image(profile_image_url),
             "chains": chains,
             "gameLink": gameLink,
             "volume24h": 0,

@@ -1,4 +1,5 @@
 from shared.get_midnight_utc import get_midnight_utc
+from app.utils.proxy_image import proxy_image
 from db.activity_repo import ActivityRepo
 from db.game_repo import GameRepo
 from datetime import datetime
@@ -123,7 +124,7 @@ class ActivityStatsService:
                 document["delta7dColor"] = "danger"
             if document["newUsers7dDelta"] > 0:
                 document["delta7dColor"] = "success"
-                
+
         return documents
 
         # return list(
@@ -142,7 +143,7 @@ class ActivityStatsService:
         telegram = None
         profile_image_url = None
         name = record["game_name"]
-        
+
         if id in games_map:
             game = games_map[id]
             name = game['name']
@@ -151,14 +152,14 @@ class ActivityStatsService:
             discord = game["discord"]
             telegram = game["telegram"]
             profile_image_url = game.get('profile_image_url', None)
-            
+
         return {
             "id": id,
             "gameId": record["game_id"],
             "gameName": name,
             "gameLink": gameLink,
             "chains": [record["game_chain"]],
-            "profile_image_url": profile_image_url,            
+            "profile_image_url": proxy_image(profile_image_url),
             "newUsers24h": 0,
             "newUsers48h": 0,
             "newUsersDelta": None,
