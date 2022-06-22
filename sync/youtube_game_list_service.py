@@ -31,7 +31,9 @@ class YoutubeSyncService:
 
         today_timestamp = get_midnight_utc(datetime.datetime.now()).timestamp()
 
-        game_ids_with_videos_today = self.youtube_repo.find_game_ids_with_videos_today(today_timestamp)
+        game_ids_with_videos_today = self.youtube_repo.find_game_ids_with_videos_today(
+            today_timestamp
+        )
 
         for game in games:
             if game['id'] in game_ids_with_videos_today:
@@ -52,7 +54,8 @@ class YoutubeSyncService:
         channel_subs = None
         try:
             channel = Channel.get(channel_id)
-            channel_subs = channel['subscribers']['simpleText'].replace("subscribers", "")
+            channel_subs = channel['subscribers']['simpleText'].replace(
+                "subscribers", "")
         except Exception as e:
             pass
         return channel_subs if channel_subs else "0"
@@ -99,7 +102,6 @@ class YoutubeSyncService:
             "subscribers_count": channel_subs,
             "link": video['link']
         }
-
 
     def get_timestamp_of_publish_date(self, pb_time):
         map_dict = {

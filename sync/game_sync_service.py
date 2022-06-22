@@ -24,6 +24,9 @@ class GameSyncService:
     async def sync_games(self):
         manual_games = self.manual_sync_service.get_games()
 
+        for game in manual_games:
+            self.game_repo.upsert(game)
+
         coingecko_games = await self.coingecko_sync_service.get_games()
 
         games = self.__merge_lists(manual_games, coingecko_games)
@@ -59,12 +62,12 @@ class GameSyncService:
                 self.__update_game_field(game, "description", map_get(
                     coin, ["description", "en"]
                 ))
-                
+
                 if chat_url:
                     for chat in chat_url:
                         if not chat:
                             continue
-                        
+
                         if ("discord.com" in chat or "discord.gg" in chat):
                             self.__update_game_field(game, "discord", chat)
                         if "t.me" in chat:

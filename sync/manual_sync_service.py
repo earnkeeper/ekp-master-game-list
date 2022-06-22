@@ -14,7 +14,7 @@ class ManualSyncService:
     def get_games(self):
         rows = self.google_sheets_client.get_range(
             self.sheet_id,
-            "manual!A2:M"
+            "manual!A2:N"
         )
 
         games = []
