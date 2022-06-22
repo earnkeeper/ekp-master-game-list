@@ -1,6 +1,7 @@
 import datetime
 import datetime
 
+from dateutil.relativedelta import relativedelta
 from ekp_sdk.services import CacheService
 from app.utils.get_midnight_utc import get_midnight_utc
 from youtubesearchpython import *
@@ -25,19 +26,19 @@ class YoutubeSyncService:
         self.youtube_api_service = youtube_api_service
 
     async def sync_youtube_games_info(self):
-        
+
         games = self.game_repo.find_all()
-        
+
         today_timestamp = get_midnight_utc(datetime.datetime.now()).timestamp()
 
         game_ids_with_videos_today = self.youtube_repo.find_game_ids_with_videos_today(today_timestamp)
-        
+
         for game in games:
             if game['id'] in game_ids_with_videos_today:
                 continue
 
             search_query = game['name']
-            
+
             if 'youtube_search_query' in game and game['youtube_search_query']:
                 search_query = game['youtube_search_query']
 
@@ -60,16 +61,18 @@ class YoutubeSyncService:
         videos_list = VideosSearch(search_query, limit=10).result()['result']
 
         videos = []
-        
+
         for video in videos_list:
+            if not video['publishedTime']:
+                continue
             channel_subs = await self.cache_service.wrap(
                 f"channelId_{video['channel']['id']}",
                 lambda: self.get_channel_subs_by_id(video['channel']['id']),
                 ex=3600
             )
-            
+
             document = await self.get_single_video_info(video, search_query, channel_subs, today_timestamp, game)
-            
+
             videos.append(document)
 
         return videos
@@ -91,8 +94,30 @@ class YoutubeSyncService:
             "thumbnail": video['thumbnails'][0]['url'],
             "view_count": view_count,
             "duration": video['duration'],
-            "publish_time": video['publishedTime'],
+            "publish_time": self.get_timestamp_of_publish_date(video['publishedTime']),
             "channel_name": video['channel']['name'],
             "subscribers_count": channel_subs,
             "link": video['link']
         }
+
+
+    def get_timestamp_of_publish_date(self, pb_time):
+        map_dict = {
+            'minute ': 'minutes ',
+            'hour ': 'hours ',
+            'day ': 'days ',
+            'month ': 'months ',
+            'year ': 'years '
+        }
+
+        for key in map_dict.keys():
+            pb_time = pb_time.replace(key, map_dict[key])
+
+        parsed_s = [pb_time.split()[:2]]
+        if 'Streamed' in pb_time:
+            parsed_s = [pb_time.split()[1:3]]
+        time_dict = dict((fmt, float(amount)) for amount, fmt in parsed_s)
+        dt = relativedelta(**time_dict)
+        past_time = datetime.datetime.now() - dt
+
+        return int(past_time.timestamp())
