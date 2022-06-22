@@ -1,15 +1,12 @@
 import datetime
-import datetime
 
 from dateutil.relativedelta import relativedelta
-from ekp_sdk.services import CacheService
-from app.utils.get_midnight_utc import get_midnight_utc
-from youtubesearchpython import *
-from app.utils.get_midnight_utc import get_midnight_utc
 from db.game_repo import GameRepo
 from db.youtube_repo import YoutubeRepo
-
+from ekp_sdk.services import CacheService
+from shared.get_midnight_utc import get_midnight_utc
 from shared.youtube_api_service import YoutubeApiService
+from youtubesearchpython import *
 
 
 class YoutubeSyncService:

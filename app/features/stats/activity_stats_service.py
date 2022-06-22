@@ -1,4 +1,4 @@
-from app.utils.get_midnight_utc import get_midnight_utc
+from shared.get_midnight_utc import get_midnight_utc
 from db.activity_repo import ActivityRepo
 from db.game_repo import GameRepo
 from datetime import datetime
