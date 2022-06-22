@@ -1,10 +1,6 @@
 import datetime
-import logging
 import datetime
-import time
-from pprint import pprint
 
-import isodate
 from ekp_sdk.services import CacheService
 from app.utils.get_midnight_utc import get_midnight_utc
 from youtubesearchpython import *
@@ -35,17 +31,18 @@ class YoutubeSyncService:
         today_timestamp = get_midnight_utc(datetime.datetime.now()).timestamp()
 
         game_ids_with_videos_today = self.youtube_repo.find_game_ids_with_videos_today(today_timestamp)
-
+        
         for game in games:
-
             if game['id'] in game_ids_with_videos_today:
                 continue
 
             search_query = game['name']
+            
             if 'youtube_search_query' in game and game['youtube_search_query']:
                 search_query = game['youtube_search_query']
 
-            videos = await self.get_youtube_game_videos_info(game_name=search_query, today_timestamp=today_timestamp)
+            videos = await self.get_youtube_game_videos_info(search_query, today_timestamp, game)
+
             self.youtube_repo.save(videos)
 
         self.youtube_repo.delete_where_timestamp_before(today_timestamp)
@@ -59,22 +56,25 @@ class YoutubeSyncService:
             pass
         return channel_subs if channel_subs else "0"
 
-    async def get_youtube_game_videos_info(self, game_name, today_timestamp):
-        videos_list = VideosSearch(game_name, limit=10).result()['result']
+    async def get_youtube_game_videos_info(self, search_query, today_timestamp, game):
+        videos_list = VideosSearch(search_query, limit=10).result()['result']
+
         videos = []
+        
         for video in videos_list:
             channel_subs = await self.cache_service.wrap(
                 f"channelId_{video['channel']['id']}",
                 lambda: self.get_channel_subs_by_id(video['channel']['id']),
                 ex=3600
             )
-
-            document = await self.get_single_video_info(video, game_name, channel_subs, today_timestamp)
+            
+            document = await self.get_single_video_info(video, search_query, channel_subs, today_timestamp, game)
+            
             videos.append(document)
 
         return videos
 
-    async def get_single_video_info(self, video, game_name, channel_subs, today_timestamp):
+    async def get_single_video_info(self, video, search_query, channel_subs, today_timestamp, game):
 
         view_count = None
 
@@ -83,8 +83,8 @@ class YoutubeSyncService:
 
         return {
             "id": video['id'],
-            "game_name": game_name,
-            "game_id": video['id'],
+            "search_query": search_query,
+            "game_id": game['id'],
             "date_timestamp": today_timestamp,
             "title": video['title'].replace('\n', ''),
             "video_description": video['descriptionSnippet'][0]['text'] if video['descriptionSnippet'] else None,
