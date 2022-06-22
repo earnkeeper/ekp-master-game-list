@@ -25,7 +25,7 @@ class YoutubeSyncService:
 
         for game in games:
             game_name = game['name']
-            if game['youtube_game_name']:
+            if 'youtube_game_name' in game and game['youtube_game_name']:
                 game_name = game['youtube_game_name']
 
             videos = await self.get_youtube_game_videos_info(game_name=game_name)
