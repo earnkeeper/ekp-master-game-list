@@ -1,5 +1,5 @@
-from pprint import pprint
 
+from app.utils.proxy_image import proxy_image
 from app.features.info.activity_info_service import ActivityInfoService
 from app.features.info.media_info_service import MediaInfoService
 from app.features.info.social_followers_info_service import SocialFollowersInfoService
@@ -139,7 +139,7 @@ class InfoService:
                 "id": game_id,
                 "updated": now,
                 "name": game["name"],
-                "banner": banner_url,
+                "banner": proxy_image(banner_url),
                 "twitter_followers": twitter_followers,
                 "telegram_members": telegram_members,
                 "discord_members": discord_members,
