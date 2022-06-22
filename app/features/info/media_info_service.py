@@ -15,6 +15,10 @@ class MediaInfoService:
 
         top_10_video_info = self.youtube_repo.find_videos_by_game_id(game_id)
 
+        for video in top_10_video_info:
+            if len(video["title"]) > 80:
+                video["title"] = video["title"][:78] + "..."
+
         # pprint(top_10_video_info)
         return top_10_video_info
 

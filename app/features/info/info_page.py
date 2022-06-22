@@ -194,13 +194,15 @@ def __media_card():
             Div(
                 children=[
                     Image(
+                        class_name="mb-1",
                         src="$.thumbnail",
-                        style={"height": "200px", "width": "100%"}
+                        style={"height": "150px", "width": "100%"}
                     ),
                 ]
             ),
             Div(
-                class_name="pl-1 pr-2 pt-1",
+                style={"height": "52px"},
+                class_name="px-1",
                 children=[
                     Link(
                         class_name="font-small-3",
@@ -216,7 +218,7 @@ def __media_card():
                     Row(
                         children=[
                             Col(
-                                class_name="col-auto",
+                                class_name="col-6",
                                 children=[
                                     # Icon(
                                     #     "user",
@@ -229,7 +231,7 @@ def __media_card():
                                 ]
                             ),
                             Col(
-                                class_name="col-auto",
+                                class_name="col-6",
                                 children=[
                                     Icon(
                                         "users",
@@ -256,7 +258,7 @@ def __media_card():
                     Row(
                         children=[
                             Col(
-                                class_name="col-auto",
+                                class_name="col-6",
                                 children=[
                                     Icon(
                                         "calendar",
@@ -269,7 +271,7 @@ def __media_card():
                                 ]
                             ),
                             Col(
-                                class_name="col-auto",
+                                class_name="col-6",
                                 children=[
                                     Icon(
                                         "eye",
