@@ -46,7 +46,6 @@ class YoutubeSyncService:
                 search_query = game['youtube_search_query']
 
             videos = await self.get_youtube_game_videos_info(game_name=search_query, today_timestamp=today_timestamp)
-
             self.youtube_repo.save(videos)
 
         self.youtube_repo.delete_where_timestamp_before(today_timestamp)
@@ -95,5 +94,5 @@ class YoutubeSyncService:
             "publish_time": video['publishedTime'],
             "channel_name": video['channel']['name'],
             "subscribers_count": channel_subs,
-            "link": f"https://www.youtube.com/watch?v={video['id']}"
+            "link": video['link']
         }
