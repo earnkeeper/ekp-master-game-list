@@ -1,12 +1,18 @@
 import datetime
 import logging
+import datetime
+import time
+from pprint import pprint
 
+import isodate
 from ekp_sdk.services import CacheService
+from app.utils.get_midnight_utc import get_midnight_utc
 
 from app.utils.get_midnight_utc import get_midnight_utc
 from db.game_repo import GameRepo
 from db.youtube_repo import YoutubeRepo
-from youtubesearchpython import VideosSearch, Channel
+
+from shared.youtube_api_service import YoutubeApiService
 
 
 class YoutubeSyncService:
@@ -15,16 +21,17 @@ class YoutubeSyncService:
             cache_service: CacheService,
             game_repo: GameRepo,
             youtube_repo: YoutubeRepo,
+            youtube_api_service: YoutubeApiService
     ):
         self.cache_service = cache_service
         self.game_repo = game_repo
         self.youtube_repo = youtube_repo
+        self.youtube_api_service = youtube_api_service
 
     async def sync_youtube_games_info(self):
-        self.youtube_repo.delete_records()
-
+        
         games = self.game_repo.find_all()
-
+        
         today_timestamp = get_midnight_utc(datetime.datetime.now()).timestamp()
 
         game_ids_with_videos_today = self.youtube_repo.find_game_ids_with_videos_today(today_timestamp)
@@ -88,6 +95,5 @@ class YoutubeSyncService:
             "publish_time": video['publishedTime'],
             "channel_name": video['channel']['name'],
             "subscribers_count": channel_subs,
-            "link": video['link']
-
+            "link": f"https://www.youtube.com/watch?v={video['id']}"
         }

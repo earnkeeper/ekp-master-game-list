@@ -3,7 +3,7 @@ from ekp_sdk.ui import (Button, Card, Chart, Col, Column, Container, Datatable,
                         Div, Hr, Icon, Image, Link, Paragraphs, Row, Span,
                         Tabs, commify, ekp_map, format_currency,
                         format_mask_address, format_percent, format_template,
-                        is_busy, json_array, navigate, sort_by, navigate_back)
+                        is_busy, json_array, navigate, sort_by, navigate_back, format_age)
 
 
 def page(GAME_INFO_COLLECTION_NAME):
@@ -265,7 +265,7 @@ def __media_card():
                                             "marginRight": "6px"
                                         }
                                     ),
-                                    Span("$.publish_time", "font-small-2")
+                                    Span(format_age("$.publish_time"), "font-small-2")
                                 ]
                             ),
                             Col(
