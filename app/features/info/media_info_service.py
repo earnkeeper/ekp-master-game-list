@@ -1,3 +1,5 @@
+from pprint import pprint
+
 from db.youtube_repo import YoutubeRepo
 
 
@@ -9,9 +11,14 @@ class MediaInfoService:
         self.youtube_repo = youtube_repo
 
     async def get_media_documents(self, game):
-        game_name = game["name"]
+        game_id = game["id"]
 
-        top_10_video_info = self.youtube_repo.find_videos_by_game_name(game_name)
+        top_10_video_info = self.youtube_repo.find_videos_by_game_id(game_id)
 
+        for video in top_10_video_info:
+            if len(video["title"]) > 80:
+                video["title"] = video["title"][:78] + "..."
+
+        # pprint(top_10_video_info)
         return top_10_video_info
 

@@ -14,7 +14,7 @@ class ManualSyncService:
     def get_games(self):
         rows = self.google_sheets_client.get_range(
             self.sheet_id,
-            "manual!A2:M"
+            "manual!A2:N"
         )
 
         games = []
@@ -42,7 +42,8 @@ class ManualSyncService:
             website = self.__get_value_from(row, 9)
             discord = self.__get_value_from(row, 10)
             description = self.__get_value_from(row, 12)
-            
+            youtube_search_query = self.__get_value_from(row, 13)
+
             games.append({
                 "id": game_id,
                 "disable": disable,
@@ -57,7 +58,8 @@ class ManualSyncService:
                 "telegram": telegram,
                 "website": website,
                 "discord": discord,
-                "description": description
+                "description": description,
+                "youtube_search_query": youtube_search_query
             })
 
         return games
