@@ -19,6 +19,46 @@ class YoutubeRepo:
     def find_all(self):
         return list(self.collection.find())
 
+    def find_game_ids_with_videos_today(self, midnight):
+        results = list(
+            self.collection
+                .aggregate([
+                {
+                    "$match": {
+                        "date_timestamp": midnight,
+                    }
+                },
+                {
+                    "$group":
+                        {
+                            "_id": "$game_id",
+                        }
+                }
+            ])
+        )
+
+        if not len(results):
+            return []
+
+        # [{"_id": "metabomb"}, {"_id": "mines-of-dalarnia"}]
+        # ["metabomb", "mines-of-dalarnia"]
+
+        return list(
+            map(
+                lambda x: x["_id"],
+                results
+            )
+        )
+
+    def delete_where_timestamp_before(self, midnight):
+        self.collection.delete_many(
+            {
+                "date_timestamp": {
+                    "$lt": midnight
+                }
+            }
+        )
+
     def find_videos_by_game_name(self, game_name):
         results = list(
             self.collection
