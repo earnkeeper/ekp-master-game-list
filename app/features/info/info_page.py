@@ -122,18 +122,74 @@ def __resources_section():
         ])
 
 
+# def __single_resource(rank_id):
+#     return Div(
+#         # when=f"$.resources[{rank_id}]",
+#         context=f"$.resources[{rank_id}]",
+#         children=[
+#             Row([
+#                 # Col(
+#                 #     when="$.icon",
+#                 #     class_name="col-auto my-auto pr-0",
+#                 #     children=[
+#                 #         Icon(
+#                 #             "$.icon",
+#                 #             size='sm',
+#                 #             style={
+#                 #                 "marginRight": "6px"
+#                 #             }
+#                 #         ),
+#                 #     ]),
+#                 Col(
+#                     "col-auto my-auto",
+#                     [
+#                         Link(
+#                             class_name="d-block",
+#                             content = Div(
+#
+#                             ) ,
+#                             external=True,
+#                             external_icon=True,
+#                             href="$.link"),
+#                     ])
+#             ]),
+#         ]
+#     )
+
 def __single_resource(rank_id):
     return Div(
-        # when=f"$.resources[{rank_id}]",
         context=f"$.resources[{rank_id}]",
         children=[
             Link(
                 class_name="d-block",
-                content="$.title",
+                content=Div(
+                    children=[
+                        Row([
+                            Col(
+                                when="$.icon",
+                                class_name="col-auto my-auto pr-0",
+                                children=[
+                                    Icon(
+                                        "$.icon",
+                                        size='sm',
+                                        style={
+                                            "marginRight": "6px"
+                                        }
+                                    ),
+                                ]),
+                            Col(
+                                "col-auto my-auto",
+                                [
+                                    Span("$.title")
+                                ])
+                        ]),
+                    ]
+                ),
                 external=True,
                 external_icon=True,
                 href="$.link"),
         ]
+
     )
 
 
