@@ -97,7 +97,7 @@ def __media_section():
 
 def __resources_section():
     return Div(
-        when="$",
+        when="$.resources",
         # context="$.resources.*",
         children=[
             Span("Earning Resources", "font-medium-5 mt-3 d-block"),

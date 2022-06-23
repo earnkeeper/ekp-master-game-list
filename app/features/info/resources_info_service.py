@@ -14,6 +14,8 @@ class ResourcesInfoService:
 
         game_resources = self.resources_repo.find_resources_by_game_id(game_id)
 
-        pprint(game_resources)
+        if not game_resources:
+            return None
+        # pprint(game_resources)
         return game_resources
 
