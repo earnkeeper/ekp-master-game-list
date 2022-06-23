@@ -35,6 +35,7 @@ def page(GAME_INFO_COLLECTION_NAME):
                             __socials_section(),
                             __info_section(),
                             __media_section(),
+                            __resources_section(),
                             __volumes_section(),
                             __deep_dives_section(),
                             Div([], style={"height": "300px"})
@@ -93,6 +94,46 @@ def __media_section():
 
     ])
 
+
+def __resources_section():
+    return Div(
+        when="$",
+        # context="$.resources.*",
+        children=[
+            Span("Earning Resources", "font-medium-5 mt-3 d-block"),
+            Hr(),
+            Div(
+                children=[
+                    Span(
+                        "We hunt down the best resources for teaching you how to earn in our games. "
+                        "From tools, to videos to spreadsheets, you will find all the info here you "
+                        "need to get started earning in this game."
+                    ),
+                    Div(style={"marginTop": "20px"}),
+                    __single_resource(0),
+                    Div(style={"marginTop": "10px"}),
+                    __single_resource(1),
+                    Div(style={"marginTop": "10px"}),
+                    __single_resource(2),
+                    # Div(style={"marginTop": "-10px"}),
+
+                ]
+            )
+        ])
+
+def __single_resource(rank_id):
+    return Div(
+        # when=f"$.resources[{rank_id}]",
+        context=f"$.resources[{rank_id}]",
+        children=[
+            Link(
+                class_name="d-block",
+                content="$.title",
+                external=True,
+                external_icon=True,
+                href="$.link"),
+        ]
+    )
 
 def __volumes_section():
     return Div([
@@ -238,9 +279,9 @@ def __media_card():
                                     ),
                                     Span(
                                         format_template(
-                                                        "{{ subscribers_count }} subs",
-                                                        {"subscribers_count": "$.subscribers_count"}
-                                                        )
+                                            "{{ subscribers_count }} subs",
+                                            {"subscribers_count": "$.subscribers_count"}
+                                        )
                                         , "font-small-2")
                                 ]
                             )

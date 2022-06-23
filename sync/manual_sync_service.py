@@ -1,5 +1,4 @@
 from ekp_sdk.services import GoogleSheetsClient
-from db.game_repo import GameRepo
 
 
 class ManualSyncService:

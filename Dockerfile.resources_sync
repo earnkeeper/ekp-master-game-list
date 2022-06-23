@@ -1,0 +1,12 @@
+FROM python:3.8-buster
+
+WORKDIR /app
+
+COPY requirements.txt requirements.txt
+RUN pip3 install -r requirements.txt
+
+COPY ./db ./db
+COPY ./sync ./sync
+COPY ./main_resources_sync.py ./main_resources_sync.py
+
+CMD [ "python3", "main_resources_sync.py" ]

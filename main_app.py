@@ -5,6 +5,7 @@ from app.features.info.activity_info_service import ActivityInfoService
 from app.features.info.info_controller import InfoController
 from app.features.info.info_service import InfoService
 from app.features.info.media_info_service import MediaInfoService
+from app.features.info.resources_info_service import ResourcesInfoService
 from app.features.info.social_followers_info_service import SocialFollowersInfoService
 from app.features.info.token_price_info_service import TokenPriceInfoService
 from app.features.info.token_volume_info_service import TokenVolumeInfoService
@@ -14,14 +15,15 @@ from app.features.stats.stats_controller import StatsController
 from app.features.stats.volume_stats_service import VolumeStatsService
 from db.activity_repo import ActivityRepo
 from db.price_repo import PriceRepo
+from db.resouces_repo import ResourcesRepo
 from db.social_repo import SocialRepo
 from db.volume_repo import VolumeRepo
-
 
 from db.game_repo import GameRepo
 from db.youtube_repo import YoutubeRepo
 
 from aiohttp import ClientSession, web
+
 
 async def image_handler(req: web.Request):
     url = req.query.get("url", None)
@@ -38,6 +40,7 @@ async def image_handler(req: web.Request):
 
     return web.Response(body=img_raw, content_type='image/jpeg')
 
+
 class AppContainer(BaseContainer):
     def __init__(self):
         config = AutoConfig(".env")
@@ -45,11 +48,11 @@ class AppContainer(BaseContainer):
         super().__init__(config)
 
         # Image Proxy
-        
+
         self.client_service.app.add_routes([
             web.get('/image', image_handler)
         ])
-        
+
         # DB
 
         self.activity_repo = ActivityRepo(
@@ -75,6 +78,10 @@ class AppContainer(BaseContainer):
         self.social_repo = SocialRepo(
             mg_client=self.mg_client
         )
+
+        self.resources_repo = ResourcesRepo(
+            mg_client=self.mg_client
+        )
         # FEATURES - INFO
 
         self.activity_info_service = ActivityInfoService(
@@ -98,6 +105,10 @@ class AppContainer(BaseContainer):
             youtube_repo=self.youtube_repo
         )
 
+        self.resources_info_service = ResourcesInfoService(
+            resources_repo=self.resources_repo
+        )
+
         self.info_service = InfoService(
             activity_info_service=self.activity_info_service,
             cache_service=self.cache_service,
@@ -108,7 +119,8 @@ class AppContainer(BaseContainer):
             price_repo=self.price_repo,
             token_price_info_service=self.token_price_info_service,
             social_followers_info_service=self.social_followers_info_service,
-            media_info_service=self.media_info_service
+            media_info_service=self.media_info_service,
+            resources_info_service=self.resources_info_service
         )
 
         self.info_controller = InfoController(
@@ -134,7 +146,7 @@ class AppContainer(BaseContainer):
             coingecko_service=self.coingecko_service,
             game_repo=self.game_repo,
         )
-        
+
         self.stats_controller = StatsController(
             client_service=self.client_service,
             activity_stats_service=self.activity_stats_service,
