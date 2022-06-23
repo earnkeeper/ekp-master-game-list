@@ -2,6 +2,7 @@
 from app.utils.proxy_image import proxy_image
 from app.features.info.activity_info_service import ActivityInfoService
 from app.features.info.media_info_service import MediaInfoService
+from app.features.info.resources_info_service import ResourcesInfoService
 from app.features.info.social_followers_info_service import SocialFollowersInfoService
 from app.features.info.token_price_info_service import TokenPriceInfoService
 from app.features.info.token_volume_info_service import TokenVolumeInfoService
@@ -26,7 +27,8 @@ class InfoService:
         token_volume_info_service: TokenVolumeInfoService,
         token_price_info_service: TokenPriceInfoService,
         social_followers_info_service: SocialFollowersInfoService,
-        media_info_service: MediaInfoService
+        media_info_service: MediaInfoService,
+        resources_info_service: ResourcesInfoService
     ):
         self.activity_info_service = activity_info_service
         self.cache_service = cache_service
@@ -38,6 +40,7 @@ class InfoService:
         self.token_price_info_service = token_price_info_service
         self.social_followers_info_service = social_followers_info_service
         self.media_info_service = media_info_service
+        self.resources_info_service = resources_info_service
 
     async def get_documents(self, game_id, currency):
         game = self.game_repo.find_one_by_id(game_id)
@@ -129,6 +132,7 @@ class InfoService:
         price_document = await self.token_price_info_service.get_price_document(game, rate, currency['symbol'])
         social_document = await self.social_followers_info_service.get_social_document(game)
         media_documents = await self.media_info_service.get_media_documents(game)
+        resources_documents = await self.resources_info_service.get_resources_documents(game)
 
         telegram = game["telegram"] if (
             game["telegram"] and game["telegram"] != "https://t.me/") else None
@@ -152,6 +156,7 @@ class InfoService:
                 "volume": volume_document,
                 "social": social_document,
                 "media": media_documents,
+                "resources": resources_documents,
                 "price_doc": price_document,
                 "coingecko": f"https://www.coingecko.com/en/coins/{game['id']}" if price else None,
                 "statsAvailable": activity_document is not None or volume_document is not None,

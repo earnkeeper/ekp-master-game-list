@@ -15,6 +15,9 @@ class SocialFollowersInfoService:
     async def get_social_document(self, game):
         records = self.social_repo.group_by_date(game['id'])
 
+        if not len(records):
+            return None
+
         records.sort(key=lambda record: record["_id"])
 
         now = datetime.now().timestamp()

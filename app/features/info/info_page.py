@@ -35,6 +35,7 @@ def page(GAME_INFO_COLLECTION_NAME):
                             __socials_section(),
                             __info_section(),
                             __media_section(),
+                            __resources_section(),
                             __volumes_section(),
                             __deep_dives_section(),
                             Div([], style={"height": "300px"})
@@ -94,6 +95,48 @@ def __media_section():
     ])
 
 
+def __resources_section():
+    return Div(
+        when="$.resources",
+        # context="$.resources.*",
+        children=[
+            Span("Earning Resources", "font-medium-5 mt-3 d-block"),
+            Hr(),
+            Div(
+                children=[
+                    Span(
+                        "We hunt down the best resources for teaching you how to earn in our games. "
+                        "From tools, to videos to spreadsheets, you will find all the info here you "
+                        "need to get started earning in this game."
+                    ),
+                    Div(style={"marginTop": "20px"}),
+                    __single_resource(0),
+                    Div(style={"marginTop": "10px"}),
+                    __single_resource(1),
+                    Div(style={"marginTop": "10px"}),
+                    __single_resource(2),
+                    # Div(style={"marginTop": "-10px"}),
+
+                ]
+            )
+        ])
+
+
+def __single_resource(rank_id):
+    return Div(
+        # when=f"$.resources[{rank_id}]",
+        context=f"$.resources[{rank_id}]",
+        children=[
+            Link(
+                class_name="d-block",
+                content="$.title",
+                external=True,
+                external_icon=True,
+                href="$.link"),
+        ]
+    )
+
+
 def __volumes_section():
     return Div([
         Span("Volumes and Stats", "font-medium-5 mt-3 d-block"),
@@ -113,30 +156,33 @@ def __volumes_section():
                 Div(style={"height": "16px"}),
                 Row([
                     Col(
-                        "col-12 col-md-6 col-lg-4",
-                        [
+                        class_name="col-12 col-md-6 col-lg-4",
+                        when="$.social",
+                        children=[
                             __socials_card()
                         ]
                     ),
                     Col(
-                        "col-12 col-md-6 col-lg-4",
-                        [
+                        class_name="col-12 col-md-6 col-lg-4",
+                        when="$.activity",
+                        children=[
                             __activity_card()
                         ]
                     ),
                     Col(
-                        "col-12 col-md-6 col-lg-4",
-                        [
+                        class_name="col-12 col-md-6 col-lg-4",
+                        when="$.volume",
+                        children=[
                             __volume_card()
                         ]
                     ),
                     Col(
-                        "col-12 col-md-6 col-lg-4",
-                        [
+                        class_name="col-12 col-md-6 col-lg-4",
+                        when="$.price_doc",
+                        children=[
                             __price_card()
                         ]
                     ),
-
                 ])
             ]
         ),
@@ -238,9 +284,9 @@ def __media_card():
                                     ),
                                     Span(
                                         format_template(
-                                                        "{{ subscribers_count }} subs",
-                                                        {"subscribers_count": "$.subscribers_count"}
-                                                        )
+                                            "{{ subscribers_count }} subs",
+                                            {"subscribers_count": "$.subscribers_count"}
+                                        )
                                         , "font-small-2")
                                 ]
                             )
@@ -290,7 +336,6 @@ def __media_card():
 def __activity_card():
     return Div(
         context="$.activity",
-        when="$",
         children=[
             Card(
                 children=[
@@ -306,7 +351,6 @@ def __activity_card():
 def __socials_card():
     return Div(
         context="$.social",
-        when="$",
         children=[
             Card(
                 children=[
@@ -546,7 +590,6 @@ def __socials_stats():
 def __volume_card():
     return Div(
         context="$.volume",
-        when="$",
         children=[
             Card(
                 children=[
@@ -562,7 +605,6 @@ def __volume_card():
 def __price_card():
     return Div(
         context="$.price_doc",
-        when="$",
         children=[
             Card(
                 children=[

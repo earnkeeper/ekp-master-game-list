@@ -35,10 +35,11 @@ class YoutubeSyncService:
         for game in games:
             if game['id'] in game_ids_with_videos_today:
                 continue
-            if game['disable']:
+            
+            if game['disable'] or not game['name']:
                 continue
 
-            search_query = game['name']
+            search_query = game['name'] + " play to earn"
 
             if 'youtube_search_query' in game and game['youtube_search_query']:
                 search_query = game['youtube_search_query']
