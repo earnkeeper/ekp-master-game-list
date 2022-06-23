@@ -32,16 +32,9 @@ class ResourcesSyncService:
             title = self.__get_value_from(row, 3)
             link = self.__get_value_from(row, 4)
 
-            # resource = {
-            #     "game_id": game_id,
-            #     "rank": rank,
-            #     "icon": icon,
-            #     "title": title,
-            #     "link": link
-            # }
             resources.append({
                 "game_id": game_id,
-                "rank": rank,
+                "rank": int(rank),
                 "icon": icon,
                 "title": title,
                 "link": link,
