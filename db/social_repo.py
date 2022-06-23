@@ -25,10 +25,7 @@ class SocialRepo:
                 {
                     "$match": {
                         "date_timestamp": {"$exists": True},
-                        "twitter_followers": {
-                            "$exists": True,
-                            "$ne": None
-                        },
+                        "twitter_followers": { "$gt": 5 },
                         "game_id": game_id,
                     }
                 },
@@ -59,7 +56,10 @@ class SocialRepo:
             self.collection
             .aggregate([
                 {
-                    "$match": {"date_timestamp": {"$exists": True}}
+                    "$match": {
+                        "date_timestamp": {"$exists": True},
+                        "twitter_followers": { "$gt": 5 }
+                    }
                 },
                 {"$sort": {"date_timestamp": 1}},
                 {
