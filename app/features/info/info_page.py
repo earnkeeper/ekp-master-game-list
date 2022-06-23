@@ -121,6 +121,7 @@ def __resources_section():
             )
         ])
 
+
 def __single_resource(rank_id):
     return Div(
         # when=f"$.resources[{rank_id}]",
@@ -134,6 +135,7 @@ def __single_resource(rank_id):
                 href="$.link"),
         ]
     )
+
 
 def __volumes_section():
     return Div([
@@ -154,30 +156,33 @@ def __volumes_section():
                 Div(style={"height": "16px"}),
                 Row([
                     Col(
-                        "col-12 col-md-6 col-lg-4",
-                        [
+                        class_name="col-12 col-md-6 col-lg-4",
+                        when="$.social",
+                        children=[
                             __socials_card()
                         ]
                     ),
                     Col(
-                        "col-12 col-md-6 col-lg-4",
-                        [
+                        class_name="col-12 col-md-6 col-lg-4",
+                        when="$.activity",
+                        children=[
                             __activity_card()
                         ]
                     ),
                     Col(
-                        "col-12 col-md-6 col-lg-4",
-                        [
+                        class_name="col-12 col-md-6 col-lg-4",
+                        when="$.volume",
+                        children=[
                             __volume_card()
                         ]
                     ),
                     Col(
-                        "col-12 col-md-6 col-lg-4",
-                        [
+                        class_name="col-12 col-md-6 col-lg-4",
+                        when="$.price_doc",
+                        children=[
                             __price_card()
                         ]
                     ),
-
                 ])
             ]
         ),
@@ -331,7 +336,6 @@ def __media_card():
 def __activity_card():
     return Div(
         context="$.activity",
-        when="$",
         children=[
             Card(
                 children=[
@@ -347,7 +351,6 @@ def __activity_card():
 def __socials_card():
     return Div(
         context="$.social",
-        when="$",
         children=[
             Card(
                 children=[
@@ -587,7 +590,6 @@ def __socials_stats():
 def __volume_card():
     return Div(
         context="$.volume",
-        when="$",
         children=[
             Card(
                 children=[
@@ -603,7 +605,6 @@ def __volume_card():
 def __price_card():
     return Div(
         context="$.price_doc",
-        when="$",
         children=[
             Card(
                 children=[
