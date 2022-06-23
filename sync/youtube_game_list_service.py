@@ -38,10 +38,10 @@ class YoutubeSyncService:
             if game['disable']:
                 continue
 
-            search_query = game['name']
+            search_query = game['name'] + " play to earn"
 
-            if 'youtube_search_query' in game and game['youtube_search_query']:
-                search_query = game['youtube_search_query']
+            # if 'youtube_search_query' in game and game['youtube_search_query']:
+            #     search_query = game['youtube_search_query']
 
             videos = await self.get_youtube_game_videos_info(search_query, today_timestamp, game)
 
