@@ -19,6 +19,8 @@ class MediaInfoService:
             if len(video["title"]) > 80:
                 video["title"] = video["title"][:78] + "..."
 
-        # pprint(top_10_video_info)
+        if not top_10_video_info:
+            return None
+
         return top_10_video_info
 

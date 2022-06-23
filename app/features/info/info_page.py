@@ -70,29 +70,30 @@ def __info_section():
 
 
 def __media_section():
-    return Div([
-        Div(
-            children=[
-                Span("Media", "font-medium-5 mt-3 d-block"),
-                Hr(),
-                Span(
-                    "We search the web for the best content for Play To Earn games, focusing on gameplay, economy health and earning potential.",
-                ),
-            ]),
-        Div(
-            children=[
-                Div(style={"height": "16px"}),
-                {
-                    "_type": "Scroller",
-                    "props": {
-                        "data": json_array("$.media.*"),
-                        "tileSchema": __media_card()
-                    }
-                },
-            ]
-        ),
-
-    ])
+    return Div(
+        when="$.media",
+        children=[
+            Div(
+                children=[
+                    Span("Media", "font-medium-5 mt-3 d-block"),
+                    Hr(),
+                    Span(
+                        "We search the web for the best content for Play To Earn games, focusing on gameplay, economy health and earning potential.",
+                    ),
+                ]),
+            Div(
+                children=[
+                    Div(style={"height": "16px"}),
+                    {
+                        "_type": "Scroller",
+                        "props": {
+                            "data": json_array("$.media.*"),
+                            "tileSchema": __media_card()
+                        }
+                    },
+                ]
+            ),
+        ])
 
 
 def __resources_section():
