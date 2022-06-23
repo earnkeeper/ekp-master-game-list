@@ -43,19 +43,9 @@ class StatsController:
     async def on_client_state_changed(self, sid, event):
         path = client_path(event)
 
-        if not path or (path != self.path):
+        if path and (path != self.path):
             return
         
-        tab_param = client_query_param(event, "tab")
-        
-
-        if tab_param is None:
-            tab_param = 0
-
-        tab_param = int(tab_param)
-        
-        
-        # if tab_param == 0:
         async def update_socials():
             await self.client_service.emit_busy(sid, SOCIAL_TABLE_COLLECTION_NAME)
             
@@ -69,7 +59,6 @@ class StatsController:
             
             await self.client_service.emit_done(sid, SOCIAL_TABLE_COLLECTION_NAME)
                     
-        # if tab_param == 1:
         async def update_activity():
             await self.client_service.emit_busy(sid, ACTIVITY_TABLE_COLLECTION_NAME)
             
@@ -83,7 +72,6 @@ class StatsController:
             
             await self.client_service.emit_done(sid, ACTIVITY_TABLE_COLLECTION_NAME)
 
-        # if tab_param == 2:
         async def update_volumes():
             await self.client_service.emit_busy(sid, VOLUME_TABLE_COLLECTION_NAME)
 
