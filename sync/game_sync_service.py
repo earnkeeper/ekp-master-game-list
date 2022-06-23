@@ -24,9 +24,6 @@ class GameSyncService:
     async def sync_games(self):
         manual_games = self.manual_sync_service.get_games()
 
-        for game in manual_games:
-            self.game_repo.upsert(game)
-
         coingecko_games = await self.coingecko_sync_service.get_games()
 
         games = self.__merge_lists(manual_games, coingecko_games)
