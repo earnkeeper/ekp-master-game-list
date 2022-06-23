@@ -34,8 +34,8 @@ def page(GAME_INFO_COLLECTION_NAME):
                             Hr(),
                             __socials_section(),
                             __info_section(),
-                            __media_section(),
                             __resources_section(),
+                            __media_section(),
                             __volumes_section(),
                             __deep_dives_section(),
                             Div([], style={"height": "300px"})
