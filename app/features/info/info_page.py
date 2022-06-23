@@ -110,12 +110,17 @@ def __resources_section():
                         "From tools, to videos to spreadsheets, you will find all the info here you "
                         "need to get started earning in this game."
                     ),
-                    Div(style={"marginTop": "20px"}),
+                    Div(class_name="mt-2"),
                     __single_resource(0),
-                    Div(style={"marginTop": "10px"}),
                     __single_resource(1),
-                    Div(style={"marginTop": "10px"}),
                     __single_resource(2),
+                    __single_resource(3),
+                    __single_resource(4),
+                    __single_resource(5),
+                    __single_resource(6),
+                    __single_resource(7),
+                    __single_resource(8),
+                    __single_resource(9),
                     # Div(style={"marginTop": "-10px"}),
 
                 ]
@@ -159,27 +164,27 @@ def __resources_section():
 
 def __single_resource(rank_id):
     return Div(
+        when=f"$",
         context=f"$.resources[{rank_id}]",
+        class_name="mt-1",
         children=[
             Link(
                 class_name="d-block",
                 content=Div(
+                    class_name="ml-2",
                     children=[
                         Row([
                             Col(
                                 when="$.icon",
-                                class_name="col-auto my-auto pr-0",
+                                class_name="col-auto my-auto",
                                 children=[
                                     Icon(
                                         "$.icon",
                                         size='sm',
-                                        style={
-                                            "marginRight": "6px"
-                                        }
                                     ),
                                 ]),
                             Col(
-                                "col-auto my-auto",
+                                "col-auto my-auto pl-0",
                                 [
                                     Span("$.title")
                                 ])
@@ -187,8 +192,8 @@ def __single_resource(rank_id):
                     ]
                 ),
                 external=True,
-                external_icon=True,
-                href="$.link"),
+                href="$.link"
+            ),
         ]
 
     )
