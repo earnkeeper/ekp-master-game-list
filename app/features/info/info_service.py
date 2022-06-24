@@ -136,8 +136,12 @@ class InfoService:
 
         telegram = game["telegram"] if (
             game["telegram"] and game["telegram"] != "https://t.me/") else None
+        
         if telegram and not telegram.startswith("http"):
             telegram = f"https://t.me/{telegram}"
+            
+        stats_available = activity_document is not None or volume_document is not None or price_document is not None or social_document is not None
+        
         return [
             {
                 "id": game_id,
@@ -159,7 +163,7 @@ class InfoService:
                 "resources": resources_documents,
                 "price_doc": price_document,
                 "coingecko": f"https://www.coingecko.com/en/coins/{game['id']}" if price else None,
-                "statsAvailable": activity_document is not None or volume_document is not None,
+                "statsAvailable": stats_available,
                 "fiat_symbol": currency['symbol'],
                 "price": price,
                 "price_color": price_color,
