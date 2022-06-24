@@ -98,18 +98,15 @@ def __media_section():
 
 def __resources_section():
     return Div(
-        when="$.resources",
+        # when="$",
         # context="$.resources.*",
         children=[
             Span("Earning Resources", "font-medium-5 mt-3 d-block"),
             Hr(),
             Div(
                 children=[
-                    Span(
-                        "We hunt down the best resources for teaching you how to earn in our games. "
-                        "From tools, to videos to spreadsheets, you will find all the info here you "
-                        "need to get started earning in this game."
-                    ),
+                    __resource_description(),
+                    __resource_description_if_not_links(),
                     Div(class_name="mt-2"),
                     __single_resource(0),
                     __single_resource(1),
@@ -126,6 +123,35 @@ def __resources_section():
                 ]
             )
         ])
+
+
+def __resource_description():
+    return Div(
+        when="$.resources.*",
+        children=[
+            Span(
+                "We hunt down the best resources for teaching you how to earn in our games. "
+                "From tools, to videos to spreadsheets, you will find all the info here you "
+                "need to get started earning in this game."
+            ),
+        ]
+    )
+
+
+def __resource_description_if_not_links():
+    return Div(
+        when={"not": "$.resources.*"},
+        children=[
+            Span("Want to see curated resources for calculating earning in this game?"),
+            Div(style={"height": "8px"}),
+            Span("Add a feedback item "),
+            Link(content="here", href="https://feedback.earnkeeper.io", external=True),
+            Span(", then ping us on "),
+            Link(content="discord",
+                 href="https://discord.gg/RHnnWBAkes", external=True),
+            Span(" to talk it through."),
+        ]
+    )
 
 
 # def __single_resource(rank_id):
