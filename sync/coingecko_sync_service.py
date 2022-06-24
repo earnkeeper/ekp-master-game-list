@@ -11,20 +11,21 @@ class CoingeckoSyncService:
         self.cache_service = cache_service
         self.page_size = 50
 
-    async def get_games(self):
-
+    async def __add_category_to_games(self, category, games_map):
+        
         markets = await self.cache_service.wrap(
-            "coingecko_markets",
-            lambda: self.__get_markets(),
+            f"coingecko_markets_{category}",
+            lambda: self.__get_markets(category),
             ex=3600
         )
-
-        games = []
-
+        
         for market in markets:
             id = market['id']
+            
+            if id in games_map:
+                continue
 
-            games.append({
+            games_map[id] = {
                 "id": id,
                 "coin_ids": [id],
                 "disable": False,
@@ -38,17 +39,27 @@ class CoingeckoSyncService:
                 "website": None,
                 "discord": None,
                 "description": None
-            })
+            }
+        
+        
+    async def get_games(self):
 
-        return games
+        games_map = {}
+        
+        await self.__add_category_to_games("gaming", games_map)
+        await self.__add_category_to_games("play-to-earn", games_map)
+        await self.__add_category_to_games("move-to-earn", games_map)
+        
+        return list(games_map.values())
 
-    async def __get_markets(self):
+
+    async def __get_markets(self, category):
         page = 1
 
         markets = []
 
         while True:
-            next_markets = await self.coingecko_service.get_coin_markets(page=page, per_page=self.page_size, category="gaming")
+            next_markets = await self.coingecko_service.get_coin_markets(page=page, per_page=self.page_size, category=category)
 
             if not len(next_markets):
                 break
