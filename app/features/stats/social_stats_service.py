@@ -56,6 +56,7 @@ class SocialStatsService:
             document = documents_map[game_id]
 
             document["twitter_followers"] = record["value"]
+            document["discord_members"] = record["discord_value"]
 
             if game_id in last_records:
                 last_record = last_records[game_id]
@@ -91,6 +92,7 @@ class SocialStatsService:
             "updated": now,
             "game_name": game['name'],
             "twitter_followers": 0,
+            "discord_members": 0,
             "chains": chains,
             "chart": [],
             "profile_image_url": proxy_image(game.get('profile_image_url', None)),

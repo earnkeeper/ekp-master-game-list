@@ -1,4 +1,6 @@
 import logging
+from pprint import pprint
+
 from ekp_sdk.db import MgClient
 from pymongo import UpdateOne
 import time
@@ -66,7 +68,8 @@ class SocialRepo:
                     "$group":
                     {
                         "_id": {"game_id": "$game_id", "date_timestamp": "$date_timestamp"},
-                        "value": {"$avg": "$twitter_followers"}
+                        "value": {"$avg": "$twitter_followers"},
+                        "discord_value": {"$avg": "$discord_members"}
                     }
                 }
             ])

@@ -90,6 +90,13 @@ def __table_row(COLLECTION_NAME):
                 sortable=True,
             ),
             Column(
+                id="discord_members",
+                title="Discord followers",
+                sortable=True,
+                width="160px",
+                cell=__discord_members_cell
+            ),
+            Column(
                 id="twitter_followers",
                 title="Followers",
                 sortable=True,
@@ -225,6 +232,49 @@ def __chain_image(index, height="14px"):
         style={"height": height, "marginRight": "12px", "marginTop": "-2px"}
     )
 
+__discord_members_cell = Div(
+    children=[
+        Row([
+            Col("col-auto my-auto", [Icon("cib-discord", size='sm')]),
+            Col(
+                "col-auto pl-0 my-auto",
+                [
+                    Span(
+                        commify(
+                            "$.discord_members"
+                        ),
+                        "font-small-2 d-block"
+                    ),
+
+                ]
+            )
+        ]),
+        # Div(
+        #     when="$.change_24h",
+        #     children=[
+        #         Span(
+        #             "+",
+        #             format_template("font-small-1 text-{{ color }}", {
+        #                 "color": "$.change_24h_color"
+        #             }),
+        #             when="$.twitter_plus"
+        #         ),
+        #         Span(
+        #             commify("$.change_24h"),
+        #             format_template("font-small-1 text-{{ color }}", {
+        #                 "color": "$.change_24h_color"
+        #             })
+        #         ),
+        #         Span(
+        #             format_template(" ( {{ pc }} )", {"pc": format_percent(
+        #                 "$.change_24h_pc", showPlus=True, decimals=2)}),
+        #             format_template("font-small-1 text-{{ color }}", {
+        #                 "color": "$.change_24h_color"
+        #             })
+        #         ),
+        #     ]),
+
+    ])
 
 __twitter_followers_cell = Div(
     children=[

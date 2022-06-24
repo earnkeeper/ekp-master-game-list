@@ -1,4 +1,6 @@
 import asyncio
+from pprint import pprint
+
 from ekp_sdk.services import ClientService
 from ekp_sdk.util import client_path, client_query_param
 
@@ -50,6 +52,8 @@ class StatsController:
             await self.client_service.emit_busy(sid, SOCIAL_TABLE_COLLECTION_NAME)
             
             social_document = await self.social_stats_service.get_documents()
+
+            # pprint(social_document)
             
             await self.client_service.emit_documents(
                 sid,
