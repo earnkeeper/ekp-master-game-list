@@ -91,14 +91,14 @@ def __table_row(COLLECTION_NAME):
             ),
             Column(
                 id="discord_members",
-                title="Discord followers",
+                title="Discord",
                 sortable=True,
                 width="160px",
                 cell=__discord_members_cell
             ),
             Column(
                 id="twitter_followers",
-                title="Followers",
+                title="Twitter",
                 sortable=True,
                 width="160px",
                 cell=__twitter_followers_cell
@@ -111,17 +111,28 @@ def __table_row(COLLECTION_NAME):
             ),
             Column(
                 id="change_24h",
-                title="New Followers",
+                title="Twitter Change",
                 sortable=True,
                 omit=True
             ),
             Column(
                 id="change_24h_pc",
-                title="New Followers %",
+                title="Twitter Change %",
                 sortable=True,
                 omit=True
             ),
-
+            Column(
+                id="change_24h_discord",
+                title="Discord Change",
+                sortable=True,
+                omit=True
+            ),
+            Column(
+                id="change_24h_pc_discord",
+                title="Discord Change %",
+                sortable=True,
+                omit=True
+            ),
         ]
     )
 
@@ -232,7 +243,9 @@ def __chain_image(index, height="14px"):
         style={"height": height, "marginRight": "12px", "marginTop": "-2px"}
     )
 
+
 __discord_members_cell = Div(
+    when="$.discord_members",
     children=[
         Row([
             Col("col-auto my-auto", [Icon("cib-discord", size='sm')]),
@@ -249,31 +262,30 @@ __discord_members_cell = Div(
                 ]
             )
         ]),
-        # Div(
-        #     when="$.change_24h",
-        #     children=[
-        #         Span(
-        #             "+",
-        #             format_template("font-small-1 text-{{ color }}", {
-        #                 "color": "$.change_24h_color"
-        #             }),
-        #             when="$.twitter_plus"
-        #         ),
-        #         Span(
-        #             commify("$.change_24h"),
-        #             format_template("font-small-1 text-{{ color }}", {
-        #                 "color": "$.change_24h_color"
-        #             })
-        #         ),
-        #         Span(
-        #             format_template(" ( {{ pc }} )", {"pc": format_percent(
-        #                 "$.change_24h_pc", showPlus=True, decimals=2)}),
-        #             format_template("font-small-1 text-{{ color }}", {
-        #                 "color": "$.change_24h_color"
-        #             })
-        #         ),
-        #     ]),
-
+        Div(
+            when="$.change_24h_discord",
+            children=[
+                Span(
+                    "+",
+                    format_template("font-small-1 text-{{ color }}", {
+                        "color": "$.change_24h_discord_color"
+                    }),
+                    when="$.discord_plus"
+                ),
+                Span(
+                    commify("$.change_24h_discord"),
+                    format_template("font-small-1 text-{{ color }}", {
+                        "color": "$.change_24h_discord_color"
+                    })
+                ),
+                Span(
+                    format_template(" ( {{ pc }} )", {"pc": format_percent(
+                        "$.change_24h_pc_discord", showPlus=True, decimals=2)}),
+                    format_template("font-small-1 text-{{ color }}", {
+                        "color": "$.change_24h_discord_color"
+                    })
+                ),
+            ]),
     ])
 
 __twitter_followers_cell = Div(
@@ -326,7 +338,7 @@ __name_cell = Row(
             "col-auto pr-0 my-auto",
             [
                 Image(src="$.profile_image_url", style={
-                      "height": "32px", "width": "32px", "marginTop": "18px"}, rounded=True)
+                    "height": "32px", "width": "32px", "marginTop": "18px"}, rounded=True)
             ]
         ),
         Col(
