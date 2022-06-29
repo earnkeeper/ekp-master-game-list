@@ -83,7 +83,7 @@ def __media_section():
                 ]),
             Div(
                 children=[
-                    Div(style={"height": "16px"}),
+                    Div(style={"height": "48px"}),
                     {
                         "_type": "Scroller",
                         "props": {
