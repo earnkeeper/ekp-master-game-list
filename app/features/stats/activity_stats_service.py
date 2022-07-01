@@ -1,3 +1,5 @@
+from pprint import pprint
+
 from shared.get_midnight_utc import get_midnight_utc
 from app.utils.proxy_image import proxy_image
 from db.activity_repo import ActivityRepo
@@ -125,14 +127,10 @@ class ActivityStatsService:
             if document["newUsers7dDelta"] > 0:
                 document["delta7dColor"] = "success"
 
+        # pprint(documents)
+
         return documents
 
-        # return list(
-        #     filter(
-        #         lambda x: x["newUsers7d"] > 100,
-        #         documents,
-        #     ),
-        # )
 
     def create_record(self, id, record, games_map, now, chart7d_template):
         gameLink = f"https://www.coingecko.com/en/coins/{id}"
@@ -156,7 +154,7 @@ class ActivityStatsService:
         return {
             "id": id,
             "gameId": record["game_id"],
-            "gameName": name,
+            "game_name": name,
             "gameLink": gameLink,
             "chains": [record["game_chain"]],
             "profile_image_url": proxy_image(profile_image_url),

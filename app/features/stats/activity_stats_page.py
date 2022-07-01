@@ -1,4 +1,4 @@
-from app.features.stats.shared import name_cell
+from app.features.stats.shared import name_cell, change_cell
 from app.utils.page_title import page_title
 from ekp_sdk.ui import (Button, Card, Chart, Col, Column, Container, Datatable,
                         Div, Icon, Image, Link, Paragraphs, Row, Span, commify,
@@ -8,13 +8,10 @@ from ekp_sdk.ui import (Button, Card, Chart, Col, Column, Container, Datatable,
 from ekp_sdk.util import collection, documents
 
 
-def social_tab(COLLECTION_NAME):
+def activity_tab(COLLECTION_NAME):
     return Container(
         children=[
-            Paragraphs([
-                "Gamefi projects rely on a steady stream of new users to keep a healthy economy.",
-                "Use this list to watch changes in the social following of games."
-            ]),
+            page_title("activity", "Games"),
             __table_row(COLLECTION_NAME)
         ]
     )
@@ -29,57 +26,6 @@ def __table_row(COLLECTION_NAME):
         default_sort_asc=False,
         show_export=False,
         show_last_updated=True,
-        # filters=[
-        #     {
-        #         "columnId": 'change_24h',
-        #         "title": 'New Followers 24h',
-        #         "type": 'radio',
-        #         "allowCustomOption": True,
-        #         "options": [
-        #             {
-        #                 "label": 'All',
-        #             },
-        #             {
-        #                 "label": '> 50',
-        #                 "query": '> 50',
-        #             },
-
-        #         ],
-        #     },
-        #     {
-        #         "columnId": 'change_24h_pc',
-        #         "title": 'New Followers 24h %',
-        #         "type": 'radio',
-        #         "allowCustomOption": True,
-        #         "options": [
-        #             {
-        #                 "label": 'All',
-        #             },
-        #             {
-        #                 "label": '> 0.1',
-        #                 "query": '> 0.1',
-        #             },
-
-        #         ],
-        #     },
-        #     {
-        #         "columnId": 'twitter_followers',
-        #         "title": 'Total Followers',
-        #         "type": 'radio',
-        #         "allowCustomOption": True,
-        #         "options": [
-        #             {
-        #                 "label": 'All',
-        #             },
-        #             {
-        #                 "label": '> 10,000',
-        #                 "query": '> 10000',
-        #             },
-
-        #         ],
-        #     },
-
-        # ],
         columns=[
             Column(
                 id="game_name",
@@ -104,10 +50,72 @@ def __table_row(COLLECTION_NAME):
                 cell=__twitter_followers_cell
             ),
             Column(
-                id="chart",
+                id="newUsers24h",
+                title="New Users 24h",
+                sortable=True,
+                width="120px",
+                cell=change_cell(
+                    commify("$.newUsers24h"),
+                    "$.newUsersDelta",
+                    "$.deltaColor"
+                )
+            ),
+            Column(
+                id="newUsers7d",
+                title="New Users 7d",
+                sortable=True,
+                format=commify("$.newUsers7d"),
+                width="110px",
+                cell=change_cell(
+                    commify("$.newUsers7d"),
+                    "$.newUsers7dDelta",
+                    "$.delta7dColor"
+
+                )
+            ),
+            Column(
+                id="newUsers7dDelta",
+                title="New Users 7d %",
+                sortable=True,
+                omit=True,
+            ),
+            Column(
+                id="newUsersDelta",
+                title="New Users 24h %",
+                sortable=True,
+                omit=True,
+            ),
+            Column(
+                id="volume24h",
+                title="Volume 24h",
+                sortable=True,
+                width="150px",
+                cell=change_cell(format_currency("$.volume24h", None), "$.volumeDelta", "$.deltaColor")
+            ),
+            Column(
+                id="volumeDelta",
+                title="Volume 24h %",
+                sortable=True,
+                omit=True,
+            ),
+            Column(
+                id="volume7d",
+                title="Volume 7d",
+                sortable=True,
+                width="150px",
+                cell=change_cell(format_currency("$.volume7d", None), "$.volume7dDelta", "$.delta7dColor"),
+            ),
+            Column(
+                id="volume7dDelta",
+                title="Volume 7d %",
+                sortable=True,
+                omit=True,
+            ),
+            Column(
+                id="chart7d",
                 title="",
                 width="120px",
-                cell=__chart_cell('$.chart.*')
+                cell=__chart_cell('$.chart7d.*')
             ),
             Column(
                 id="change_24h",
@@ -159,7 +167,7 @@ def __chart_cell(path):
                                 json_array(path),
                                 '$.timestamp',
                             ),
-                            ['$.timestamp_ms', '$.value'],
+                            ['$.timestamp_ms', '$.newUsers'],
                         ),
                     },
                 ],
@@ -205,43 +213,6 @@ def __chart_cell(path):
                 }
             )
         ])
-
-
-CHAIN_IMAGE = {
-    "bsc": "https://cryptologos.cc/logos/history/bnb-bnb-logo.svg?v=001",
-    "eth": "https://cryptologos.cc/logos/ethereum-eth-logo.svg?v=022",
-    "polygon": "https://cryptologos.cc/logos/polygon-matic-logo.svg?v=022",
-}
-
-
-def __icon_link_col(href, icon_name):
-    return Col(
-        "col-auto my-auto px-0",
-        [
-            Div(
-                when=href,
-                class_name="mr-1",
-                children=[
-                    Link(
-                        href=href,
-                        external=True,
-                        content=Icon(
-                            icon_name,
-                            size='sm'
-                        )
-                    )
-                ]
-            )
-        ]
-    )
-
-
-def __chain_image(index, height="14px"):
-    return Image(
-        when=f"$.chains[{index}]",
-        src=switch_case(f"$.chains[{index}]", CHAIN_IMAGE),
-        style={"height": height, "marginRight": "12px", "marginTop": "-2px"}
-    )
 
 
 __discord_members_cell = Div(
@@ -330,41 +301,4 @@ __twitter_followers_cell = Div(
                 ),
             ]),
 
-    ])
-
-__name_cell = Row(
-    children=[
-        Col(
-            "col-auto pr-0 my-auto",
-            [
-                Image(src="$.profile_image_url", style={
-                    "height": "32px", "width": "32px", "marginTop": "18px"}, rounded=True)
-            ]
-        ),
-        Col(
-            "",
-            [
-                Div(style={"height": "24px"}),
-                Link(
-                    href=format_template("/game/all/info/{{ id }}", {
-                        "id": "$.id"
-                    }),
-                    content="$.game_name",
-                    class_name="font-medium-2 d-block",
-                    external_icon=True
-                ),
-                Div(
-                    style={"marginTop": "0px",
-                           "paddingLeft": "0px"},
-                    children=[
-                        __chain_image(0, "14px"),
-                        __chain_image(1, "14px"),
-                        __chain_image(2, "14px"),
-
-                    ]
-                ),
-                Div(style={"height": "8px"}),
-
-            ]
-        )
     ])

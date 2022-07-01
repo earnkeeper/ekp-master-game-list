@@ -108,8 +108,8 @@ class VolumeStatsService:
                 group["volumeDelta"] = (
                                                group["volume24h"] - group["volume48h"]) * 100 / group["volume48h"]
 
-            if date_timestamp in group["chart7d"]:
-                group["chart7d"][date_timestamp]["volume"] = volume
+            if date_timestamp in group["chart7d_volume"]:
+                group["chart7d_volume"][date_timestamp]["volume"] = volume
 
         documents = list(
             filter(lambda x: x["volume7d"], grouped_by_game_id.values())
@@ -153,7 +153,7 @@ class VolumeStatsService:
         return {
             "id": game_id,
             "gameId": game_id,
-            "gameName": record["game_name"],
+            "game_name": record["game_name"],
             "profile_image_url": proxy_image(profile_image_url),
             "chains": chains,
             "gameLink": gameLink,
@@ -164,7 +164,7 @@ class VolumeStatsService:
             "volume7d": 0,
             "volume14d": 0,
             "updated": now,
-            "chart7d": copy.deepcopy(chart7d_template),
+            "chart7d_volume": copy.deepcopy(chart7d_template),
             "website": website,
             "twitter": twitter,
             "discord": discord,
