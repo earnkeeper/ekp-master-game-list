@@ -23,7 +23,7 @@ def change_cell(value, delta, deltaColor, icon=None):
             [
                 Span(
                     value,
-                    format_template("font-small-2 d-block text-{{ color }}", {
+                    format_template("font-small-3 d-block text-{{ color }}", {
                         "color": "normal"
                     })
                 ),
@@ -33,7 +33,7 @@ def change_cell(value, delta, deltaColor, icon=None):
     )
     return Div(
         children=[
-            Row(cols),
+            Row(cols, "text-right"),
             Div(
                 when=delta,
                 children=[
@@ -74,7 +74,21 @@ def name_cell(name):
                 "col-auto pr-0 my-auto",
                 [
                     Image(
+                        when="$.profile_image_url",
                         src="$.profile_image_url",
+                        style={
+                            "height": "24px",
+                            "width": "24px",
+                        },
+                        rounded=True)
+                ]
+            ),
+            Col(
+                "col-auto pr-0 my-auto",
+                [
+                    Image(
+                        when={"not": "$.profile_image_url"},
+                        src="https://earnkeeper.io/logos/earnkeeper_logo.png",
                         style={
                             "height": "24px",
                             "width": "24px",

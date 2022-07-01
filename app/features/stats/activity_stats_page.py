@@ -22,7 +22,7 @@ def __table_row(COLLECTION_NAME):
         class_name="mt-1",
         data=documents(COLLECTION_NAME),
         busy_when=is_busy(collection(COLLECTION_NAME)),
-        default_sort_field_id="change_24h",
+        default_sort_field_id="newUsers24h",
         default_sort_asc=False,
         show_export=False,
         show_last_updated=True,
@@ -30,48 +30,53 @@ def __table_row(COLLECTION_NAME):
             Column(
                 id="game_name",
                 title="Game",
-                min_width="270px",
+                width="200px",
                 cell=name_cell("$.game_name"),
                 searchable=True,
                 sortable=True,
+                # right=True
             ),
             Column(
                 id="discord_members",
                 title="Discord",
                 sortable=True,
                 width="160px",
-                cell=__discord_members_cell
+                cell=__discord_members_cell,
+                right=True
             ),
             Column(
                 id="twitter_followers",
                 title="Twitter",
                 sortable=True,
                 width="160px",
-                cell=__twitter_followers_cell
+                cell=__twitter_followers_cell,
+                right=True
             ),
             Column(
                 id="newUsers24h",
                 title="New Users 24h",
                 sortable=True,
-                width="120px",
+                width="130px",
                 cell=change_cell(
                     commify("$.newUsers24h"),
                     "$.newUsersDelta",
                     "$.deltaColor"
-                )
+                ),
+                right=True
             ),
             Column(
                 id="newUsers7d",
                 title="New Users 7d",
                 sortable=True,
                 format=commify("$.newUsers7d"),
-                width="110px",
+                width="120px",
                 cell=change_cell(
                     commify("$.newUsers7d"),
                     "$.newUsers7dDelta",
                     "$.delta7dColor"
 
-                )
+                ),
+                right=True
             ),
             Column(
                 id="newUsers7dDelta",
@@ -90,7 +95,8 @@ def __table_row(COLLECTION_NAME):
                 title="Volume 24h",
                 sortable=True,
                 width="150px",
-                cell=change_cell(format_currency("$.volume24h", None), "$.volumeDelta", "$.deltaColor")
+                cell=change_cell(format_currency("$.volume24h", None), "$.volumeDelta", "$.deltaColor"),
+                right=True
             ),
             Column(
                 id="volumeDelta",
@@ -104,6 +110,7 @@ def __table_row(COLLECTION_NAME):
                 sortable=True,
                 width="150px",
                 cell=change_cell(format_currency("$.volume7d", None), "$.volume7dDelta", "$.delta7dColor"),
+                right=True
             ),
             Column(
                 id="volume7dDelta",
@@ -111,12 +118,12 @@ def __table_row(COLLECTION_NAME):
                 sortable=True,
                 omit=True,
             ),
-            Column(
-                id="chart7d",
-                title="",
-                width="120px",
-                cell=__chart_cell('$.chart7d.*')
-            ),
+            # Column(
+            #     id="chart7d",
+            #     title="",
+            #     width="120px",
+            #     cell=__chart_cell('$.chart7d.*')
+            # ),
             Column(
                 id="change_24h",
                 title="Twitter Change",
@@ -219,7 +226,7 @@ __discord_members_cell = Div(
     when="$.discord_members",
     children=[
         Row([
-            Col("col-auto my-auto", [Icon("cib-discord", size='sm')]),
+            # Col("col-auto my-auto", [Icon("cib-discord", size='sm')]),
             Col(
                 "col-auto pl-0 my-auto",
                 [
@@ -227,12 +234,13 @@ __discord_members_cell = Div(
                         commify(
                             "$.discord_members"
                         ),
-                        "font-small-2 d-block"
+                        "font-small-3 d-block"
                     ),
 
                 ]
             )
-        ]),
+        ],
+        "text-right"),
         Div(
             when="$.change_24h_discord",
             children=[
@@ -262,7 +270,7 @@ __discord_members_cell = Div(
 __twitter_followers_cell = Div(
     children=[
         Row([
-            Col("col-auto my-auto", [Icon("cib-twitter", size='sm')]),
+            # Col("col-auto my-auto", [Icon("cib-twitter", size='sm')]),
             Col(
                 "col-auto pl-0 my-auto",
                 [
@@ -270,12 +278,13 @@ __twitter_followers_cell = Div(
                         commify(
                             "$.twitter_followers"
                         ),
-                        "font-small-2 d-block"
+                        "font-small-3 d-block"
                     ),
 
                 ]
             )
-        ]),
+        ],
+        "text-right"),
         Div(
             when="$.change_24h",
             children=[
