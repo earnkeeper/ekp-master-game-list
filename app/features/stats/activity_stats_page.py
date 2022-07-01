@@ -1,4 +1,4 @@
-from app.features.stats.shared import name_cell, change_cell
+from app.features.stats.shared import name_cell, change_cell, social_followers
 from app.utils.page_title import page_title
 from ekp_sdk.ui import (Button, Card, Chart, Col, Column, Container, Datatable,
                         Div, Icon, Image, Link, Paragraphs, Row, Span, commify,
@@ -41,7 +41,8 @@ def __table_row(COLLECTION_NAME):
                 title="Discord",
                 sortable=True,
                 width="160px",
-                cell=__discord_members_cell,
+                cell=social_followers("$.discord_members", "$.change_24h_discord", "$.change_24h_discord_color",
+                                      "$.discord_plus", "$.change_24h_pc_discord"),
                 right=True
             ),
             Column(
@@ -49,7 +50,8 @@ def __table_row(COLLECTION_NAME):
                 title="Twitter",
                 sortable=True,
                 width="160px",
-                cell=__twitter_followers_cell,
+                cell=social_followers("$.twitter_followers", "$.change_24h", "$.change_24h_color", "$.twitter_plus",
+                                      "$.change_24h_pc"),
                 right=True
             ),
             Column(
@@ -220,76 +222,3 @@ def __chart_cell(path):
                 }
             )
         ])
-
-
-__discord_members_cell = Div(
-    when="$.discord_members",
-    children=[
-        Div(
-            class_name="text-right",
-            when="$.change_24h_discord",
-            children=[
-                Span(
-                    commify(
-                        "$.discord_members"
-                    ),
-                    "font-small-3 d-block"
-                ),
-                Span(
-                    "+",
-                    format_template("font-small-1 text-{{ color }}", {
-                        "color": "$.change_24h_discord_color"
-                    }),
-                    when="$.discord_plus"
-                ),
-                Span(
-                    commify("$.change_24h_discord"),
-                    format_template("font-small-1 text-{{ color }}", {
-                        "color": "$.change_24h_discord_color"
-                    })
-                ),
-                Span(
-                    format_template(" ( {{ pc }} )", {"pc": format_percent(
-                        "$.change_24h_pc_discord", showPlus=True, decimals=2)}),
-                    format_template("font-small-1 text-{{ color }}", {
-                        "color": "$.change_24h_discord_color"
-                    })
-                ),
-            ]),
-    ])
-
-__twitter_followers_cell = Div(
-    children=[
-        Div(
-            class_name="text-right",
-            when="$.change_24h",
-            children=[
-                Span(
-                    commify(
-                        "$.twitter_followers"
-                    ),
-                    "font-small-3 d-block"
-                ),
-                Span(
-                    "+",
-                    format_template("font-small-1 text-{{ color }}", {
-                        "color": "$.change_24h_color"
-                    }),
-                    when="$.twitter_plus"
-                ),
-                Span(
-                    commify("$.change_24h"),
-                    format_template("font-small-1 text-{{ color }}", {
-                        "color": "$.change_24h_color"
-                    })
-                ),
-                Span(
-                    format_template(" ( {{ pc }} )", {"pc": format_percent(
-                        "$.change_24h_pc", showPlus=True, decimals=2)}),
-                    format_template("font-small-1 text-{{ color }}", {
-                        "color": "$.change_24h_color"
-                    })
-                ),
-            ]),
-
-    ])

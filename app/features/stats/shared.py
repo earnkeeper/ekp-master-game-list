@@ -28,6 +28,44 @@ def change_cell(value, delta, deltaColor, icon=None):
         ])
 
 
+def social_followers(value, delta_24h, delta_color_24h, plus, delta_24h_pc):
+    return Div(
+        when=value,
+        children=[
+            Div(
+                class_name="text-right",
+                when=delta_24h,
+                children=[
+                    Span(
+                        commify(
+                            value
+                        ),
+                        "font-small-3 d-block"
+                    ),
+                    Span(
+                        "+",
+                        format_template("font-small-1 text-{{ color }}", {
+                            "color": delta_color_24h
+                        }),
+                        when=plus
+                    ),
+                    Span(
+                        commify(delta_24h),
+                        format_template("font-small-1 text-{{ color }}", {
+                            "color": delta_color_24h
+                        })
+                    ),
+                    Span(
+                        format_template(" ( {{ pc }} )", {"pc": format_percent(
+                            delta_24h_pc, showPlus=True, decimals=2)}),
+                        format_template("font-small-1 text-{{ color }}", {
+                            "color": delta_color_24h
+                        })
+                    ),
+                ]),
+        ])
+
+
 CHAIN_IMAGE = {
     "bsc": "https://cryptologos.cc/logos/history/bnb-bnb-logo.svg?v=001",
     "eth": "https://cryptologos.cc/logos/ethereum-eth-logo.svg?v=022",
