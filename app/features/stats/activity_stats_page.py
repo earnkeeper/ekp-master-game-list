@@ -225,25 +225,16 @@ def __chart_cell(path):
 __discord_members_cell = Div(
     when="$.discord_members",
     children=[
-        Row([
-            # Col("col-auto my-auto", [Icon("cib-discord", size='sm')]),
-            Col(
-                "col-auto pl-0 my-auto",
-                [
-                    Span(
-                        commify(
-                            "$.discord_members"
-                        ),
-                        "font-small-3 d-block"
-                    ),
-
-                ]
-            )
-        ],
-        "text-right"),
         Div(
+            class_name="text-right",
             when="$.change_24h_discord",
             children=[
+                Span(
+                    commify(
+                        "$.discord_members"
+                    ),
+                    "font-small-3 d-block"
+                ),
                 Span(
                     "+",
                     format_template("font-small-1 text-{{ color }}", {
@@ -269,25 +260,16 @@ __discord_members_cell = Div(
 
 __twitter_followers_cell = Div(
     children=[
-        Row([
-            # Col("col-auto my-auto", [Icon("cib-twitter", size='sm')]),
-            Col(
-                "col-auto pl-0 my-auto",
-                [
-                    Span(
-                        commify(
-                            "$.twitter_followers"
-                        ),
-                        "font-small-3 d-block"
-                    ),
-
-                ]
-            )
-        ],
-        "text-right"),
         Div(
+            class_name="text-right",
             when="$.change_24h",
             children=[
+                Span(
+                    commify(
+                        "$.twitter_followers"
+                    ),
+                    "font-small-3 d-block"
+                ),
                 Span(
                     "+",
                     format_template("font-small-1 text-{{ color }}", {
