@@ -6,49 +6,25 @@ from ekp_sdk.ui import (Button, Card, Chart, Col, Column, Container, Datatable,
 
 
 def change_cell(value, delta, deltaColor, icon=None):
-    cols = []
-
-    if icon is not None:
-        cols.append(
-            Col(
-                "col-auto pr-0",
-                [
-                    Icon(icon)
-                ]
-            )
-        )
-    cols.append(
-        Col(
-            "col-auto pr-0",
-            [
-                Span(
-                    value,
-                    format_template("font-small-3 d-block text-{{ color }}", {
-                        "color": "normal"
-                    })
-                ),
-
-            ]
-        )
-    )
     return Div(
+        class_name="text-right",
         children=[
-            Row(cols, "text-right"),
-            Div(
-                when=delta,
-                children=[
-
-                    Span(
-                        format_percent(
-                            delta,
-                            showPlus=True,
-                        ),
-                        format_template("font-small-1 text-{{ color }}", {
-                            "color": deltaColor
-                        })
-                    ),
-                ]),
-
+            Span(
+                value,
+                format_template("font-small-3 d-block text-{{ color }}", {
+                    "color": "normal"
+                })
+            ),
+            Span(
+                format_percent(
+                    delta,
+                    showPlus=True,
+                ),
+                format_template("font-small-1 text-{{ color }}", {
+                    "color": deltaColor
+                }),
+                when=delta
+            ),
         ])
 
 
