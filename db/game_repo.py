@@ -27,3 +27,21 @@ class GameRepo:
         self.collection.update_one({ "id": game["id"]}, {"$set": game}, True)
 
         logging.info(f"⏱  [GameRepo.upsert({game['id']})] {time.perf_counter() - start:0.3f}s")
+        
+    def save(self, models):
+        
+        if not len(models):
+            return
+        
+        start = time.perf_counter()
+
+        def update_action(model):
+            new_model = model
+            del new_model["_id"]
+            return UpdateOne({ "id": model["id"]}, {"$set": model}, True)
+
+        self.collection.bulk_write(
+            list(map(lambda model: update_action(model), models))
+        )
+
+        logging.info(f"⏱  [GameRepo.save({len(models)})] {time.perf_counter() - start:0.3f}s")

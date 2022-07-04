@@ -1,6 +1,3 @@
-import logging
-
-from db.game_repo_eth import GameRepoEth
 from db.game_repo import GameRepo
 
 
@@ -8,20 +5,20 @@ class EthSyncService:
     def __init__(
         self,
         game_repo: GameRepo,
-        game_repo_eth: GameRepoEth
+        game_repo_eth: GameRepo
     ):
         self.game_repo = game_repo
-        self.eth_games_repo = game_repo_eth
+        self.game_repo_eth = game_repo_eth
 
     async def sync_games(self):
-        eth_games = list(self.game_repo.collection.find({
-            "tokens.eth": {
-                "$ne": []
-            }
-        }))
+        games_eth = list(
+            self.game_repo.collection.find(
+                {
+                    "tokens.eth": {
+                        "$ne": []
+                    }
+                }
+            )
+        )
 
-        self.eth_games_repo.save(eth_games)
-
-
-
-
+        self.game_repo_eth.save(games_eth)

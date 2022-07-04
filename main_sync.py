@@ -5,9 +5,7 @@ import logging
 from decouple import AutoConfig
 from ekp_sdk import BaseContainer
 
-from db.game_repo_eth import GameRepoEth
 from db.game_repo import GameRepo
-from db.mg_client_eth import MgClientEth
 from sync.coingecko_sync_service import CoingeckoSyncService
 from sync.eth_sync_service import EthSyncService
 from sync.game_sync_service import GameSyncService
@@ -34,7 +32,7 @@ class AppContainer(BaseContainer):
             mg_client=self.mg_client,
         )
 
-        self.game_repo_eth = GameRepoEth(
+        self.game_repo_eth = GameRepo(
             mg_client=self.mg_client_eth
         )
 
