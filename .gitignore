@@ -171,3 +171,4 @@ clear-values.yaml
 records.csv
 secret/**/*
 testing.py
+ssl_certs/
