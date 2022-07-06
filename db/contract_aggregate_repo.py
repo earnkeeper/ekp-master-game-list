@@ -25,7 +25,7 @@ class ContractAggregateRepo:
         self.mg_client = mg_client
         self.collection = self.mg_client.db['contract_aggregates']
 
-    def get_since(self, addresses, since):
+    def get_since(self, addresses, since, days_input):
         start = t.perf_counter()
 
         results = self.collection.aggregate([
@@ -59,6 +59,9 @@ class ContractAggregateRepo:
         ])
 
         results = sorted(results, key=lambda x: x['_id'], reverse=True)
+
+        if days_input != "all":
+            results = results[:days_input]
 
         logging.info(
             f"⏱  [ContractAggregateRepo.get_since({addresses}, {since})] {t.perf_counter() - start:0.3f}s"

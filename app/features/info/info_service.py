@@ -49,7 +49,7 @@ class InfoService:
         self.contract_aggregate_repo = contract_aggregate_repo
         self.user_aggregate_service = user_aggregate_service
 
-    async def get_documents(self, game_id, currency):
+    async def get_documents(self, game_id, currency, aggregate_days_form_value):
         
         game = self.game_repo.find_one_by_id(game_id)
 
@@ -147,7 +147,7 @@ class InfoService:
         social_document = await self.social_followers_info_service.get_social_document(game)
         media_documents = await self.media_info_service.get_media_documents(game)
         resources_documents = await self.resources_info_service.get_resources_documents(game)
-        user_aggregate_documents = await self.user_aggregate_service.get_user_aggregate_document(game)
+        user_aggregate_documents = await self.user_aggregate_service.get_user_aggregate_document(game, aggregate_days_form_value)
 
         pprint(user_aggregate_documents)
         telegram = game["telegram"] if (
