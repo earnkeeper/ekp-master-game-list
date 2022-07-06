@@ -2,8 +2,17 @@ from datetime import datetime
 
 from db.contract_aggregate_repo import ContractAggregateRepo
 from db.game_repo import GameRepo
-from shared.get_midnight_utc import get_midnight_utc
-from db.activity_repo import ActivityRepo
+
+
+def labels_to_values(argument):
+    switcher = {
+        "Last 7 days": 7,
+        "Last 28 days": 28,
+        "Last 3 months": 92,
+        "Last 12 months": 365,
+    }
+
+    return switcher.get(argument, 365)
 
 
 class UserAggregateService:
@@ -15,10 +24,12 @@ class UserAggregateService:
         self.contract_aggregate_repo = contract_aggregate_repo
         self.game_repo = game_repo
 
-    def get_last_period_chart(self, game, days):
+    def get_last_period_chart(self, game, aggregate_days_form_value):
+        days = labels_to_values(aggregate_days_form_value)
         return self.__get_chart(game, days * 2, days)
 
-    def get_period_chart(self, game, days):
+    def get_period_chart(self, game, aggregate_days_form_value):
+        days = labels_to_values(aggregate_days_form_value)        
         return self.__get_chart(game, days, 0)
 
     def __get_chart(self, game, start_days_ago, end_days_ago):

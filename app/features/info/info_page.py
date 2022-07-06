@@ -3,7 +3,7 @@ from ekp_sdk.ui import (Button, Card, Chart, Col, Column, Container, Datatable,
                         Div, Hr, Icon, Image, Link, Paragraphs, Row, Span,
                         Tabs, commify, ekp_map, format_currency, sum,
                         format_mask_address, format_percent, format_template,
-                        is_busy, json_array, navigate, sort_by, navigate_back, format_age, Avatar)
+                        is_busy, json_array, navigate, sort_by, navigate_back, format_age, Avatar, Form, Select)
 
 
 def page(GAME_INFO_COLLECTION_NAME):
@@ -37,7 +37,7 @@ def page(GAME_INFO_COLLECTION_NAME):
                             __resources_section(),
                             __media_section(),
                             __volumes_section(),
-                            __user_aggregates_section(),
+                            __user_aggregates_section(GAME_INFO_COLLECTION_NAME),
                             __deep_dives_section(),
                             Div([], style={"height": "300px"})
                         ]
@@ -289,7 +289,7 @@ def __volumes_section():
     ])
 
 
-def __user_aggregates_section():
+def __user_aggregates_section(GAME_INFO_COLLECTION_NAME):
     return Div([
         Span("Analytics", "font-medium-5 mt-3 d-block"),
         Hr(),
@@ -298,6 +298,7 @@ def __user_aggregates_section():
             when="$.users_period_chart",
             children=[
                 __user_aggregates_summary(),
+                __form_row(GAME_INFO_COLLECTION_NAME),
                 __user_aggregates_chart()
             ]
         )
@@ -321,6 +322,51 @@ def __analytics_summary_card(title, value):
 
                     ])
                 ])
+        ]
+    )
+
+def __form_row(GAME_INFO_COLLECTION_NAME):
+    return Div(
+        class_name="pt-1 pl-3",
+        children=[
+            Form(
+                name=GAME_INFO_COLLECTION_NAME,
+                schema={
+                    "type": "object",
+                    "properties": {
+                        "aggregate_days": "string",
+                    },
+                    "default": {
+                        "aggregate_days": "Last 7 days",
+                    }
+                },
+                children=[
+                    Row([
+                        Col(
+                            "col-auto my-auto",
+                            [
+                                Select(
+                                    label="Aggregate per days",
+                                    name="aggregate_days",
+                                    options=["Last 7 days", "Last 28 days",
+                                             "Last 3 months", "Last 12 months",
+                                             "all"],
+                                    min_width="150px"
+                                ),
+                            ],
+
+                        ),
+                        Col(
+                            "col-auto my-auto",
+                            [
+                                Button(label="Update", is_submit=True,
+                                       busy_when=is_busy(GAME_INFO_COLLECTION_NAME))
+                            ]
+                        )
+                    ])
+
+                ]
+            )
         ]
     )
 
