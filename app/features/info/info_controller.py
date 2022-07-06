@@ -39,13 +39,12 @@ class InfoController:
 
         aggregate_days_form_value = form_values(event, TABLE_COLLECTION_NAME)
 
-        table_documents = await self.info_service.get_documents(game_id, currency,
-                                                                aggregate_days_form_value[
-                                                                    "aggregate_days"] if "aggregate_days"
-                                                                in aggregate_days_form_value
-                                                                else None)
+        aggregate_days = 7
 
-        # print(hero_form_values)
+        if aggregate_days_form_value and "aggregate_days" in aggregate_days_form_value:
+            aggregate_days = aggregate_days_form_value["aggregate_days"]
+
+        table_documents = await self.info_service.get_documents(game_id, currency, aggregate_days)
 
         await self.client_service.emit_documents(
             sid,
