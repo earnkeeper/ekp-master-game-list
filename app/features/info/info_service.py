@@ -1,4 +1,6 @@
+from pprint import pprint
 
+from app.features.info.user_aggregate_service import UserAggregateService
 from app.utils.proxy_image import proxy_image
 from app.features.info.activity_info_service import ActivityInfoService
 from app.features.info.media_info_service import MediaInfoService
@@ -30,7 +32,8 @@ class InfoService:
         social_followers_info_service: SocialFollowersInfoService,
         media_info_service: MediaInfoService,
         resources_info_service: ResourcesInfoService,
-        contract_aggregate_repo: ContractAggregateRepo
+        contract_aggregate_repo: ContractAggregateRepo,
+        user_aggregate_service: UserAggregateService
     ):
         self.activity_info_service = activity_info_service
         self.cache_service = cache_service
@@ -44,16 +47,17 @@ class InfoService:
         self.media_info_service = media_info_service
         self.resources_info_service = resources_info_service
         self.contract_aggregate_repo = contract_aggregate_repo
+        self.user_aggregate_service = user_aggregate_service
 
     async def get_documents(self, game_id, currency):
         
         game = self.game_repo.find_one_by_id(game_id)
 
-        eth_addresses = game['tokens']['eth']
-        
-        if len(eth_addresses):
-            results = self.contract_aggregate_repo.get_since(eth_addresses, 0)
-            print(len(results))
+        # eth_addresses = game['tokens']['eth']
+        #
+        # if len(eth_addresses):
+        #     results = self.contract_aggregate_repo.get_since(eth_addresses, 0)
+        #     print(len(results))
         
         now = datetime.now().timestamp()
 
@@ -143,7 +147,9 @@ class InfoService:
         social_document = await self.social_followers_info_service.get_social_document(game)
         media_documents = await self.media_info_service.get_media_documents(game)
         resources_documents = await self.resources_info_service.get_resources_documents(game)
+        user_aggregate_documents = await self.user_aggregate_service.get_user_aggregate_document(game)
 
+        pprint(user_aggregate_documents)
         telegram = game["telegram"] if (
             game["telegram"] and game["telegram"] != "https://t.me/") else None
         
@@ -171,6 +177,7 @@ class InfoService:
                 "social": social_document,
                 "media": media_documents,
                 "resources": resources_documents,
+                "user_aggregates": user_aggregate_documents,
                 "price_doc": price_document,
                 "coingecko": f"https://www.coingecko.com/en/coins/{game['id']}" if price else None,
                 "statsAvailable": stats_available,

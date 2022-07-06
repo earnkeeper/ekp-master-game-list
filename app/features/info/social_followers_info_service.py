@@ -1,4 +1,6 @@
 from datetime import datetime
+from pprint import pprint
+
 from db.social_repo import SocialRepo
 from db.game_repo import GameRepo
 
@@ -17,6 +19,8 @@ class SocialFollowersInfoService:
 
         if not len(records):
             return None
+
+        # pprint(records)
 
         records.sort(key=lambda record: record["_id"])
 

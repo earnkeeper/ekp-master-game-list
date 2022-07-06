@@ -1,9 +1,9 @@
 from app.utils.page_title import page_title
 from ekp_sdk.ui import (Button, Card, Chart, Col, Column, Container, Datatable,
                         Div, Hr, Icon, Image, Link, Paragraphs, Row, Span,
-                        Tabs, commify, ekp_map, format_currency,
+                        Tabs, commify, ekp_map, format_currency, sum,
                         format_mask_address, format_percent, format_template,
-                        is_busy, json_array, navigate, sort_by, navigate_back, format_age)
+                        is_busy, json_array, navigate, sort_by, navigate_back, format_age, Avatar)
 
 
 def page(GAME_INFO_COLLECTION_NAME):
@@ -37,6 +37,7 @@ def page(GAME_INFO_COLLECTION_NAME):
                             __resources_section(),
                             __media_section(),
                             __volumes_section(),
+                            __user_aggregates_section(),
                             __deep_dives_section(),
                             Div([], style={"height": "300px"})
                         ]
@@ -286,6 +287,189 @@ def __volumes_section():
         )
 
     ])
+
+
+def __user_aggregates_section():
+    return Div([
+        Span("Analytics", "font-medium-5 mt-3 d-block"),
+        Hr(),
+        Span(
+            "Play to Earn games require a steady stream of new users joining the game to maintain a healthy economy.",
+        ),
+        Div(style={"height": "8px"}),
+        Span(
+            "Track new users joining the game daily here",
+        ),
+        Div(class_name="mt-2"),
+        Div(
+            when="$.user_aggregates",
+            children=[
+                __user_aggregates_summary(),
+                __user_aggregates_chart()
+            ]
+        )
+        # Div(
+        #     when="$.user_aggregates",
+        #     children=[
+        #         __user_aggregates_chart(),
+        #         # bomb_chart_row(BOMB_CHART_COLLECTION_NAME),
+        #     ],
+        # )
+        # Div(
+        #     when="$.statsAvailable",
+        #     children=[
+        #         Span(
+        #             "Play to Earn games require a steady stream of new users joining the game to maintain a healthy economy.",
+        #         ),
+        #         Div(style={"height": "8px"}),
+        #         Span(
+        #             "Track new users joining the game daily here",
+        #         ),
+        #         Div(style={"height": "16px"}),
+        #         Div(
+        #             class_name="col-12 col-md-6 col-lg-4",
+        #             when="$.user_aggregates",
+        #             children=[
+        #                 __socials_card()
+        #             ]
+        #         ),
+        #     ]
+        # ),
+        # Div(
+        #     when={"not": "$.statsAvailable"},
+        #     children=[
+        #         Span("⚠️ We have not collected any usage stats for this game yet."),
+        #         Div(style={"height": "8px"}),
+        #         Span(
+        #             "Connect with us on discord if you would like us to dive deeper"
+        #         ),
+        #     ]
+        # )
+
+    ])
+
+
+
+def __user_aggregates_summary():
+    return Div(
+        context="$.user_aggregates",
+        children=[
+            Row(
+                children=[
+                    Col("col-auto", [
+                        summary_card(
+                            "Active Users",
+                            sum(
+                                f"$.chart..active_users"
+                            ),
+                        ),
+                    ]),
+                    Col("col-auto", [
+                        summary_card(
+                            "Transactions",
+                            sum(
+                                f"$.chart..total_transfers"
+                            ),
+                        ),
+                    ]),
+                ]
+            )
+        ]
+    )
+
+def summary_card(title, value):
+    return Container(
+        children=[
+            Card(
+                class_name="p-1",
+                children=[
+                    Row([
+                        Col("col-auto pr-4", [
+                            Span(title, "font-medium-1 font-weight-bold d-block"),
+                            Span(
+                                content=value,
+                                class_name="font-small-1 d-block"
+                            ),
+                        ]),
+
+                    ])
+                ])
+        ]
+    )
+
+def __user_aggregates_chart():
+    return Div(
+        context="$.user_aggregates",
+        style={
+            "marginRight": "-10px",
+            "marginLeft": "-22px",
+            "marginBottom": "-14px",
+            "marginTop": "-20px"
+        },
+        children=[
+            Chart(
+                title="",
+                height=220,
+                type="line",
+                data="$.user_aggregates.chart.*",
+                card=False,
+                options={
+                    "legend": {
+                        "show": False
+                    },
+                    "chart": {
+                        "zoom": {
+                            "enabled": False,
+                        },
+                        "toolbar": {
+                            "show": False,
+                        },
+                        "stacked": False,
+                        "type": "line"
+                    },
+                    "xaxis": {
+                        "type": "datetime",
+                        "labels": {"show": True}
+                    },
+                    "yaxis": [
+                        {
+                            "labels": {
+                                "show": False,
+                                "formatter": commify("$")
+                            },
+                        },
+                    ],
+                    "colors": ["#F76D00"],
+                    "labels": ekp_map(
+                        sort_by(
+                            json_array(
+                                "$.chart.*"
+                            ),
+                            "$.timestamp_ms"
+                        ), "$.timestamp_ms"
+                    ),
+                    "stroke": {
+                        "width": [4, 4],
+                        # "curve": 'smooth',
+                        "colors": ["#F76D00"]
+                    }
+                },
+                series=[
+                    {
+                        "name": "User aggregates",
+                        "type": "line",
+                        "data": ekp_map(
+                            sort_by(
+                                json_array("$.chart.*"),
+                                "$.timestamp_ms"
+                            ),
+                            "$.active_users"
+                        ),
+                    },
+                ],
+            )
+        ]
+    )
 
 
 def __deep_dives_section():

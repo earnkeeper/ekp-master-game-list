@@ -10,6 +10,7 @@ from app.features.info.resources_info_service import ResourcesInfoService
 from app.features.info.social_followers_info_service import SocialFollowersInfoService
 from app.features.info.token_price_info_service import TokenPriceInfoService
 from app.features.info.token_volume_info_service import TokenVolumeInfoService
+from app.features.info.user_aggregate_service import UserAggregateService
 from app.features.stats.activity_stats_service import ActivityStatsService
 from app.features.stats.social_stats_service import SocialStatsService
 from app.features.stats.stats_controller import StatsController
@@ -124,6 +125,11 @@ class AppContainer(BaseContainer):
             resources_repo=self.resources_repo
         )
 
+        self.user_aggregate_service = UserAggregateService(
+            contract_aggregate_repo=self.contract_aggregate_repo,
+            game_repo=self.game_repo
+        )
+
         self.info_service = InfoService(
             activity_info_service=self.activity_info_service,
             cache_service=self.cache_service,
@@ -136,7 +142,8 @@ class AppContainer(BaseContainer):
             social_followers_info_service=self.social_followers_info_service,
             media_info_service=self.media_info_service,
             resources_info_service=self.resources_info_service,
-            contract_aggregate_repo=self.contract_aggregate_repo
+            contract_aggregate_repo=self.contract_aggregate_repo,
+            user_aggregate_service=self.user_aggregate_service
         )
 
         self.info_controller = InfoController(
