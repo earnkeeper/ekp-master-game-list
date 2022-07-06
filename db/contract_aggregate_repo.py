@@ -25,17 +25,19 @@ class ContractAggregateRepo:
         self.mg_client = mg_client
         self.collection = self.mg_client.db['contract_aggregates']
 
-    def get_since(self, addresses, since):
+    def get_range(self, addresses, start_timestamp, end_timestamp):
         start = t.perf_counter()
 
         results = self.collection.aggregate([
             {
                 "$match": {
                     "contract_address": {"$in": addresses},
-                    "timestamp": {"$gte": since}
+                    "timestamp": {
+                        "$gte": start_timestamp,
+                        "$lt": end_timestamp
+                    }
                 }
             },
-            # {"$sort": {"timestamp": 1}},
             {
                 "$group":
                     {
@@ -61,7 +63,7 @@ class ContractAggregateRepo:
         results = sorted(results, key=lambda x: x['_id'], reverse=True)
 
         logging.info(
-            f"⏱  [ContractAggregateRepo.get_since({addresses}, {since})] {t.perf_counter() - start:0.3f}s"
+            f"⏱  [ContractAggregateRepo.get_since({addresses})] {t.perf_counter() - start:0.3f}s"
         )
 
         new_result_list = []

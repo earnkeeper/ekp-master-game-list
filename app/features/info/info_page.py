@@ -293,91 +293,18 @@ def __user_aggregates_section():
     return Div([
         Span("Analytics", "font-medium-5 mt-3 d-block"),
         Hr(),
-        Span(
-            "Play to Earn games require a steady stream of new users joining the game to maintain a healthy economy.",
-        ),
-        Div(style={"height": "8px"}),
-        Span(
-            "Track new users joining the game daily here",
-        ),
         Div(class_name="mt-2"),
         Div(
-            when="$.user_aggregates",
+            when="$.users_period_chart",
             children=[
                 __user_aggregates_summary(),
                 __user_aggregates_chart()
             ]
         )
-        # Div(
-        #     when="$.user_aggregates",
-        #     children=[
-        #         __user_aggregates_chart(),
-        #         # bomb_chart_row(BOMB_CHART_COLLECTION_NAME),
-        #     ],
-        # )
-        # Div(
-        #     when="$.statsAvailable",
-        #     children=[
-        #         Span(
-        #             "Play to Earn games require a steady stream of new users joining the game to maintain a healthy economy.",
-        #         ),
-        #         Div(style={"height": "8px"}),
-        #         Span(
-        #             "Track new users joining the game daily here",
-        #         ),
-        #         Div(style={"height": "16px"}),
-        #         Div(
-        #             class_name="col-12 col-md-6 col-lg-4",
-        #             when="$.user_aggregates",
-        #             children=[
-        #                 __socials_card()
-        #             ]
-        #         ),
-        #     ]
-        # ),
-        # Div(
-        #     when={"not": "$.statsAvailable"},
-        #     children=[
-        #         Span("⚠️ We have not collected any usage stats for this game yet."),
-        #         Div(style={"height": "8px"}),
-        #         Span(
-        #             "Connect with us on discord if you would like us to dive deeper"
-        #         ),
-        #     ]
-        # )
-
     ])
 
 
-
-def __user_aggregates_summary():
-    return Div(
-        context="$.user_aggregates",
-        children=[
-            Row(
-                children=[
-                    Col("col-auto", [
-                        summary_card(
-                            "Active Users",
-                            sum(
-                                f"$.chart..active_users"
-                            ),
-                        ),
-                    ]),
-                    Col("col-auto", [
-                        summary_card(
-                            "Transactions",
-                            sum(
-                                f"$.chart..total_transfers"
-                            ),
-                        ),
-                    ]),
-                ]
-            )
-        ]
-    )
-
-def summary_card(title, value):
+def __analytics_summary_card(title, value):
     return Container(
         children=[
             Card(
@@ -385,10 +312,10 @@ def summary_card(title, value):
                 children=[
                     Row([
                         Col("col-auto pr-4", [
-                            Span(title, "font-medium-1 font-weight-bold d-block"),
+                            Span(title, "font-small-2 d-block"),
                             Span(
                                 content=value,
-                                class_name="font-small-1 d-block"
+                                class_name="font-medium-3 font-weight-bold d-block"
                             ),
                         ]),
 
@@ -397,76 +324,122 @@ def summary_card(title, value):
         ]
     )
 
-def __user_aggregates_chart():
+
+def __user_aggregates_summary():
     return Div(
-        context="$.user_aggregates",
-        style={
-            "marginRight": "-10px",
-            "marginLeft": "-22px",
-            "marginBottom": "-14px",
-            "marginTop": "-20px"
-        },
+        context="$.users_period_chart",
         children=[
-            Chart(
-                title="",
-                height=220,
-                type="line",
-                data="$.user_aggregates.chart.*",
-                card=False,
-                options={
-                    "legend": {
-                        "show": False
-                    },
-                    "chart": {
-                        "zoom": {
-                            "enabled": False,
-                        },
-                        "toolbar": {
-                            "show": False,
-                        },
-                        "stacked": False,
-                        "type": "line"
-                    },
-                    "xaxis": {
-                        "type": "datetime",
-                        "labels": {"show": True}
-                    },
-                    "yaxis": [
-                        {
-                            "labels": {
-                                "show": False,
-                                "formatter": commify("$")
-                            },
-                        },
-                    ],
-                    "colors": ["#F76D00"],
-                    "labels": ekp_map(
-                        sort_by(
-                            json_array(
-                                "$.chart.*"
-                            ),
-                            "$.timestamp_ms"
-                        ), "$.timestamp_ms"
-                    ),
-                    "stroke": {
-                        "width": [4, 4],
-                        # "curve": 'smooth',
-                        "colors": ["#F76D00"]
-                    }
-                },
-                series=[
-                    {
-                        "name": "User aggregates",
-                        "type": "line",
-                        "data": ekp_map(
-                            sort_by(
-                                json_array("$.chart.*"),
-                                "$.timestamp_ms"
-                            ),
-                            "$.active_users"
+            Row(
+                children=[
+                    Col("col-auto", [
+                        __analytics_summary_card(
+                            "Users",
+                            commify(
+                                sum(
+                                    f"$.chart..active_users"
+                                ),
+                            )
                         ),
-                    },
-                ],
+                    ]),
+                    Col("col-auto", [
+                        __analytics_summary_card(
+                            "Transactions",
+                            commify(
+                                sum(
+                                    f"$.chart..total_transfers"
+                                )
+                            ),
+                        ),
+                    ]),
+                ]
+            )
+        ]
+    )
+
+def __user_aggregates_chart():
+    return Card(
+        children=[
+            Div(
+                class_name="mx-1 my-2",
+                style={
+                    "marginRight": "-10px",
+                    "marginLeft": "-22px",
+                    "marginBottom": "-14px",
+                    "marginTop": "-20px"
+                },
+                children=[
+                    Chart(
+                        title="",
+                        height=350,
+                        type="line",
+                        data="$.users_period_chart.chart.*",
+                        card=False,
+                        options={
+                            "legend": {
+                                "show": False
+                            },
+                            "chart": {
+                                "zoom": {
+                                    "enabled": False,
+                                },
+                                "toolbar": {
+                                    "show": False,
+                                },
+                                "stacked": False,
+                                "type": "line"
+                            },
+                            "xaxis": {
+                                "type": "datetime",
+                                "labels": {"show": True}
+                            },
+                            "yaxis": [
+                                {
+                                    "labels": {
+                                        "show": False,
+                                        "formatter": commify("$")
+                                    },
+                                },
+                            ],
+                            "colors": ["#F76D00"],
+                            "labels": ekp_map(
+                                sort_by(
+                                    json_array(
+                                        "$.users_period_chart.chart.*"
+                                    ),
+                                    "$.timestamp_ms"
+                                ), "$.timestamp_ms"
+                            ),
+                            "stroke": {
+                                "width": [4, 4],
+                                "colors": ["#F76D00"]
+                            }
+                        },
+                        series=[
+                            {
+                                "name": "Active Users",
+                                "type": "line",
+                                "data": ekp_map(
+                                    sort_by(
+                                        json_array("$.users_period_chart.chart.*"),
+                                        "$.timestamp_ms"
+                                    ),
+                                    "$.active_users"
+                                ),
+                            },
+                            {
+                                "name": "Active Users (Last Period)",
+                                "type": "line",
+                                "data": ekp_map(
+                                    sort_by(
+                                        json_array("$.users_last_period_chart.chart.*"),
+                                        "$.timestamp_ms"
+                                    ),
+                                    "$.active_users"
+                                ),
+                            },
+                        ],
+                    )
+                ]
             )
         ]
     )
@@ -558,8 +531,7 @@ def __media_card():
                                         format_template(
                                             "{{ subscribers_count }} subs",
                                             {"subscribers_count": "$.subscribers_count"}
-                                        )
-                                        , "font-small-2")
+                                        ), "font-small-2")
                                 ]
                             )
                         ]
@@ -581,7 +553,8 @@ def __media_card():
                                             "marginRight": "6px"
                                         }
                                     ),
-                                    Span(format_age("$.publish_time"), "font-small-2")
+                                    Span(format_age("$.publish_time"),
+                                         "font-small-2")
                                 ]
                             ),
                             Col(

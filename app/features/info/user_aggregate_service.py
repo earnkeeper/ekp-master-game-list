@@ -15,21 +15,25 @@ class UserAggregateService:
         self.contract_aggregate_repo = contract_aggregate_repo
         self.game_repo = game_repo
 
-    async def get_user_aggregate_document(self, game):
-        # game = self.game_repo.find_one_by_id(game["id"])
+    def get_last_period_chart(self, game, days):
+        return self.__get_chart(game, days * 2, days)
 
+    def get_period_chart(self, game, days):
+        return self.__get_chart(game, days, 0)
+
+    def __get_chart(self, game, start_days_ago, end_days_ago):
         eth_addresses = game['tokens']['eth']
 
         if not len(eth_addresses):
             return None
 
-        results = self.contract_aggregate_repo.get_since(eth_addresses, 0)
+        start = int(datetime.now().timestamp()) - start_days_ago * 86400
+        end = int(datetime.now().timestamp()) - end_days_ago * 86400
+
+        results = self.contract_aggregate_repo.get_range(
+            eth_addresses,
+            start,
+            end
+        )
 
         return results
-
-
-
-        # if len(eth_addresses):
-        #     results = self.contract_aggregate_repo.get_since(eth_addresses, 0)
-        #     print(len(results))
-

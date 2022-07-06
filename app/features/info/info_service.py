@@ -147,9 +147,10 @@ class InfoService:
         social_document = await self.social_followers_info_service.get_social_document(game)
         media_documents = await self.media_info_service.get_media_documents(game)
         resources_documents = await self.resources_info_service.get_resources_documents(game)
-        user_aggregate_documents = await self.user_aggregate_service.get_user_aggregate_document(game)
+        users_period_chart = self.user_aggregate_service.get_period_chart(game, 7)
+        users_last_period_chart = self.user_aggregate_service.get_last_period_chart(game, 7)
 
-        pprint(user_aggregate_documents)
+        pprint(users_period_chart)
         telegram = game["telegram"] if (
             game["telegram"] and game["telegram"] != "https://t.me/") else None
         
@@ -177,7 +178,8 @@ class InfoService:
                 "social": social_document,
                 "media": media_documents,
                 "resources": resources_documents,
-                "user_aggregates": user_aggregate_documents,
+                "users_period_chart": users_period_chart,
+                "users_last_period_chart": users_last_period_chart,
                 "price_doc": price_document,
                 "coingecko": f"https://www.coingecko.com/en/coins/{game['id']}" if price else None,
                 "statsAvailable": stats_available,
