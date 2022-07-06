@@ -33,6 +33,10 @@ class UserAggregateService:
         return self.__get_chart(game, days, 0)
 
     def __get_chart(self, game, start_days_ago, end_days_ago):
+        
+        print(start_days_ago)
+        print(end_days_ago)
+        
         eth_addresses = game['tokens']['eth']
 
         if not len(eth_addresses):

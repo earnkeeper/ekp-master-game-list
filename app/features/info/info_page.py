@@ -6,7 +6,7 @@ from ekp_sdk.ui import (Button, Card, Chart, Col, Column, Container, Datatable,
                         is_busy, json_array, navigate, sort_by, navigate_back, format_age, Avatar, Form, Select)
 
 
-def page(GAME_INFO_COLLECTION_NAME):
+def page(GAME_INFO_COLLECTION_NAME, USERS_CHART_FORM_NAME):
     return Container(
         children=[
             Div(
@@ -37,7 +37,8 @@ def page(GAME_INFO_COLLECTION_NAME):
                             __resources_section(),
                             __media_section(),
                             __volumes_section(),
-                            __user_aggregates_section(GAME_INFO_COLLECTION_NAME),
+                            __user_aggregates_section(
+                                GAME_INFO_COLLECTION_NAME, USERS_CHART_FORM_NAME),
                             __deep_dives_section(),
                             Div([], style={"height": "300px"})
                         ]
@@ -289,7 +290,7 @@ def __volumes_section():
     ])
 
 
-def __user_aggregates_section(GAME_INFO_COLLECTION_NAME):
+def __user_aggregates_section(GAME_INFO_COLLECTION_NAME, USERS_CHART_FORM_NAME):
     return Div([
         Span("Analytics", "font-medium-5 mt-3 d-block"),
         Hr(),
@@ -298,8 +299,8 @@ def __user_aggregates_section(GAME_INFO_COLLECTION_NAME):
             when="$.users_period_chart",
             children=[
                 __user_aggregates_summary(),
-                __form_row(GAME_INFO_COLLECTION_NAME),
-                __user_aggregates_chart()
+                __user_aggregates_chart(
+                    GAME_INFO_COLLECTION_NAME, USERS_CHART_FORM_NAME)
             ]
         )
     ])
@@ -325,19 +326,21 @@ def __analytics_summary_card(title, value):
         ]
     )
 
-def __form_row(GAME_INFO_COLLECTION_NAME):
+
+def __form_row(GAME_INFO_COLLECTION_NAME, USERS_CHART_FORM_NAME):
     return Div(
-        class_name="pt-1 pl-3",
+        style={"marginTop": "-30px"},
+        class_name="pl-2",
         children=[
             Form(
-                name=GAME_INFO_COLLECTION_NAME,
+                name=USERS_CHART_FORM_NAME,
                 schema={
                     "type": "object",
                     "properties": {
-                        "aggregate_days": "string",
+                        "period": "string",
                     },
                     "default": {
-                        "aggregate_days": "Last 7 days",
+                        "period": "Last 7 days",
                     }
                 },
                 children=[
@@ -346,11 +349,14 @@ def __form_row(GAME_INFO_COLLECTION_NAME):
                             "col-auto my-auto",
                             [
                                 Select(
-                                    label="Aggregate per days",
-                                    name="aggregate_days",
-                                    options=["Last 7 days", "Last 28 days",
-                                             "Last 3 months", "Last 12 months",
-                                             "all"],
+                                    label="Period",
+                                    name="period",
+                                    options=[
+                                        "Last 7 days",
+                                        "Last 28 days",
+                                        "Last 3 months",
+                                        "Last 12 months"
+                                    ],
                                     min_width="150px"
                                 ),
                             ],
@@ -402,7 +408,8 @@ def __user_aggregates_summary():
         ]
     )
 
-def __user_aggregates_chart():
+
+def __user_aggregates_chart(GAME_INFO_COLLECTION_NAME, USERS_CHART_FORM_NAME):
     return Card(
         children=[
             Div(
@@ -466,7 +473,8 @@ def __user_aggregates_chart():
                                 "type": "line",
                                 "data": ekp_map(
                                     sort_by(
-                                        json_array("$.users_period_chart.chart.*"),
+                                        json_array(
+                                            "$.users_period_chart.chart.*"),
                                         "$.timestamp_ms"
                                     ),
                                     "$.active_users"
@@ -477,7 +485,8 @@ def __user_aggregates_chart():
                                 "type": "line",
                                 "data": ekp_map(
                                     sort_by(
-                                        json_array("$.users_last_period_chart.chart.*"),
+                                        json_array(
+                                            "$.users_last_period_chart.chart.*"),
                                         "$.timestamp_ms"
                                     ),
                                     "$.active_users"
@@ -486,7 +495,8 @@ def __user_aggregates_chart():
                         ],
                     )
                 ]
-            )
+            ),
+            __form_row(GAME_INFO_COLLECTION_NAME, USERS_CHART_FORM_NAME)
         ]
     )
 
