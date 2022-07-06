@@ -1,6 +1,7 @@
 import logging
 from decouple import AutoConfig
 from ekp_sdk import BaseContainer
+from ekp_sdk.db import MgClient
 from app.features.info.activity_info_service import ActivityInfoService
 from app.features.info.info_controller import InfoController
 from app.features.info.info_service import InfoService
@@ -14,6 +15,7 @@ from app.features.stats.social_stats_service import SocialStatsService
 from app.features.stats.stats_controller import StatsController
 from app.features.stats.volume_stats_service import VolumeStatsService
 from db.activity_repo import ActivityRepo
+from db.contract_aggregate_repo import ContractAggregateRepo
 from db.price_repo import PriceRepo
 from db.resouces_repo import ResourcesRepo
 from db.social_repo import SocialRepo
@@ -47,6 +49,9 @@ class AppContainer(BaseContainer):
 
         super().__init__(config)
 
+        MONGO_URI_ETH = config("MONGO_URI_ETH")
+        MONGO_DB_NAME = config('MONGO_DB_NAME')
+
         # Image Proxy
 
         self.client_service.app.add_routes([
@@ -54,6 +59,11 @@ class AppContainer(BaseContainer):
         ])
 
         # DB
+        
+        self.mg_client_eth = MgClient(
+            uri=MONGO_URI_ETH,
+            db_name=MONGO_DB_NAME
+        )
 
         self.activity_repo = ActivityRepo(
             mg_client=self.mg_client
@@ -82,6 +92,11 @@ class AppContainer(BaseContainer):
         self.resources_repo = ResourcesRepo(
             mg_client=self.mg_client
         )
+
+        self.contract_aggregate_repo = ContractAggregateRepo(
+            mg_client=self.mg_client_eth
+        )
+        
         # FEATURES - INFO
 
         self.activity_info_service = ActivityInfoService(
@@ -120,7 +135,8 @@ class AppContainer(BaseContainer):
             token_price_info_service=self.token_price_info_service,
             social_followers_info_service=self.social_followers_info_service,
             media_info_service=self.media_info_service,
-            resources_info_service=self.resources_info_service
+            resources_info_service=self.resources_info_service,
+            contract_aggregate_repo=self.contract_aggregate_repo
         )
 
         self.info_controller = InfoController(

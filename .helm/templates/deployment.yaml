@@ -24,6 +24,8 @@ spec:
               value: "{{ .Chart.Name }}"          
             - name: MONGO_URI
               value: "{{ .Values.mongodb.uri }}"
+            - name: MONGO_URI_ETH
+              value: "{{ .Values.mongodb_eth.uri }}"
             - name: MONGO_DB_NAME
               value: "{{ .Values.mongodb.dbName._default }}"
             - name: REDIS_URI

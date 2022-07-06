@@ -6,6 +6,7 @@ from app.features.info.resources_info_service import ResourcesInfoService
 from app.features.info.social_followers_info_service import SocialFollowersInfoService
 from app.features.info.token_price_info_service import TokenPriceInfoService
 from app.features.info.token_volume_info_service import TokenVolumeInfoService
+from db.contract_aggregate_repo import ContractAggregateRepo
 from db.price_repo import PriceRepo
 from shared.map_get import map_get
 from db.game_repo import GameRepo
@@ -28,7 +29,8 @@ class InfoService:
         token_price_info_service: TokenPriceInfoService,
         social_followers_info_service: SocialFollowersInfoService,
         media_info_service: MediaInfoService,
-        resources_info_service: ResourcesInfoService
+        resources_info_service: ResourcesInfoService,
+        contract_aggregate_repo: ContractAggregateRepo
     ):
         self.activity_info_service = activity_info_service
         self.cache_service = cache_service
@@ -41,10 +43,18 @@ class InfoService:
         self.social_followers_info_service = social_followers_info_service
         self.media_info_service = media_info_service
         self.resources_info_service = resources_info_service
+        self.contract_aggregate_repo = contract_aggregate_repo
 
     async def get_documents(self, game_id, currency):
+        
         game = self.game_repo.find_one_by_id(game_id)
 
+        eth_addresses = game['tokens']['eth']
+        
+        if len(eth_addresses):
+            results = self.contract_aggregate_repo.get_since(eth_addresses, 0)
+            print(len(results))
+        
         now = datetime.now().timestamp()
 
         if not game:
