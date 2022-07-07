@@ -37,7 +37,7 @@ def page(GAME_INFO_COLLECTION_NAME, USERS_CHART_NAME):
                             __resources_section(),
                             __media_section(),
                             __volumes_section(),
-                            __user_aggregates_section(USERS_CHART_NAME),
+                            __analytics_section(USERS_CHART_NAME),
                             __deep_dives_section(),
                             Div([], style={"height": "300px"})
                         ]
@@ -289,7 +289,7 @@ def __volumes_section():
     ])
 
 
-def __user_aggregates_section(USERS_CHART_NAME):
+def __analytics_section(USERS_CHART_NAME):
     return Div([
         Span("Analytics", "font-medium-5 mt-3 d-block"),
         Hr(),

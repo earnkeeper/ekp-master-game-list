@@ -36,7 +36,7 @@ class UserAnalyticsService:
         eth_addresses = game['tokens']['eth']
 
         if not len(eth_addresses):
-            return None
+            return []
 
         start = int(datetime.now().timestamp()) - start_days_ago * 86400
         end = int(datetime.now().timestamp()) - end_days_ago * 86400
