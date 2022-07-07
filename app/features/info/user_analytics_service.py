@@ -17,7 +17,11 @@ class UserAnalyticsService:
 
     def get_last_period_chart(self, game, days):
         results = self.__get_chart(game, days * 2, days)
-        while (len(results) < (days -1)):
+
+        if results is None:
+            return None
+
+        while (len(results) < (days - 1)):
             results.insert(
                 0,
                 {
@@ -26,6 +30,7 @@ class UserAnalyticsService:
                     "total_transfers": None
                 }
             )
+
         return results
 
     def get_period_chart(self, game, days):
@@ -36,7 +41,7 @@ class UserAnalyticsService:
         eth_addresses = game['tokens']['eth']
 
         if not len(eth_addresses):
-            return []
+            return None
 
         start = int(datetime.now().timestamp()) - start_days_ago * 86400
         end = int(datetime.now().timestamp()) - end_days_ago * 86400
@@ -46,6 +51,9 @@ class UserAnalyticsService:
             start,
             end
         )
+
+        if not len(results):
+            return None
 
         chart = []
 

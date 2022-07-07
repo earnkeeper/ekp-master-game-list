@@ -290,20 +290,21 @@ def __volumes_section():
 
 
 def __analytics_section(USERS_CHART_NAME):
-    return Div([
-        Span("Analytics", "font-medium-5 mt-3 d-block"),
-        Hr(),
-        Div(class_name="mt-2"),
-        Div(
-            when="$.users_period_chart",
-            children=[
-                __user_aggregates_summary(),
-                __user_aggregates_chart(
-                    USERS_CHART_NAME
-                )
-            ]
-        )
-    ])
+    return Div(
+        when="$.users_period_chart",
+        children=[
+            Span("Analytics", "font-medium-5 mt-3 d-block"),
+            Hr(),
+            Div(class_name="mt-2"),
+            Div(
+                children=[
+                    __user_aggregates_summary(),
+                    __user_aggregates_chart(
+                        USERS_CHART_NAME
+                    )
+                ]
+            )
+        ])
 
 
 def __analytics_summary_card(title, value):
