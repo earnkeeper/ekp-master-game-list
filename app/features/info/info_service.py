@@ -52,7 +52,6 @@ class InfoService:
     async def get_documents(self, game_id, currency, users_days):
         
         game = self.game_repo.find_one_by_id(game_id)
-
         now = datetime.now().timestamp()
 
         if not game:
