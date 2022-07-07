@@ -1,6 +1,6 @@
 from pprint import pprint
 
-from app.features.info.user_aggregate_service import UserAggregateService
+from app.features.info.user_analytics_service import UserAnalyticsService
 from app.utils.proxy_image import proxy_image
 from app.features.info.activity_info_service import ActivityInfoService
 from app.features.info.media_info_service import MediaInfoService
@@ -33,7 +33,7 @@ class InfoService:
         media_info_service: MediaInfoService,
         resources_info_service: ResourcesInfoService,
         contract_aggregate_repo: ContractAggregateRepo,
-        user_aggregate_service: UserAggregateService
+        user_aggregate_service: UserAnalyticsService
     ):
         self.activity_info_service = activity_info_service
         self.cache_service = cache_service
@@ -49,7 +49,7 @@ class InfoService:
         self.contract_aggregate_repo = contract_aggregate_repo
         self.user_aggregate_service = user_aggregate_service
 
-    async def get_documents(self, game_id, currency, users_chart_period_value):
+    async def get_documents(self, game_id, currency, users_days):
         
         game = self.game_repo.find_one_by_id(game_id)
 
@@ -141,8 +141,8 @@ class InfoService:
         social_document = await self.social_followers_info_service.get_social_document(game)
         media_documents = await self.media_info_service.get_media_documents(game)
         resources_documents = await self.resources_info_service.get_resources_documents(game)
-        users_period_chart = self.user_aggregate_service.get_period_chart(game, users_chart_period_value)
-        users_last_period_chart = self.user_aggregate_service.get_last_period_chart(game, users_chart_period_value)
+        users_period_chart = self.user_aggregate_service.get_period_chart(game, users_days)
+        users_last_period_chart = self.user_aggregate_service.get_last_period_chart(game, users_days)
 
         telegram = game["telegram"] if (
             game["telegram"] and game["telegram"] != "https://t.me/") else None

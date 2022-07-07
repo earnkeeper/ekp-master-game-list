@@ -6,7 +6,7 @@ from ekp_sdk.ui import (Button, Card, Chart, Col, Column, Container, Datatable,
                         is_busy, json_array, navigate, sort_by, navigate_back, format_age, Avatar, Form, Select)
 
 
-def page(GAME_INFO_COLLECTION_NAME, USERS_CHART_FORM_NAME):
+def page(GAME_INFO_COLLECTION_NAME, USERS_CHART_NAME):
     return Container(
         children=[
             Div(
@@ -37,8 +37,7 @@ def page(GAME_INFO_COLLECTION_NAME, USERS_CHART_FORM_NAME):
                             __resources_section(),
                             __media_section(),
                             __volumes_section(),
-                            __user_aggregates_section(
-                                GAME_INFO_COLLECTION_NAME, USERS_CHART_FORM_NAME),
+                            __user_aggregates_section(USERS_CHART_NAME),
                             __deep_dives_section(),
                             Div([], style={"height": "300px"})
                         ]
@@ -290,7 +289,7 @@ def __volumes_section():
     ])
 
 
-def __user_aggregates_section(GAME_INFO_COLLECTION_NAME, USERS_CHART_FORM_NAME):
+def __user_aggregates_section(USERS_CHART_NAME):
     return Div([
         Span("Analytics", "font-medium-5 mt-3 d-block"),
         Hr(),
@@ -300,7 +299,8 @@ def __user_aggregates_section(GAME_INFO_COLLECTION_NAME, USERS_CHART_FORM_NAME):
             children=[
                 __user_aggregates_summary(),
                 __user_aggregates_chart(
-                    GAME_INFO_COLLECTION_NAME, USERS_CHART_FORM_NAME)
+                    USERS_CHART_NAME
+                )
             ]
         )
     ])
@@ -379,7 +379,6 @@ def __form_row(GAME_INFO_COLLECTION_NAME, USERS_CHART_FORM_NAME):
 
 def __user_aggregates_summary():
     return Div(
-        context="$.users_period_chart",
         children=[
             Row(
                 children=[
@@ -388,7 +387,7 @@ def __user_aggregates_summary():
                             "Users",
                             commify(
                                 sum(
-                                    f"$.chart..active_users"
+                                    f"$.users_period_chart..active_users"
                                 ),
                             )
                         ),
@@ -398,7 +397,7 @@ def __user_aggregates_summary():
                             "Transactions",
                             commify(
                                 sum(
-                                    f"$.chart..total_transfers"
+                                    f"$.users_period_chart..total_transfers"
                                 )
                             ),
                         ),
@@ -409,7 +408,7 @@ def __user_aggregates_summary():
     )
 
 
-def __user_aggregates_chart(GAME_INFO_COLLECTION_NAME, USERS_CHART_FORM_NAME):
+def __user_aggregates_chart(USERS_CHART_NAME):
     return Card(
         children=[
             Div(
@@ -423,10 +422,12 @@ def __user_aggregates_chart(GAME_INFO_COLLECTION_NAME, USERS_CHART_FORM_NAME):
                 children=[
                     Chart(
                         title="",
+                        name=USERS_CHART_NAME,
                         height=350,
                         type="line",
-                        data="$.users_period_chart.chart.*",
+                        data="$.users_period_chart.*",
                         card=False,
+                        period_days_select=[7, 28, 90, 365, None],
                         options={
                             "legend": {
                                 "show": False
@@ -457,14 +458,15 @@ def __user_aggregates_chart(GAME_INFO_COLLECTION_NAME, USERS_CHART_FORM_NAME):
                             "labels": ekp_map(
                                 sort_by(
                                     json_array(
-                                        "$.users_period_chart.chart.*"
+                                        "$.users_period_chart.*"
                                     ),
                                     "$.timestamp_ms"
                                 ), "$.timestamp_ms"
                             ),
                             "stroke": {
-                                "width": [4, 4],
-                                "colors": ["#F76D00"]
+                                "width": [4, 2],
+                                "colors": ["#F76D00"],
+                                "dashArray": [0, [3, 2]]
                             }
                         },
                         series=[
@@ -474,7 +476,7 @@ def __user_aggregates_chart(GAME_INFO_COLLECTION_NAME, USERS_CHART_FORM_NAME):
                                 "data": ekp_map(
                                     sort_by(
                                         json_array(
-                                            "$.users_period_chart.chart.*"),
+                                            "$.users_period_chart.*"),
                                         "$.timestamp_ms"
                                     ),
                                     "$.active_users"
@@ -486,7 +488,8 @@ def __user_aggregates_chart(GAME_INFO_COLLECTION_NAME, USERS_CHART_FORM_NAME):
                                 "data": ekp_map(
                                     sort_by(
                                         json_array(
-                                            "$.users_last_period_chart.chart.*"),
+                                            "$.users_last_period_chart.*"
+                                        ),
                                         "$.timestamp_ms"
                                     ),
                                     "$.active_users"
@@ -496,7 +499,7 @@ def __user_aggregates_chart(GAME_INFO_COLLECTION_NAME, USERS_CHART_FORM_NAME):
                     )
                 ]
             ),
-            __form_row(GAME_INFO_COLLECTION_NAME, USERS_CHART_FORM_NAME)
+            # __form_row(GAME_INFO_COLLECTION_NAME, USERS_CHART_FORM_NAME)
         ]
     )
 
