@@ -305,8 +305,13 @@ def __user_aggregates_section(GAME_INFO_COLLECTION_NAME):
             when="$.user_aggregates",
             children=[
                 __user_aggregates_summary(),
-                __form_row(GAME_INFO_COLLECTION_NAME),
-                __user_aggregates_chart()
+                Card(
+                    children=[
+                        __form_row(GAME_INFO_COLLECTION_NAME),
+                        __user_aggregates_chart()
+                    ],
+                )
+
             ]
         )
     ])

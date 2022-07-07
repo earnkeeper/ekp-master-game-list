@@ -52,12 +52,6 @@ class InfoService:
     async def get_documents(self, game_id, currency, aggregate_days_form_value):
         
         game = self.game_repo.find_one_by_id(game_id)
-
-        # eth_addresses = game['tokens']['eth']
-        #
-        # if len(eth_addresses):
-        #     results = self.contract_aggregate_repo.get_since(eth_addresses, 0)
-        #     print(len(results))
         
         now = datetime.now().timestamp()
 
@@ -149,7 +143,6 @@ class InfoService:
         resources_documents = await self.resources_info_service.get_resources_documents(game)
         user_aggregate_documents = await self.user_aggregate_service.get_user_aggregate_document(game, aggregate_days_form_value)
 
-        pprint(user_aggregate_documents)
         telegram = game["telegram"] if (
             game["telegram"] and game["telegram"] != "https://t.me/") else None
         
