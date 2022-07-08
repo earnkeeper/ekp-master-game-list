@@ -14,6 +14,7 @@ from app.features.info.user_aggregate_service import UserAggregateService
 from app.features.stats.activity_stats_service import ActivityStatsService
 from app.features.stats.social_stats_service import SocialStatsService
 from app.features.stats.stats_controller import StatsController
+from app.features.stats.token_price_stats_service import TokenPriceStatsService
 from app.features.stats.volume_stats_service import VolumeStatsService
 from db.activity_repo import ActivityRepo
 from db.contract_aggregate_repo import ContractAggregateRepo
@@ -170,11 +171,19 @@ class AppContainer(BaseContainer):
             game_repo=self.game_repo,
         )
 
+        self.token_price_stats_service = TokenPriceStatsService(
+            price_repo=self.price_repo,
+            cache_service=self.cache_service,
+            coingecko_service=self.coingecko_service,
+            game_repo=self.game_repo
+        )
+
         self.stats_controller = StatsController(
             client_service=self.client_service,
             activity_stats_service=self.activity_stats_service,
             social_stats_service=self.social_stats_service,
-            volume_stats_service=self.volume_stats_service
+            volume_stats_service=self.volume_stats_service,
+            token_price_stats_service=self.token_price_stats_service
         )
 
 

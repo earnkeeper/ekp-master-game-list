@@ -21,6 +21,27 @@ class PriceRepo:
             self.collection.find().sort("timestamp")
         )
 
+    def find_all_and_group(self):
+        results = list(
+            self.collection.aggregate([
+                {"$sort": {"timestamp": 1}},
+                {
+                    "$group":
+                        {
+                            "_id": "$game_id",
+                            "price": {"$last": "$price_usd"},
+                            # "timestamp": "$timestamp",
+                            "timestamp": {"$last": "$timestamp"},
+                        }
+                }
+            ])
+        )
+
+        if not len(results):
+            return []
+
+        return results
+
     def find_by_game_id(self, game_id):
         return list(self.collection.find({"game_id": game_id}).sort("timestamp"))
 

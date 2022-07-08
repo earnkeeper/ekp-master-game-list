@@ -37,6 +37,14 @@ def __table_row(COLLECTION_NAME):
                 # right=True
             ),
             Column(
+                id="price24h",
+                title="Price 24h",
+                sortable=True,
+                width="150px",
+                cell=change_cell(format_currency("$.price24h", None), "$.priceDelta", "$.price_deltaColor"),
+                right=True
+            ),
+            Column(
                 id="discord_members",
                 title="Discord",
                 sortable=True,
@@ -62,30 +70,30 @@ def __table_row(COLLECTION_NAME):
                 cell=change_cell(
                     commify("$.newUsers24h"),
                     "$.newUsersDelta",
-                    "$.deltaColor"
+                    "$.activity_deltaColor"
                 ),
                 right=True
             ),
-            Column(
-                id="newUsers7d",
-                title="New Users 7d",
-                sortable=True,
-                format=commify("$.newUsers7d"),
-                width="120px",
-                cell=change_cell(
-                    commify("$.newUsers7d"),
-                    "$.newUsers7dDelta",
-                    "$.delta7dColor"
-
-                ),
-                right=True
-            ),
-            Column(
-                id="newUsers7dDelta",
-                title="New Users 7d %",
-                sortable=True,
-                omit=True,
-            ),
+            # Column(
+            #     id="newUsers7d",
+            #     title="New Users 7d",
+            #     sortable=True,
+            #     format=commify("$.newUsers7d"),
+            #     width="120px",
+            #     cell=change_cell(
+            #         commify("$.newUsers7d"),
+            #         "$.newUsers7dDelta",
+            #         "$.delta7dColor"
+            #
+            #     ),
+            #     right=True
+            # ),
+            # Column(
+            #     id="newUsers7dDelta",
+            #     title="New Users 7d %",
+            #     sortable=True,
+            #     omit=True,
+            # ),
             Column(
                 id="newUsersDelta",
                 title="New Users 24h %",
@@ -106,20 +114,20 @@ def __table_row(COLLECTION_NAME):
                 sortable=True,
                 omit=True,
             ),
-            Column(
-                id="volume7d",
-                title="Volume 7d",
-                sortable=True,
-                width="150px",
-                cell=change_cell(format_currency("$.volume7d", None), "$.volume7dDelta", "$.delta7dColor"),
-                right=True
-            ),
-            Column(
-                id="volume7dDelta",
-                title="Volume 7d %",
-                sortable=True,
-                omit=True,
-            ),
+            # Column(
+            #     id="volume7d",
+            #     title="Volume 7d",
+            #     sortable=True,
+            #     width="150px",
+            #     cell=change_cell(format_currency("$.volume7d", None), "$.volume7dDelta", "$.delta7dColor"),
+            #     right=True
+            # ),
+            # Column(
+            #     id="volume7dDelta",
+            #     title="Volume 7d %",
+            #     sortable=True,
+            #     omit=True,
+            # ),
             # Column(
             #     id="chart7d",
             #     title="",

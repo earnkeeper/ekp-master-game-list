@@ -118,14 +118,14 @@ class ActivityStatsService:
                 continue
 
             if document["newUsersDelta"] < 0:
-                document["deltaColor"] = "danger"
+                document["activity_deltaColor"] = "danger"
             if document["newUsersDelta"] > 0:
-                document["deltaColor"] = "success"
+                document["activity_deltaColor"] = "success"
 
             if document["newUsers7dDelta"] < 0:
-                document["delta7dColor"] = "danger"
+                document["activity_delta7dColor"] = "danger"
             if document["newUsers7dDelta"] > 0:
-                document["delta7dColor"] = "success"
+                document["activity_delta7dColor"] = "success"
 
         # pprint(documents)
 
