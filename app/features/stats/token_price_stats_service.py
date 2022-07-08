@@ -11,7 +11,7 @@ class TokenPriceStatsService:
     ):
         self.price_repo = price_repo
 
-    async def get_documents(self):
+    async def get_documents(self, rate):
         current_prices = self.price_repo.find_latest_price_by_game_id()
 
         if not len(current_prices):
@@ -52,7 +52,7 @@ class TokenPriceStatsService:
             document = {
                 "id": game_id,
                 "game_id": game_id,
-                "price": record["price"],
+                "price": record["price"] * rate,
                 "price_delta": delta_today,
                 "price_delta_pc": delta_today_pc,
                 "price_delta_color": delta_today_color

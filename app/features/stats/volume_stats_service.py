@@ -21,7 +21,7 @@ class VolumeStatsService:
         self.coingecko_service = coingecko_service
         self.game_repo = game_repo
 
-    async def get_documents(self):
+    async def get_documents(self, rate):
         games = self.game_repo.find_all()
 
         games_map = {}
@@ -85,20 +85,20 @@ class VolumeStatsService:
             if volume is None:
                 volume = 0
 
-            if midnight == now_midnight:
-                volume = int(volume * 86400 / now_seconds_into_day)
+            # if midnight == now_midnight:
+            #     volume = int(volume * 86400 / now_seconds_into_day)
 
             group = grouped_by_game_id[game_id]
 
             if ago == 0:
-                group["volume24h"] = group["volume24h"] + volume
+                group["volume24h"] = (group["volume24h"] + volume) * rate
             elif ago == 86400:
-                group["volume48h"] = group["volume48h"] + volume
+                group["volume48h"] = (group["volume48h"] + volume) * rate
 
             if ago < (86400 * 6):
-                group["volume7d"] += volume
+                group["volume7d"] = (group["volume7d"] + volume) * rate
             elif ago < (86400 * 13):
-                group["volume14d"] += volume
+                group["volume14d"] = (group["volume14d"] + volume) * rate
 
             if group["volume14d"] > 0:
                 group["volume7dDelta"] = (
@@ -109,7 +109,7 @@ class VolumeStatsService:
                                                group["volume24h"] - group["volume48h"]) * 100 / group["volume48h"]
 
             if date_timestamp in group["chart7d_volume"]:
-                group["chart7d_volume"][date_timestamp]["volume"] = volume
+                group["chart7d_volume"][date_timestamp]["volume"] = volume * rate
 
         documents = list(
             filter(lambda x: x["volume7d"], grouped_by_game_id.values())

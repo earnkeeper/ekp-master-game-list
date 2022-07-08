@@ -2,8 +2,8 @@ import asyncio
 from collections import defaultdict
 from pprint import pprint
 
-from ekp_sdk.services import ClientService
-from ekp_sdk.util import client_path, client_query_param
+from ekp_sdk.services import ClientService, CacheService, CoingeckoService
+from ekp_sdk.util import client_path, client_query_param, client_currency
 
 from app.features.stats.activity_stats_service import ActivityStatsService
 from app.features.stats.social_stats_service import SocialStatsService
@@ -18,12 +18,16 @@ class StatsController:
     def __init__(
             self,
             client_service: ClientService,
+            cache_service: CacheService,
+            coingecko_service: CoingeckoService,
             activity_stats_service: ActivityStatsService,
             social_stats_service: SocialStatsService,
             volume_stats_service: VolumeStatsService,
             token_price_stats_service: TokenPriceStatsService
     ):
         self.client_service = client_service
+        self.cache_service = cache_service
+        self.coingecko_service = coingecko_service
         self.activity_stats_service = activity_stats_service
         self.social_stats_service = social_stats_service
         self.volume_stats_service = volume_stats_service
@@ -49,15 +53,27 @@ class StatsController:
         if path and (path != self.path):
             return
 
+        currency = client_currency(event)
+
         await self.client_service.emit_busy(sid, STATS_TABLE_COLLECTION_NAME)
+
+        rate = 1
+
+        if currency["id"] != "usd":
+            rate = await self.cache_service.wrap(
+                f"coingecko_price_usd_{currency['id']}",
+                lambda: self.coingecko_service.get_latest_price(
+                    'usd-coin', currency["id"]),
+                ex=3600
+            )
 
         social_document = await self.social_stats_service.get_documents()
 
         activity_document = await self.activity_stats_service.get_documents()
 
-        volume_documents = await self.volume_stats_service.get_documents()
+        volume_documents = await self.volume_stats_service.get_documents(rate)
 
-        price_documents = await self.token_price_stats_service.get_documents()
+        price_documents = await self.token_price_stats_service.get_documents(rate)
 
         documents_dict = defaultdict(dict)
         

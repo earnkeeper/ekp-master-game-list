@@ -177,6 +177,8 @@ class AppContainer(BaseContainer):
 
         self.stats_controller = StatsController(
             client_service=self.client_service,
+            cache_service=self.cache_service,
+            coingecko_service=self.coingecko_service,
             activity_stats_service=self.activity_stats_service,
             social_stats_service=self.social_stats_service,
             volume_stats_service=self.volume_stats_service,

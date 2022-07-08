@@ -22,7 +22,7 @@ def __table_row(COLLECTION_NAME):
         class_name="mt-1",
         data=documents(COLLECTION_NAME),
         busy_when=is_busy(collection(COLLECTION_NAME)),
-        default_sort_field_id="newUsers24h",
+        default_sort_field_id="price_delta_pc",
         default_sort_asc=False,
         show_export=False,
         show_last_updated=True,
@@ -38,7 +38,7 @@ def __table_row(COLLECTION_NAME):
             ),
             Column(
                 id="price24h",
-                title="Price 24h",
+                title="Price",
                 sortable=True,
                 width="150px",
                 cell=change_cell(format_currency("$.price", None), "$.price_delta_pc", "$.price_delta_color"),
@@ -64,7 +64,7 @@ def __table_row(COLLECTION_NAME):
             ),
             Column(
                 id="newUsers24h",
-                title="New Users 24h",
+                title="New Users",
                 sortable=True,
                 width="130px",
                 cell=change_cell(
@@ -101,8 +101,14 @@ def __table_row(COLLECTION_NAME):
                 omit=True,
             ),
             Column(
+                id="price_delta_pc",
+                title="Price 24h %",
+                sortable=True,
+                omit=True,
+            ),
+            Column(
                 id="volume24h",
-                title="Volume 24h",
+                title="Volume",
                 sortable=True,
                 width="150px",
                 cell=change_cell(format_currency("$.volume24h", None), "$.volumeDelta", "$.deltaColor"),
