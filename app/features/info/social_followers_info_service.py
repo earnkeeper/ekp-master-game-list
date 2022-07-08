@@ -15,12 +15,13 @@ class SocialFollowersInfoService:
         self.social_repo = social_repo
 
     async def get_social_document(self, game):
-        records = self.social_repo.group_by_date(game['id'])
+        
+        ago7d = int(datetime.now().timestamp()) - 8 * 86400
+        
+        records = self.social_repo.group_by_date(game['id'], ago7d)
 
         if not len(records):
             return None
-
-        # pprint(records)
 
         records.sort(key=lambda record: record["_id"])
 

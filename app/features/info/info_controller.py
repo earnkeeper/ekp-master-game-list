@@ -1,11 +1,10 @@
-from pprint import pprint
-
 from app.features.info.info_page import page
 from app.features.info.info_service import InfoService
 from ekp_sdk.services import ClientService
 from ekp_sdk.util import client_path, client_currency, form_values
 
 TABLE_COLLECTION_NAME = "game_info"
+USERS_CHART_NAME = "users"
 
 
 class InfoController:
@@ -22,7 +21,7 @@ class InfoController:
         await self.client_service.emit_page(
             sid,
             f'{self.path}/:gameId',
-            page(TABLE_COLLECTION_NAME)
+            page(TABLE_COLLECTION_NAME, USERS_CHART_NAME)
         )
 
     async def on_client_state_changed(self, sid, event):
@@ -37,14 +36,14 @@ class InfoController:
 
         await self.client_service.emit_busy(sid, TABLE_COLLECTION_NAME)
 
-        aggregate_days_form_value = form_values(event, TABLE_COLLECTION_NAME)
+        users_chart_form = form_values(event, f"chart_{USERS_CHART_NAME}")
 
-        aggregate_days = 7
+        days = 7
 
-        if aggregate_days_form_value and "aggregate_days" in aggregate_days_form_value:
-            aggregate_days = aggregate_days_form_value["aggregate_days"]
+        if users_chart_form and "days" in users_chart_form:
+            days = users_chart_form["days"]
 
-        table_documents = await self.info_service.get_documents(game_id, currency, aggregate_days)
+        table_documents = await self.info_service.get_documents(game_id, currency, days)
 
         await self.client_service.emit_documents(
             sid,

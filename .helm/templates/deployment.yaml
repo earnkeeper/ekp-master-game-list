@@ -30,6 +30,15 @@ spec:
               value: "{{ .Values.mongodb.dbName._default }}"
             - name: REDIS_URI
               value: "redis://{{ .Release.Name }}-redis-master"
+          volumeMounts:
+            - name: secret-files
+              mountPath: "/app/secret"
+              readOnly: true
           ports:
             - containerPort: 3001
               protocol: TCP
+      volumes:
+        - name: secret-files
+          secret:
+            secretName: secret-files
+            optional: false

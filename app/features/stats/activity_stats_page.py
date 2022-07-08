@@ -30,7 +30,7 @@ def __table_row(COLLECTION_NAME):
             Column(
                 id="game_name",
                 title="Game",
-                width="200px",
+                min_width="200px",
                 cell=name_cell("$.game_name"),
                 searchable=True,
                 sortable=True,

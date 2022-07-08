@@ -18,7 +18,7 @@ class SocialRepo:
         self.collection.create_index("game_id")
         self.collection.create_index("platform")
 
-    def group_by_date(self, game_id):
+    def group_by_date(self, game_id, since):
         start = time.perf_counter()
 
         results = list(
@@ -26,7 +26,7 @@ class SocialRepo:
             .aggregate([
                 {
                     "$match": {
-                        "date_timestamp": {"$exists": True},
+                        "date_timestamp": {"$gt": since},
                         "twitter_followers": { "$gt": 5 },
                         "game_id": game_id,
                     }
