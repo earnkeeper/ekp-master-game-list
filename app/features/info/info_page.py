@@ -264,13 +264,13 @@ def __volumes_section():
                             __volume_card()
                         ]
                     ),
-                    Col(
-                        class_name="col-12 col-md-6 col-lg-4",
-                        when="$.price_doc",
-                        children=[
-                            __price_card()
-                        ]
-                    ),
+                    # Col(
+                    #     class_name="col-12 col-md-6 col-lg-4",
+                    #     when="$.price_doc",
+                    #     children=[
+                    #         __price_card()
+                    #     ]
+                    # ),
                 ])
             ]
         ),
