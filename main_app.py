@@ -61,7 +61,7 @@ class AppContainer(BaseContainer):
         ])
 
         # DB
-        
+
         self.mg_client_eth = MgClient(
             uri=MONGO_URI_ETH,
             db_name=MONGO_DB_NAME
@@ -98,7 +98,7 @@ class AppContainer(BaseContainer):
         self.contract_aggregate_repo = ContractAggregateRepo(
             mg_client=self.mg_client_eth
         )
-        
+
         # FEATURES - INFO
 
         self.activity_info_service = ActivityInfoService(
@@ -173,9 +173,6 @@ class AppContainer(BaseContainer):
 
         self.token_price_stats_service = TokenPriceStatsService(
             price_repo=self.price_repo,
-            cache_service=self.cache_service,
-            coingecko_service=self.coingecko_service,
-            game_repo=self.game_repo
         )
 
         self.stats_controller = StatsController(

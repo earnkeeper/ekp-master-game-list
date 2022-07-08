@@ -60,12 +60,13 @@ class StatsController:
         price_documents = await self.token_price_stats_service.get_documents()
 
         documents_dict = defaultdict(dict)
+        
         for document in (social_document, activity_document, volume_documents, price_documents):
             for elem in document:
                 documents_dict[elem['id']].update(elem)
+        
         all_documents = list(documents_dict.values())
 
-        pprint(all_documents[:10])
         # for doc in all_documents:
         #     if doc["id"] == 'ape-in':
             # if "game_name" not in doc or not doc['game_name'] or doc['game_name'] == "":

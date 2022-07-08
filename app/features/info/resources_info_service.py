@@ -16,6 +16,6 @@ class ResourcesInfoService:
 
         if not game_resources:
             return None
-        # pprint(game_resources)
+
         return game_resources
 

@@ -41,7 +41,7 @@ def __table_row(COLLECTION_NAME):
                 title="Price 24h",
                 sortable=True,
                 width="150px",
-                cell=change_cell(format_currency("$.price24h", None), "$.priceDelta", "$.price_deltaColor"),
+                cell=change_cell(format_currency("$.price", None), "$.price_delta_pc", "$.price_delta_color"),
                 right=True
             ),
             Column(

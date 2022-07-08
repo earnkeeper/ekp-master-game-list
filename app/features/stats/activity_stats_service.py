@@ -127,8 +127,6 @@ class ActivityStatsService:
             if document["newUsers7dDelta"] > 0:
                 document["activity_delta7dColor"] = "success"
 
-        # pprint(documents)
-
         return documents
 
 

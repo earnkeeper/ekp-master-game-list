@@ -15,24 +15,26 @@ class PriceRepo:
         self.collection.create_index("timestamp")
         self.collection.create_index("game_id")
         self.collection.create_index("block_number")
+        self.collection.create_index("latest")
 
     def find_all(self):
         return list(
             self.collection.find().sort("timestamp")
         )
 
-    def find_all_and_group(self):
+    def find_latest_price_by_game_id(self):
+
         results = list(
             self.collection.aggregate([
+                {"$match": {"latest": True}},
                 {"$sort": {"timestamp": 1}},
                 {
                     "$group":
-                        {
-                            "_id": "$game_id",
-                            "price": {"$last": "$price_usd"},
-                            # "timestamp": "$timestamp",
-                            "timestamp": {"$last": "$timestamp"},
-                        }
+                    {
+                        "_id": "$game_id",
+                        "price": {"$last": "$price_usd"},
+                        "timestamp": {"$last": "$timestamp"},
+                    }
                 }
             ])
         )
@@ -42,15 +44,37 @@ class PriceRepo:
 
         return results
 
+    def find_latest_daily_price_by_game_id(self):
+    
+        results = list(
+            self.collection.aggregate([
+                {"$match": {"latest": False}},
+                {"$sort": {"timestamp": 1}},
+                {
+                    "$group":
+                    {
+                        "_id": "$game_id",
+                        "price": {"$last": "$price_usd"},
+                        "timestamp": {"$last": "$timestamp"},
+                    }
+                }
+            ])
+        )
+
+        if not len(results):
+            return []
+
+        return results
+    
     def find_by_game_id(self, game_id):
         return list(self.collection.find({"game_id": game_id}).sort("timestamp"))
 
     def find_latest_record_by_game_id(self, game_id, sort_by, direction=-1):
         results = list(
             self.collection
-                .find({"game_id": game_id})
-                .sort(sort_by, direction)
-                .limit(1)
+            .find({"game_id": game_id})
+            .sort(sort_by, direction)
+            .limit(1)
         )
 
         if not len(results):
@@ -78,5 +102,3 @@ class PriceRepo:
         logging.info(
             f"⏱  [PriceRepo.save({len(models)})] {time.perf_counter() - start:0.3f}s"
         )
-
-
