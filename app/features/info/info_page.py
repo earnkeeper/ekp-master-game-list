@@ -84,7 +84,7 @@ def __media_section():
                 ]),
             Div(
                 children=[
-                    Div(style={"height": "16px"}),
+                    Div(style={"height": "48px"}),
                     {
                         "_type": "Scroller",
                         "props": {
@@ -800,7 +800,7 @@ def __socials_chart():
                 },
                 series=[
                     {
-                        "name": "Followers",
+                        "name": "New Followers",
                         "type": "line",
                         "data": ekp_map(
                             sort_by(
@@ -861,7 +861,7 @@ def __socials_stats():
             Col(
                 "col-6",
                 [
-                    Span("Followers (24h)", "d-block font-small-3"),
+                    Span("New Followers (24h)", "d-block font-small-3"),
                     Span(
                         commify("$.change_24h"),
                         format_template(

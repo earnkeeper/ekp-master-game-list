@@ -61,6 +61,9 @@ class SocialFollowersInfoService:
 
             last_record = record
 
+        if len(document['chart']) < 2:
+            return None
+        
         return document
 
 
