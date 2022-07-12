@@ -55,13 +55,13 @@ def social_followers(value, delta_24h, delta_color_24h, plus, delta_24h_pc):
                             "color": delta_color_24h
                         })
                     ),
-                    Span(
-                        format_template(" ( {{ pc }} )", {"pc": format_percent(
-                            delta_24h_pc, showPlus=True, decimals=2)}),
-                        format_template("font-small-1 text-{{ color }}", {
-                            "color": delta_color_24h
-                        })
-                    ),
+                    # Span(
+                    #     format_template(" ( {{ pc }} )", {"pc": format_percent(
+                    #         delta_24h_pc, showPlus=True, decimals=2)}),
+                    #     format_template("font-small-1 text-{{ color }}", {
+                    #         "color": delta_color_24h
+                    #     })
+                    # ),
                 ]),
         ])
 
