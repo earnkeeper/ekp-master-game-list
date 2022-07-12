@@ -80,6 +80,7 @@ class StatsController:
         for document in (social_document, activity_document, volume_documents, price_documents):
             for elem in document:
                 documents_dict[elem['id']].update(elem)
+                documents_dict[elem['id']]["fiat_symbol"] = currency['symbol']
         
         all_documents = list(documents_dict.values())
 

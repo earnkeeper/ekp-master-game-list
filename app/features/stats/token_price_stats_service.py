@@ -49,15 +49,17 @@ class TokenPriceStatsService:
             if delta_today < 0:
                 delta_today_color = "danger"
 
+            price = float('%s' % float('%.3g' % price * rate))
+
             document = {
                 "id": game_id,
                 "game_id": game_id,
-                "price": record["price"] * rate,
+                "price": price,
                 "price_delta": delta_today,
                 "price_delta_pc": delta_today_pc,
                 "price_delta_color": delta_today_color
             }
-
+            
             documents.append(document)
 
         return documents

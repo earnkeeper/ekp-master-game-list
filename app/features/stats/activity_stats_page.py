@@ -41,7 +41,7 @@ def __table_row(COLLECTION_NAME):
                 title="Price",
                 sortable=True,
                 width="150px",
-                cell=change_cell(format_currency("$.price", None), "$.price_delta_pc", "$.price_delta_color"),
+                cell=change_cell(format_currency("$.price", "$.fiat_symbol", False), "$.price_delta_pc", "$.price_delta_color"),
                 right=True
             ),
             Column(
