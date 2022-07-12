@@ -267,7 +267,7 @@ def __volumes_section():
                     ),
                     Col(
                         class_name="col-12 col-md-6 col-lg-4",
-                        when="$.price_doc",
+                        when="$.price",
                         children=[
                             __price_card()
                         ]
@@ -909,7 +909,6 @@ def __volume_card():
 
 def __price_card():
     return Div(
-        context="$.price_doc",
         children=[
             Card(
                 children=[
@@ -1009,7 +1008,7 @@ def __price_chart():
                 title="",
                 height=220,
                 type="line",
-                data="$.chart7d.*",
+                data="$.price.chart.*",
                 card=False,
                 options={
                     "legend": {
@@ -1041,7 +1040,7 @@ def __price_chart():
                     "labels": ekp_map(
                         sort_by(
                             json_array(
-                                "$.chart7d.*"
+                                "$.price.chart.*"
                             ),
                             "$.timestamp_ms"
                         ), "$.timestamp_ms"
@@ -1058,7 +1057,7 @@ def __price_chart():
                         "type": "line",
                         "data": ekp_map(
                             sort_by(
-                                json_array("$.chart7d.*"),
+                                json_array("$.price.chart.*"),
                                 "$.timestamp_ms"
                             ),
                             "$.price"
@@ -1115,17 +1114,17 @@ def __price_stats():
             Col(
                 "col-6",
                 [
-                    Span("Token Price (24h)", "d-block font-small-3"),
+                    Span("Token Price", "d-block font-small-3"),
                     Span(
                         # format_currency("$.volume24h", None),
                         format_template(" {{ fiat_symbol }} {{ price }}", {
-                            "price": "$.price24h",
+                            "price": "$.price.current_price",
                             "fiat_symbol": "$.fiat_symbol"
                         }),
                         format_template(
                             "d-block font-small-2 text-{{ color }}",
                             {
-                                "color": "$.deltaColor"
+                                "color": "$.price.price_color"
                             }
                         )
                     ),
@@ -1136,11 +1135,11 @@ def __price_stats():
                 [
                     Span("Change (24h)", "d-block font-small-3 text-right"),
                     Span(
-                        format_percent("$.priceDelta"),
+                        format_percent("$.price.price_delta_pc"),
                         format_template(
                             "d-block font-small-2 text-right text-{{ color }}",
                             {
-                                "color": "$.deltaColor"
+                                "color": "$.price.price_color"
                             }
                         )
                     ),
@@ -1157,8 +1156,11 @@ def __socials_section():
             __image_link_col(
                 "$.coingecko",
                 "https://static.coingecko.com/s/thumbnail-007177f3eca19695592f0b8b0eabbdae282b54154e1be912285c9034ea6cbaf2.png",
-                "$.price",
-                "$.price_color"
+                format_template("{{ price }} ( {{ price_delta_pc }} )", {
+                    "price": format_currency("$.price.current_price", "$.fiat_symbol", False),
+                    "price_delta_pc": format_percent("$.price.price_delta_pc")
+                }),
+                "$.price.price_color"
             ),
             __icon_link_col("$.website", "cil-globe-alt", "Website"),
             __icon_link_col(

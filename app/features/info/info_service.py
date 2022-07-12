@@ -89,15 +89,6 @@ class InfoService:
                 telegram_members = latest_social_record.get(
                     "telegram_members", None)
 
-        price_records = self.price_repo.find_by_game_id(game["id"])
-
-        price_records.sort(key=lambda record: record['timestamp'])
-
-        price = None
-        price_change = None
-        price_change_pc = None
-        price_color = "normal"
-
         rate = 1
 
         if currency["id"] != "usd":
@@ -107,21 +98,6 @@ class InfoService:
                     'usd-coin', currency["id"]),
                 ex=3600
             )
-
-        if len(price_records):
-            current_price = price_records[-1]["price_usd"]
-            price = f'{currency["symbol"]} {float("%.3g" % (current_price * rate))}'
-
-            if len(price_records) > 1:
-                yesterday_price = price_records[-2]["price_usd"]
-                price_change = current_price - yesterday_price
-                price_change_pc = price_change * 100 / yesterday_price
-                price_change_pc = round(price_change_pc, 2)
-                price += f' (+{price_change_pc} %)' if price_change_pc > 0 else f' ({price_change_pc} %)'
-                if price_change_pc > 0:
-                    price_color = "success"
-                if price_change_pc < 0:
-                    price_color = "danger"
 
         if twitter_followers is None:
             twitter_followers = "Twitter"
@@ -136,7 +112,7 @@ class InfoService:
 
         activity_document = await self.activity_info_service.get_activity_document(game)
         volume_document = await self.token_volume_info_service.get_volume_document(game, rate)
-        price_document = await self.token_price_info_service.get_price_document(game, rate, currency['symbol'])
+        price_document = await self.token_price_info_service.get_price_document(game, rate)
         social_document = await self.social_followers_info_service.get_social_document(game)
         media_documents = await self.media_info_service.get_media_documents(game)
         resources_documents = await self.resources_info_service.get_resources_documents(game)
@@ -168,15 +144,13 @@ class InfoService:
                 "activity": activity_document,
                 "volume": volume_document,
                 "social": social_document,
+                "price": price_document,
                 "media": media_documents,
                 "resources": resources_documents,
                 "users_period_chart": users_period_chart,
                 "users_last_period_chart": users_last_period_chart,
-                "price_doc": price_document,
-                "coingecko": f"https://www.coingecko.com/en/coins/{game['id']}" if price else None,
+                "coingecko": f"https://www.coingecko.com/en/coins/{game['id']}" if price_document else None,
                 "statsAvailable": stats_available,
                 "fiat_symbol": currency['symbol'],
-                "price": price,
-                "price_color": price_color,
             }
         ]

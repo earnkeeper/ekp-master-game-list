@@ -1,7 +1,6 @@
-from ekp_sdk.services import CoingeckoService
-
 from db.price_repo import PriceRepo
-from datetime import datetime
+
+from shared.get_midnight_utc import get_midnight_utc
 
 
 class TokenPriceInfoService:
@@ -11,53 +10,53 @@ class TokenPriceInfoService:
     ):
         self.price_repo = price_repo
 
-    async def get_price_document(self, game, rate, fiat_symbol):
+    async def get_price_document(self, game, rate):
 
-        records = self.price_repo.find_by_game_id(game["id"])
+        ago_7d = get_midnight_utc().timestamp() - 7 * 86400
 
-        now = datetime.now().timestamp()
+        price_records = self.price_repo.find_by_game_id_since(
+            game["id"], ago_7d)
 
-        if not len(records):
+        if not len(price_records):
             return None
 
-        latest_date_timestamp = records[len(records) - 1]["timestamp"]
+        price_records.sort(key=lambda record: record['timestamp'])
 
-        document = self.__create_record(game, now, latest_date_timestamp)
+        current_price = price_records[-1]["price_usd"] * rate
+        current_price = float("%.3g" % current_price)
+        price_delta = None
+        price_delta_pc = None
+        price_color = "normal"
 
-        for record in records:
-            date_timestamp = record["timestamp"]
-            ago = latest_date_timestamp - date_timestamp
-            price = record["price_usd"]
+        if len(price_records) > 1:
+            yesterday_price = price_records[-2]["price_usd"] * rate
+            yesterday_price = float("%.3g" % yesterday_price)
+            price_delta = current_price - yesterday_price
+            price_delta_pc = price_delta * 100 / yesterday_price
+            price_delta_pc = round(price_delta_pc, 2)
 
-            if price is None:
-                price = 0
+            if price_delta_pc > 0:
+                price_color = "success"
+            if price_delta_pc < 0:
+                price_color = "danger"
 
-            if ago < 86400:
-                document["price24h"] = (document["price24h"] + price) * rate
-            elif ago < (2 * 86400):
-                document["price48h"] = (document["price48h"] + price) * rate
+        chart = list(
+            map(
+                lambda record: {
+                    "timestamp_ms": record["timestamp"] * 1000,
+                    "price": float("%.3g" % (record["price_usd"] * rate))
+                },
+                price_records
+            )
+        )
 
-            if ago < (86400 * 7):
-                document["price7d"] = (document["price7d"] + price) * rate
-                document["price7dcount"] = document["price7dcount"] + 1
-
-            if document["price48h"] > 0:
-                document["priceDelta"] = (document["price24h"] - document["price48h"]) * 100 / document["price48h"]
-
-            if date_timestamp in document["chart7d"]:
-                document["chart7d"][date_timestamp]["price"] = float("%.3g" % (price * rate))
-
-        document["price24h"] = float("%.3g" % (document["price24h"] * rate))
-        document["deltaColor"] = "normal"
-
-        if document["priceDelta"] < 0:
-            document["deltaColor"] = "danger"
-        if document["priceDelta"] > 0:
-            document["deltaColor"] = "success"
-
-        document["fiat_symbol"] = fiat_symbol
-
-        return document
+        return {
+            "current_price": current_price,
+            "price_delta": price_delta,
+            "price_delta_pc": price_delta_pc,
+            "price_color": price_color,
+            "chart": chart,
+        }
 
     def __create_record(self, game, now, latest_date_timestamp):
 
@@ -81,4 +80,4 @@ class TokenPriceInfoService:
             "price7dcount": 0,
             "updated": now,
             "chart7d": chart7d_template,
-        }        
+        }

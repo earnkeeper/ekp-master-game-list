@@ -45,7 +45,7 @@ class PriceRepo:
         return results
 
     def find_latest_daily_price_by_game_id(self):
-    
+
         results = list(
             self.collection.aggregate([
                 {"$match": {"latest": False}},
@@ -65,9 +65,21 @@ class PriceRepo:
             return []
 
         return results
-    
+
     def find_by_game_id(self, game_id):
         return list(self.collection.find({"game_id": game_id}).sort("timestamp"))
+
+    def find_by_game_id_since(self, game_id, since):
+        return list(
+            self.collection
+            .find(
+                {
+                    "game_id": game_id,
+                    "timestamp": {"$gte": since}
+                }
+            )
+            .sort("timestamp")
+        )
 
     def find_latest_record_by_game_id(self, game_id, sort_by, direction=-1):
         results = list(
