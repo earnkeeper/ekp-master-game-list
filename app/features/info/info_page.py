@@ -37,7 +37,7 @@ def page(GAME_INFO_COLLECTION_NAME, USERS_CHART_NAME):
                             __resources_section(),
                             __media_section(),
                             __volumes_section(),
-                            __analytics_section(USERS_CHART_NAME),
+                            # __analytics_section(USERS_CHART_NAME),
                             __deep_dives_section(),
                             Div([], style={"height": "300px"})
                         ]
