@@ -19,7 +19,7 @@ from app.features.stats.volume_stats_service import VolumeStatsService
 from db.activity_repo import ActivityRepo
 from db.contract_aggregate_repo import ContractAggregateRepo
 from db.price_repo import PriceRepo
-from db.resouces_repo import ResourcesRepo
+from db.resources_repo import ResourcesRepo
 from db.social_repo import SocialRepo
 from db.volume_repo import VolumeRepo
 

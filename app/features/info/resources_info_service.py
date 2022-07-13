@@ -1,6 +1,6 @@
 from pprint import pprint
 
-from db.resouces_repo import ResourcesRepo
+from db.resources_repo import ResourcesRepo
 
 class ResourcesInfoService:
     def __init__(

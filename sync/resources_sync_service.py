@@ -1,6 +1,6 @@
 from ekp_sdk.services import GoogleSheetsClient
 from db.game_repo import GameRepo
-from db.resouces_repo import ResourcesRepo
+from db.resources_repo import ResourcesRepo
 
 
 class ResourcesSyncService:

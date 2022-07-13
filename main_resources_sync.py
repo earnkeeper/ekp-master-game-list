@@ -4,7 +4,7 @@ import logging
 from decouple import AutoConfig
 from ekp_sdk import BaseContainer
 
-from db.resouces_repo import ResourcesRepo
+from db.resources_repo import ResourcesRepo
 from sync.resources_sync_service import ResourcesSyncService
 
 
