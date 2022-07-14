@@ -19,6 +19,9 @@ def activity_tab(COLLECTION_NAME):
 
 def __table_row(COLLECTION_NAME):
     return Datatable(
+        alert_config={
+            "formId": "game_alerts"
+        },
         class_name="mt-1",
         data=documents(COLLECTION_NAME),
         busy_when=is_busy(collection(COLLECTION_NAME)),
@@ -30,7 +33,7 @@ def __table_row(COLLECTION_NAME):
             Column(
                 id="game_name",
                 title="Game",
-                min_width="200px",
+                min_width="240px",
                 cell=name_cell("$.game_name"),
                 searchable=True,
                 sortable=True,
