@@ -3,6 +3,7 @@ from decouple import AutoConfig
 from ekp_sdk import BaseContainer
 from ekp_sdk.db import MgClient
 from app.features.info.activity_info_service import ActivityInfoService
+from app.features.info.game_alert_service import GameAlertService
 from app.features.info.info_controller import InfoController
 from app.features.info.info_service import InfoService
 from app.features.info.media_info_service import MediaInfoService
@@ -17,6 +18,7 @@ from app.features.stats.stats_controller import StatsController
 from app.features.stats.token_price_stats_service import TokenPriceStatsService
 from app.features.stats.volume_stats_service import VolumeStatsService
 from db.activity_repo import ActivityRepo
+from db.alert_config_repo import AlertConfigRepo
 from db.contract_aggregate_repo import ContractAggregateRepo
 from db.price_repo import PriceRepo
 from db.resources_repo import ResourcesRepo
@@ -131,6 +133,10 @@ class AppContainer(BaseContainer):
             game_repo=self.game_repo
         )
 
+        self.alert_config_repo = AlertConfigRepo(
+            mg_client=self.mg_client
+        )
+
         self.info_service = InfoService(
             activity_info_service=self.activity_info_service,
             cache_service=self.cache_service,
@@ -175,6 +181,10 @@ class AppContainer(BaseContainer):
             price_repo=self.price_repo,
         )
 
+        self.game_alert_service = GameAlertService(
+            alert_config_repo=self.alert_config_repo
+        )
+
         self.stats_controller = StatsController(
             client_service=self.client_service,
             cache_service=self.cache_service,
@@ -182,7 +192,8 @@ class AppContainer(BaseContainer):
             activity_stats_service=self.activity_stats_service,
             social_stats_service=self.social_stats_service,
             volume_stats_service=self.volume_stats_service,
-            token_price_stats_service=self.token_price_stats_service
+            token_price_stats_service=self.token_price_stats_service,
+            game_alert_service=self.game_alert_service
         )
 
 

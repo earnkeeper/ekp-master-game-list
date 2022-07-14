@@ -3,8 +3,9 @@ from collections import defaultdict
 from pprint import pprint
 
 from ekp_sdk.services import ClientService, CacheService, CoingeckoService
-from ekp_sdk.util import client_path, client_query_param, client_currency
+from ekp_sdk.util import client_path, client_query_param, client_currency, form_values
 
+from app.features.info.game_alert_service import GameAlertService
 from app.features.stats.activity_stats_service import ActivityStatsService
 from app.features.stats.social_stats_service import SocialStatsService
 from app.features.stats.activity_stats_page import activity_tab
@@ -12,7 +13,7 @@ from app.features.stats.token_price_stats_service import TokenPriceStatsService
 from app.features.stats.volume_stats_service import VolumeStatsService
 
 STATS_TABLE_COLLECTION_NAME = "game_stats_service"
-
+ALERT_FORM = "game_alerts"
 
 class StatsController:
     def __init__(
@@ -23,7 +24,8 @@ class StatsController:
             activity_stats_service: ActivityStatsService,
             social_stats_service: SocialStatsService,
             volume_stats_service: VolumeStatsService,
-            token_price_stats_service: TokenPriceStatsService
+            token_price_stats_service: TokenPriceStatsService,
+            game_alert_service: GameAlertService
     ):
         self.client_service = client_service
         self.cache_service = cache_service
@@ -32,6 +34,7 @@ class StatsController:
         self.social_stats_service = social_stats_service
         self.volume_stats_service = volume_stats_service
         self.token_price_stats_service = token_price_stats_service
+        self.game_alert_service = game_alert_service
         self.path = 'stats'
 
     async def on_connect(self, sid):
@@ -54,6 +57,12 @@ class StatsController:
             return
 
         currency = client_currency(event)
+
+        alert_form_values = form_values(event, ALERT_FORM)
+
+        self.game_alert_service.save_alert(alert_form_values[0] if alert_form_values else [])
+
+        # pprint(alert_form_values)
 
         await self.client_service.emit_busy(sid, STATS_TABLE_COLLECTION_NAME)
 
