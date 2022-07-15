@@ -40,6 +40,8 @@ werf helm secret values encrypt clear-values.yaml -o .helm/secret-values.yaml
 werf helm secret file encrypt secret/credentials.json -o .helm/secret/credentials.json
 werf helm secret file encrypt secret/ca.pem -o .helm/secret/ca.pem
 werf helm secret file encrypt secret/mongodb.pem -o .helm/secret/mongodb.pem
+werf helm secret file encrypt secret/ca_bsc.pem -o .helm/secret/ca_bsc.pem
+werf helm secret file encrypt secret/mongodb_bsc.pem -o .helm/secret/mongodb_bsc.pem
 ```
 
 Set the following two secrets on your github repo:
