@@ -10,10 +10,9 @@ from app.features.info.token_price_info_service import TokenPriceInfoService
 from app.features.info.token_volume_info_service import TokenVolumeInfoService
 from db.contract_aggregate_repo import ContractAggregateRepo
 from db.price_repo import PriceRepo
-from shared.map_get import map_get
 from db.game_repo import GameRepo
 from datetime import datetime
-from ekp_sdk.services import CacheService, CoingeckoService, TwitterClient
+from ekp_sdk.services import CacheService, CoingeckoService
 
 from db.social_repo import SocialRepo
 
@@ -33,7 +32,7 @@ class InfoService:
         media_info_service: MediaInfoService,
         resources_info_service: ResourcesInfoService,
         contract_aggregate_repo: ContractAggregateRepo,
-        user_aggregate_service: UserAnalyticsService
+        user_analytics_service: UserAnalyticsService
     ):
         self.activity_info_service = activity_info_service
         self.cache_service = cache_service
@@ -47,7 +46,7 @@ class InfoService:
         self.media_info_service = media_info_service
         self.resources_info_service = resources_info_service
         self.contract_aggregate_repo = contract_aggregate_repo
-        self.user_aggregate_service = user_aggregate_service
+        self.user_analytics_service = user_analytics_service
 
     async def get_documents(self, game_id, currency, users_days):
         
@@ -116,8 +115,12 @@ class InfoService:
         social_document = await self.social_followers_info_service.get_social_document(game)
         media_documents = await self.media_info_service.get_media_documents(game)
         resources_documents = await self.resources_info_service.get_resources_documents(game)
-        users_period_chart = self.user_aggregate_service.get_period_chart(game, users_days)
-        users_last_period_chart = self.user_aggregate_service.get_last_period_chart(game, users_days)
+        users_period_chart = self.user_analytics_service.get_period_chart(game, users_days)
+        users_last_period_chart = self.user_analytics_service.get_last_period_chart(game, users_days)
+        
+        active_users_count = self.user_analytics_service.get_period_users(game, users_days)
+        
+        print(active_users_count)
 
         telegram = game["telegram"] if (
             game["telegram"] and game["telegram"] != "https://t.me/") else None

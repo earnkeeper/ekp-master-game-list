@@ -23,6 +23,7 @@ from db.contract_aggregate_repo import ContractAggregateRepo
 from db.price_repo import PriceRepo
 from db.resources_repo import ResourcesRepo
 from db.social_repo import SocialRepo
+from db.transaction_repo import TransactionRepo
 from db.volume_repo import VolumeRepo
 
 from db.game_repo import GameRepo
@@ -97,7 +98,11 @@ class AppContainer(BaseContainer):
             mg_client=self.mg_client
         )
 
-        self.contract_aggregate_repo = ContractAggregateRepo(
+        self.contract_aggregate_repo_eth = ContractAggregateRepo(
+            mg_client=self.mg_client_eth
+        )
+
+        self.transaction_repo_eth = TransactionRepo(
             mg_client=self.mg_client_eth
         )
 
@@ -129,7 +134,8 @@ class AppContainer(BaseContainer):
         )
 
         self.user_aggregate_service = UserAnalyticsService(
-            contract_aggregate_repo=self.contract_aggregate_repo,
+            contract_aggregate_repo_eth=self.contract_aggregate_repo_eth,
+            transaction_repo_eth=self.transaction_repo_eth,
             game_repo=self.game_repo
         )
 
@@ -149,8 +155,8 @@ class AppContainer(BaseContainer):
             social_followers_info_service=self.social_followers_info_service,
             media_info_service=self.media_info_service,
             resources_info_service=self.resources_info_service,
-            contract_aggregate_repo=self.contract_aggregate_repo,
-            user_aggregate_service=self.user_aggregate_service
+            contract_aggregate_repo=self.contract_aggregate_repo_eth,
+            user_analytics_service=self.user_aggregate_service
         )
 
         self.info_controller = InfoController(

@@ -62,6 +62,8 @@ class StatsController:
         if alert_form_values:
             self.game_alert_service.save_alert(alert_form_values[0] if alert_form_values else [])
 
+        # self.game_alert_service.save_alert(alert_form_values[0] if alert_form_values else [])
+
 
         await self.client_service.emit_busy(sid, STATS_TABLE_COLLECTION_NAME)
 

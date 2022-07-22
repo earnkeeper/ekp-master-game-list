@@ -7,7 +7,7 @@ from ekp_sdk import BaseContainer
 
 from db.game_repo import GameRepo
 from sync.coingecko_sync_service import CoingeckoSyncService
-from sync.eth_sync_service import EthSyncService
+from sync.remote_sync_service import RemoteSyncService
 from sync.game_sync_service import GameSyncService
 from sync.manual_sync_service import ManualSyncService
 from ekp_sdk.db import MgClient
@@ -21,10 +21,16 @@ class AppContainer(BaseContainer):
         SHEET_ID = config("SHEET_ID")
 
         MONGO_URI_ETH = config("MONGO_URI_ETH")
+        MONGO_URI_BSC = config("MONGO_URI_BSC")
         MONGO_DB_NAME = config('MONGO_DB_NAME')
         
         self.mg_client_eth = MgClient(
             uri=MONGO_URI_ETH,
+            db_name=MONGO_DB_NAME
+        )
+
+        self.mg_client_bsc = MgClient(
+            uri=MONGO_URI_BSC,
             db_name=MONGO_DB_NAME
         )
 
@@ -34,6 +40,10 @@ class AppContainer(BaseContainer):
 
         self.game_repo_eth = GameRepo(
             mg_client=self.mg_client_eth
+        )
+
+        self.game_repo_bsc = GameRepo(
+            mg_client=self.mg_client_bsc
         )
 
         # Services
@@ -56,9 +66,10 @@ class AppContainer(BaseContainer):
             manual_sync_service=self.manual_sync_service,
         )
 
-        self.eth_sync_service = EthSyncService(
+        self.remote_sync_service = RemoteSyncService(
             game_repo=self.game_repo,
-            game_repo_eth=self.game_repo_eth
+            game_repo_eth=self.game_repo_eth,
+            game_repo_bsc=self.game_repo_bsc,
         )
 
 
@@ -74,9 +85,10 @@ if __name__ == '__main__':
     loop = asyncio.get_event_loop()
 
     loop.run_until_complete(
-        container.game_sync_service.sync_games()
+        container.remote_sync_service.sync_games()
     )
 
     loop.run_until_complete(
-        container.eth_sync_service.sync_games()
+        container.game_sync_service.sync_games()
     )
+
