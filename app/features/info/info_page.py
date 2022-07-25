@@ -1,7 +1,7 @@
 from app.utils.page_title import page_title
 from ekp_sdk.ui import (Button, Card, Chart, Col, Column, Container, Datatable,
                         Div, Hr, Icon, Image, Link, Paragraphs, Row, Span,
-                        Tabs, commify, ekp_map, format_currency, sum,
+                        Tabs, commify, ekp_map, format_currency, sum, Tab,
                         format_mask_address, format_percent, format_template,
                         is_busy, json_array, navigate, sort_by, navigate_back, format_age, Avatar, Form, Select)
 
@@ -291,20 +291,29 @@ def __volumes_section():
 
 def __analytics_section(USERS_CHART_NAME):
     return Div(
-        when="$.users_period_chart",
+        when="$.analytics_users.users_period_chart",
         children=[
             Span("Analytics", "font-medium-5 mt-3 d-block"),
             Hr(),
             Div(class_name="mt-2"),
-            Div(
+            Tabs(
                 children=[
-                    __user_aggregates_summary(),
-                    __user_aggregates_chart(
-                        USERS_CHART_NAME
-                    )
+                    Tab(
+                        label="User Activity",
+                        children=[
+                            Div(
+                                children=[
+                                    __user_aggregates_summary(),
+                                    __user_aggregates_chart(
+                                        USERS_CHART_NAME
+                                    )
+                                ]
+                            )
+                        ])
                 ]
             )
-        ])
+        ]
+    )
 
 
 def __analytics_summary_card(title, value):
@@ -386,23 +395,19 @@ def __user_aggregates_summary():
                     Col("col-auto", [
                         __analytics_summary_card(
                             "Users",
-                            commify(
-                                sum(
-                                    f"$.users_period_chart..active_users"
-                                ),
-                            )
+                            commify(f"$.analytics_users.users_period_count")
                         ),
                     ]),
-                    Col("col-auto", [
-                        __analytics_summary_card(
-                            "Transactions",
-                            commify(
-                                sum(
-                                    f"$.users_period_chart..total_transfers"
-                                )
-                            ),
-                        ),
-                    ]),
+                    # Col("col-auto", [
+                    #     __analytics_summary_card(
+                    #         "Transactions",
+                    #         commify(
+                    #             sum(
+                    #                 f"$.users_period_chart..total_transfers"
+                    #             )
+                    #         ),
+                    #     ),
+                    # ]),
                 ]
             )
         ]
@@ -413,6 +418,7 @@ def __user_aggregates_chart(USERS_CHART_NAME):
     return Card(
         children=[
             Div(
+                context="$.analytics_users",
                 class_name="mx-1 my-2",
                 style={
                     "marginRight": "-10px",

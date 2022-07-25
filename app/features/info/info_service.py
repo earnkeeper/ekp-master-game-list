@@ -118,9 +118,8 @@ class InfoService:
         users_period_chart = self.user_analytics_service.get_period_chart(game, users_days)
         users_last_period_chart = self.user_analytics_service.get_last_period_chart(game, users_days)
         
-        active_users_count = self.user_analytics_service.get_period_users(game, users_days)
+        users_period_count = self.user_analytics_service.get_period_users(game, users_days)
         
-        print(active_users_count)
 
         telegram = game["telegram"] if (
             game["telegram"] and game["telegram"] != "https://t.me/") else None
@@ -150,8 +149,11 @@ class InfoService:
                 "price": price_document,
                 "media": media_documents,
                 "resources": resources_documents,
-                "users_period_chart": users_period_chart,
-                "users_last_period_chart": users_last_period_chart,
+                "analytics_users": {
+                    "users_period_count": users_period_count,
+                    "users_period_chart": users_period_chart,
+                    "users_last_period_chart": users_last_period_chart,
+                },
                 "coingecko": f"https://www.coingecko.com/en/coins/{game['id']}" if price_document else None,
                 "statsAvailable": stats_available,
                 "fiat_symbol": currency['symbol'],
