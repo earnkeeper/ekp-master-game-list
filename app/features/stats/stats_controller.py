@@ -59,6 +59,8 @@ class StatsController:
         currency = client_currency(event)
 
         alert_form_values = form_values(event, ALERT_FORM)
+        if alert_form_values:
+            self.game_alert_service.save_alert(alert_form_values[0] if alert_form_values else [])
 
         # self.game_alert_service.save_alert(alert_form_values[0] if alert_form_values else [])
 
