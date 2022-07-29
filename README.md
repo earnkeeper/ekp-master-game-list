@@ -57,3 +57,5 @@ gh secret set KUBE_CONFIG_BASE64_DATA --repos=\"$(git remote get-url origin)\" -
 ```
 
 Commit your changes and push to `main` branch. The github action in this repo will perform the deploy with werf.
+
+touch
