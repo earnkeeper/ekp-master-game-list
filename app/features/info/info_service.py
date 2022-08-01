@@ -129,6 +129,11 @@ class InfoService:
             
         stats_available = activity_document is not None or volume_document is not None or price_document is not None or social_document is not None
         
+        coingecko_link = None
+        
+        if price_document and isinstance(game['coin_ids'], list) and len(game['coin_ids']):
+            coingecko_link = f"https://www.coingecko.com/en/coins/{game['coin_ids'][0]}"
+            
         return [
             {
                 "id": game_id,
@@ -155,6 +160,9 @@ class InfoService:
                     "users_last_period_chart": users_last_period_chart,
                 },
                 "coingecko": f"https://www.coingecko.com/en/coins/{game['id']}" if price_document else None,
+                "users_period_chart": users_period_chart,
+                "users_last_period_chart": users_last_period_chart,
+                "coingecko": coingecko_link,
                 "statsAvailable": stats_available,
                 "fiat_symbol": currency['symbol'],
             }
