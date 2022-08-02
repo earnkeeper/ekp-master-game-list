@@ -10,6 +10,7 @@ def volume_analytics_chart(CHART_NAME):
         children=[
             Div(
                 context="$.analytics_volume",
+                when="$",
                 class_name="mx-1 my-2",
                 style={
                     "marginRight": "-10px",
