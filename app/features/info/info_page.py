@@ -1,3 +1,4 @@
+from app.features.info.components.analytics.volume_analytics import volume_analytics_chart
 from app.utils.page_title import page_title
 from ekp_sdk.ui import (Button, Card, Chart, Col, Column, Container, Datatable,
                         Div, Hr, Icon, Image, Link, Paragraphs, Row, Span,
@@ -6,7 +7,7 @@ from ekp_sdk.ui import (Button, Card, Chart, Col, Column, Container, Datatable,
                         is_busy, json_array, navigate, sort_by, navigate_back, format_age, Avatar, Form, Select)
 
 
-def page(GAME_INFO_COLLECTION_NAME, USERS_CHART_NAME):
+def page(GAME_INFO_COLLECTION_NAME, USERS_CHART_NAME, VOLUME_CHART_NAME):
     return Container(
         children=[
             Div(
@@ -37,7 +38,8 @@ def page(GAME_INFO_COLLECTION_NAME, USERS_CHART_NAME):
                             __resources_section(),
                             __media_section(),
                             __volumes_section(),
-                            __analytics_section(USERS_CHART_NAME),
+                            __analytics_section(
+                                USERS_CHART_NAME, VOLUME_CHART_NAME),
                             __deep_dives_section(),
                             Div([], style={"height": "300px"})
                         ]
@@ -289,7 +291,7 @@ def __volumes_section():
     ])
 
 
-def __analytics_section(USERS_CHART_NAME):
+def __analytics_section(USERS_CHART_NAME, VOLUME_CHART_NAME):
     return Div(
         when="$.analytics_users.users_period_chart",
         children=[
@@ -303,13 +305,27 @@ def __analytics_section(USERS_CHART_NAME):
                         children=[
                             Div(
                                 children=[
-                                    __user_aggregates_summary(),
+                                    # __user_aggregates_summary(),
                                     __user_aggregates_chart(
                                         USERS_CHART_NAME
                                     )
                                 ]
                             )
-                        ])
+                        ]
+                    ),
+                    Tab(
+                        label="Volume",
+                        children=[
+                            Div(
+                                children=[
+                                    volume_analytics_chart(
+                                        VOLUME_CHART_NAME
+                                    )
+                                ]
+                            )
+                        ]
+                    )
+
                 ]
             )
         ]

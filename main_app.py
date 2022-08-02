@@ -7,11 +7,13 @@ from app.features.info.game_alert_service import GameAlertService
 from app.features.info.info_controller import InfoController
 from app.features.info.info_service import InfoService
 from app.features.info.media_info_service import MediaInfoService
+from app.features.info.price_analytics_service import PriceAnalyticsService
 from app.features.info.resources_info_service import ResourcesInfoService
 from app.features.info.social_followers_info_service import SocialFollowersInfoService
 from app.features.info.token_price_info_service import TokenPriceInfoService
 from app.features.info.token_volume_info_service import TokenVolumeInfoService
 from app.features.info.user_analytics_service import UserAnalyticsService
+from app.features.info.volume_analytics_service import VolumeAnalyticsService
 from app.features.stats.activity_stats_service import ActivityStatsService
 from app.features.stats.social_stats_service import SocialStatsService
 from app.features.stats.stats_controller import StatsController
@@ -143,6 +145,9 @@ class AppContainer(BaseContainer):
             mg_client=self.mg_client
         )
 
+        self.volume_analytics_service = VolumeAnalyticsService()
+        self.price_analytics_service = PriceAnalyticsService()
+        
         self.info_service = InfoService(
             activity_info_service=self.activity_info_service,
             cache_service=self.cache_service,
@@ -156,7 +161,9 @@ class AppContainer(BaseContainer):
             media_info_service=self.media_info_service,
             resources_info_service=self.resources_info_service,
             contract_aggregate_repo=self.contract_aggregate_repo_eth,
-            user_analytics_service=self.user_aggregate_service
+            user_analytics_service=self.user_aggregate_service,
+            volume_analytics_service=self.volume_analytics_service,
+            price_analytics_service=self.price_analytics_service
         )
 
         self.info_controller = InfoController(
