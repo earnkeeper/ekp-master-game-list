@@ -57,6 +57,7 @@ class AppContainer(BaseContainer):
         super().__init__(config)
 
         MONGO_URI_ETH = config("MONGO_URI_ETH")
+        MONGO_URI_BSC = config("MONGO_URI_BSC")
         MONGO_DB_NAME = config('MONGO_DB_NAME')
 
         # Image Proxy
@@ -69,6 +70,11 @@ class AppContainer(BaseContainer):
 
         self.mg_client_eth = MgClient(
             uri=MONGO_URI_ETH,
+            db_name=MONGO_DB_NAME
+        )
+
+        self.mg_client_bsc = MgClient(
+            uri=MONGO_URI_BSC,
             db_name=MONGO_DB_NAME
         )
 
@@ -102,6 +108,10 @@ class AppContainer(BaseContainer):
 
         self.contract_aggregate_repo_eth = ContractAggregateRepo(
             mg_client=self.mg_client_eth
+        )
+        
+        self.contract_aggregate_repo_bsc = ContractAggregateRepo(
+            mg_client=self.mg_client_bsc
         )
 
         self.transaction_repo_eth = TransactionRepo(
@@ -137,6 +147,7 @@ class AppContainer(BaseContainer):
 
         self.user_aggregate_service = UserAnalyticsService(
             contract_aggregate_repo_eth=self.contract_aggregate_repo_eth,
+            contract_aggregate_repo_bsc=self.contract_aggregate_repo_bsc,
             transaction_repo_eth=self.transaction_repo_eth,
             game_repo=self.game_repo
         )
