@@ -22,6 +22,8 @@ spec:
                   value: "{{ .Values.mongodb.uri }}"
                 - name: MONGO_URI_ETH
                   value: "{{ .Values.mongodb_eth.uri }}"
+                - name: MONGO_URI_BSC
+                  value: "{{ .Values.mongodb_bsc.uri }}"
                 - name: MONGO_DB_NAME
                   value: '{{ eq .Values.werf.env "staging" | ternary .Values.mongodb.dbName.staging .Values.mongodb.dbName._default }}'
                 - name: SHEET_ID
