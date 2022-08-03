@@ -52,7 +52,7 @@ class InfoService:
         self.volume_analytics_service = volume_analytics_service
         self.price_analytics_service = price_analytics_service
 
-    async def get_documents(self, game_id, currency, users_days, volume_days, price_days):
+    async def get_documents(self, game_id, currency, users_days, volume_days, price_days, is_subscribed):
         
         game = self.game_repo.find_one_by_id(game_id)
         now = datetime.now().timestamp()
@@ -162,6 +162,7 @@ class InfoService:
                 "discord": game["discord"],
                 "website": game["website"],
                 "activity": activity_document,
+                "is_subscribed": is_subscribed,
                 "volume": volume_document,
                 "social": social_document,
                 "price": price_document,

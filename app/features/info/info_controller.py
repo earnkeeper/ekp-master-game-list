@@ -1,3 +1,4 @@
+from pprint import pprint
 from app.features.info.info_page import page
 from app.features.info.info_service import InfoService
 from ekp_sdk.services import ClientService
@@ -32,6 +33,8 @@ class InfoController:
         if not path or (not path.startswith(f'{self.path}/')):
             return
 
+        is_subscribed = client_is_subscribed(event)
+        
         game_id = path.replace(f'{self.path}/', '')
 
         currency = client_currency(event)
@@ -59,7 +62,7 @@ class InfoController:
         if price_chart_form and "days" in price_chart_form:
             price_days = price_chart_form["days"]
 
-        table_documents = await self.info_service.get_documents(game_id, currency, users_days, volume_days, price_days)
+        table_documents = await self.info_service.get_documents(game_id, currency, users_days, volume_days, price_days, is_subscribed)
 
         await self.client_service.emit_documents(
             sid,
@@ -69,3 +72,18 @@ class InfoController:
         )
 
         await self.client_service.emit_done(sid, TABLE_COLLECTION_NAME)
+
+def client_is_subscribed(event):
+    if (event is None):
+        return False
+
+    if ("state" not in event.keys()):
+        return False
+
+    if ("client" not in event["state"].keys()):
+        return False
+
+    if ("subscribed" not in event["state"]["client"].keys()):
+        return False
+
+    return event["state"]["client"]["subscribed"]

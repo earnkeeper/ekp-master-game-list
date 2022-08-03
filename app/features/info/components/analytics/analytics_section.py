@@ -11,50 +11,69 @@ from ekp_sdk.ui import (Button, Card, Chart, Col, Column, Container, Datatable,
 
 def analytics_section(USERS_CHART_NAME, VOLUME_CHART_NAME, PRICE_CHART_NAME):
     return Div(
-        when="$.analytics_available",
         children=[
-            Span("Analytics", "font-medium-5 mt-3 d-block"),
-            Hr(),
-            Div(class_name="mt-2"),
-            Tabs(
+            Div(
+                when={"not": "$.is_subscribed"},
                 children=[
-                    Tab(
-                        label="User Activity",
+                    Span("Analytics (Premium Only)", "font-medium-5 mt-3 d-block"),
+                    Hr(),
+                    Span("Want to see full historical data for all game metrics, remove adverts and even more benefits?"),
+                    Div(class_name="pt-1"),
+                    Link(content="Subscribe here", href="/account")
+                ]
+            ),
+            Div(
+                when="$.is_subscribed",
+                children=[
+                    Div(
+                        when="$.analytics_available",
                         children=[
-                            Div(
+                            Span("Analytics", "font-medium-5 mt-3 d-block"),
+                            Hr(),
+                            Div(class_name="mt-2"),
+                            Tabs(
                                 children=[
-                                    analytics_users(
-                                        USERS_CHART_NAME
+                                    Tab(
+                                        label="User Activity",
+                                        children=[
+                                            Div(
+                                                children=[
+                                                    analytics_users(
+                                                        USERS_CHART_NAME
+                                                    )
+                                                ]
+                                            )
+                                        ]
+                                    ),
+                                    Tab(
+                                        label="Volume",
+                                        children=[
+                                            Div(
+                                                children=[
+                                                    analytics_volume(
+                                                        VOLUME_CHART_NAME
+                                                    )
+                                                ]
+                                            )
+                                        ]
+                                    ),
+                                    Tab(
+                                        label="Price",
+                                        children=[
+                                            Div(
+                                                children=[
+                                                    analytics_price(
+                                                        PRICE_CHART_NAME
+                                                    )
+                                                ]
+                                            )
+                                        ]
                                     )
-                                ]
-                            )
-                        ]
-                    ),
-                    Tab(
-                        label="Volume",
-                        children=[
-                            Div(
-                                children=[
-                                    analytics_volume(
-                                        VOLUME_CHART_NAME
-                                    )
-                                ]
-                            )
-                        ]
-                    ),
-                    Tab(
-                        label="Price",
-                        children=[
-                            Div(
-                                children=[
-                                    analytics_price(
-                                        PRICE_CHART_NAME
-                                    )
+
                                 ]
                             )
                         ]
                     )
-
                 ]
             )
         ]
