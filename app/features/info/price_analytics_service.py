@@ -41,10 +41,7 @@ class PriceAnalyticsService:
                 continue;
             
             chart_record = {}
-            dt = parser.parse(record['_id'])
-            dtm = get_midnight_utc(dt)
-            dtm_timestamp = dtm.timestamp()
-            chart_record["timestamp_ms"] = int(dtm_timestamp) * 1000
+            chart_record["timestamp_ms"] = record['timestamp']
             chart_record["price_usd"] = record["price_usd"]
             chart.append(chart_record)
 

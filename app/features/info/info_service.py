@@ -52,7 +52,7 @@ class InfoService:
         self.volume_analytics_service = volume_analytics_service
         self.price_analytics_service = price_analytics_service
 
-    async def get_documents(self, game_id, currency, users_days, volume_days):
+    async def get_documents(self, game_id, currency, users_days, volume_days, price_days):
         
         game = self.game_repo.find_one_by_id(game_id)
         now = datetime.now().timestamp()
@@ -114,10 +114,14 @@ class InfoService:
         description = game.get("description", None)
 
         activity_document = await self.activity_info_service.get_activity_document(game)
-        price_document = await self.token_price_info_service.get_price_document(game, rate)
         social_document = await self.social_followers_info_service.get_social_document(game)
         media_documents = await self.media_info_service.get_media_documents(game)
         resources_documents = await self.resources_info_service.get_resources_documents(game)
+
+        price_records = self.token_price_info_service.get_price_records(game)
+        price_document = await self.token_price_info_service.get_price_document(price_records, game, rate)
+        price_period_chart = self.price_analytics_service.get_period_chart(price_days, price_records)
+        price_last_period_chart = self.price_analytics_service.get_last_period_chart(price_days, price_records)
 
         volume_records = await self.token_volume_info_service.get_volume_records(game)
         volume_document = await self.token_volume_info_service.get_volume_document(volume_records, game, rate)
@@ -143,7 +147,6 @@ class InfoService:
         if price_document and isinstance(game['coin_ids'], list) and len(game['coin_ids']):
             coingecko_link = f"https://www.coingecko.com/en/coins/{game['coin_ids'][0]}"
         
-        print(volume_period_chart)
         return [
             {
                 "id": game_id,
@@ -164,13 +167,16 @@ class InfoService:
                 "price": price_document,
                 "media": media_documents,
                 "resources": resources_documents,
+                "analytics_available": len(price_last_period_chart) or len(volume_period_chart) or len(users_period_chart),
+                "analytics_price": {
+                    "price_period_chart": price_period_chart,
+                    "price_last_period_chart": price_last_period_chart,
+                },
                 "analytics_volume": {
-                    "volume_period_total": volume_period_total,
                     "volume_period_chart": volume_period_chart,
                     "volume_last_period_chart": volume_last_period_chart,
                 },
                 "analytics_users": {
-                    "users_period_count": users_period_count,
                     "users_period_chart": users_period_chart,
                     "users_last_period_chart": users_last_period_chart,
                 },

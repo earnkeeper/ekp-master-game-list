@@ -6,6 +6,7 @@ from ekp_sdk.util import client_path, client_currency, form_values
 TABLE_COLLECTION_NAME = "game_info"
 USERS_CHART_NAME = "users"
 VOLUME_CHART_NAME = "volume"
+PRICE_CHART_NAME = "price"
 
 
 class InfoController:
@@ -22,7 +23,7 @@ class InfoController:
         await self.client_service.emit_page(
             sid,
             f'{self.path}/:gameId',
-            page(TABLE_COLLECTION_NAME, USERS_CHART_NAME, VOLUME_CHART_NAME)
+            page(TABLE_COLLECTION_NAME, USERS_CHART_NAME, VOLUME_CHART_NAME, PRICE_CHART_NAME)
         )
 
     async def on_client_state_changed(self, sid, event):
@@ -51,7 +52,14 @@ class InfoController:
         if volume_chart_form and "days" in volume_chart_form:
             volume_days = volume_chart_form["days"]
 
-        table_documents = await self.info_service.get_documents(game_id, currency, users_days, volume_days)
+        price_chart_form = form_values(event, f"chart_{PRICE_CHART_NAME}")
+
+        price_days = 7
+
+        if price_chart_form and "days" in price_chart_form:
+            price_days = price_chart_form["days"]
+
+        table_documents = await self.info_service.get_documents(game_id, currency, users_days, volume_days, price_days)
 
         await self.client_service.emit_documents(
             sid,

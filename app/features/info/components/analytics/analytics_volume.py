@@ -5,7 +5,7 @@ from ekp_sdk.ui import (Button, Card, Chart, Col, Column, Container, Datatable,
                         format_mask_address, format_percent, format_template,
                         is_busy, json_array, navigate, sort_by, navigate_back, format_age, Avatar, Form, Select)
 
-def volume_analytics_chart(CHART_NAME):
+def analytics_volume(CHART_NAME):
     return Card(
         children=[
             Div(

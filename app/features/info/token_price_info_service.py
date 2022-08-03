@@ -10,12 +10,18 @@ class TokenPriceInfoService:
     ):
         self.price_repo = price_repo
 
-    async def get_price_document(self, game, rate):
+    def get_price_records(self, game):
+        records = self.price_repo.find_by_game_id(game["id"])
+        return records
+
+    async def get_price_document(self, price_records, game, rate):
 
         ago_7d = get_midnight_utc().timestamp() - 7 * 86400
 
-        price_records = self.price_repo.find_by_game_id_since(
-            game["id"], ago_7d)
+        price_records = list(filter(
+            lambda x: x['timestamp'] >= ago_7d,
+            price_records
+        ))
 
         if not len(price_records):
             return None
