@@ -1,12 +1,14 @@
+from app.features.info.components.analytics.analytics_section import analytics_section
+from app.features.info.components.analytics.analytics_volume import analytics_volume
 from app.utils.page_title import page_title
 from ekp_sdk.ui import (Button, Card, Chart, Col, Column, Container, Datatable,
                         Div, Hr, Icon, Image, Link, Paragraphs, Row, Span,
-                        Tabs, commify, ekp_map, format_currency, sum,
+                        Tabs, commify, ekp_map, format_currency, sum, Tab,
                         format_mask_address, format_percent, format_template,
                         is_busy, json_array, navigate, sort_by, navigate_back, format_age, Avatar, Form, Select)
 
 
-def page(GAME_INFO_COLLECTION_NAME, USERS_CHART_NAME):
+def page(GAME_INFO_COLLECTION_NAME, USERS_CHART_NAME, VOLUME_CHART_NAME, PRICE_CHART_NAME):
     return Container(
         children=[
             Div(
@@ -37,7 +39,11 @@ def page(GAME_INFO_COLLECTION_NAME, USERS_CHART_NAME):
                             __resources_section(),
                             __media_section(),
                             __volumes_section(),
-                            __analytics_section(USERS_CHART_NAME),
+                            analytics_section(
+                                USERS_CHART_NAME,
+                                VOLUME_CHART_NAME,
+                                PRICE_CHART_NAME
+                            ),
                             __deep_dives_section(),
                             Div([], style={"height": "300px"})
                         ]
@@ -287,223 +293,6 @@ def __volumes_section():
         )
 
     ])
-
-
-def __analytics_section(USERS_CHART_NAME):
-    return Div(
-        when="$.users_period_chart",
-        children=[
-            Span("Analytics", "font-medium-5 mt-3 d-block"),
-            Hr(),
-            Div(class_name="mt-2"),
-            Div(
-                children=[
-                    __user_aggregates_summary(),
-                    __user_aggregates_chart(
-                        USERS_CHART_NAME
-                    )
-                ]
-            )
-        ])
-
-
-def __analytics_summary_card(title, value):
-    return Container(
-        children=[
-            Card(
-                class_name="p-1",
-                children=[
-                    Row([
-                        Col("col-auto pr-4", [
-                            Span(title, "font-small-2 d-block"),
-                            Span(
-                                content=value,
-                                class_name="font-medium-3 font-weight-bold d-block"
-                            ),
-                        ]),
-
-                    ])
-                ])
-        ]
-    )
-
-
-def __form_row(GAME_INFO_COLLECTION_NAME, USERS_CHART_FORM_NAME):
-    return Div(
-        style={"marginTop": "-30px"},
-        class_name="pl-2",
-        children=[
-            Form(
-                name=USERS_CHART_FORM_NAME,
-                schema={
-                    "type": "object",
-                    "properties": {
-                        "period": "string",
-                    },
-                    "default": {
-                        "period": "Last 7 days",
-                    }
-                },
-                children=[
-                    Row([
-                        Col(
-                            "col-auto my-auto",
-                            [
-                                Select(
-                                    label="Period",
-                                    name="period",
-                                    options=[
-                                        "Last 7 days",
-                                        "Last 28 days",
-                                        "Last 3 months",
-                                        "Last 12 months"
-                                    ],
-                                    min_width="150px"
-                                ),
-                            ],
-
-                        ),
-                        Col(
-                            "col-auto my-auto",
-                            [
-                                Button(label="Update", is_submit=True,
-                                       busy_when=is_busy(GAME_INFO_COLLECTION_NAME))
-                            ]
-                        )
-                    ])
-
-                ]
-            )
-        ]
-    )
-
-
-def __user_aggregates_summary():
-    return Div(
-        children=[
-            Row(
-                children=[
-                    Col("col-auto", [
-                        __analytics_summary_card(
-                            "Users",
-                            commify(
-                                sum(
-                                    f"$.users_period_chart..active_users"
-                                ),
-                            )
-                        ),
-                    ]),
-                    Col("col-auto", [
-                        __analytics_summary_card(
-                            "Transactions",
-                            commify(
-                                sum(
-                                    f"$.users_period_chart..total_transfers"
-                                )
-                            ),
-                        ),
-                    ]),
-                ]
-            )
-        ]
-    )
-
-
-def __user_aggregates_chart(USERS_CHART_NAME):
-    return Card(
-        children=[
-            Div(
-                class_name="mx-1 my-2",
-                style={
-                    "marginRight": "-10px",
-                    "marginLeft": "-22px",
-                    "marginBottom": "-14px",
-                    "marginTop": "-20px"
-                },
-                children=[
-                    Chart(
-                        title="",
-                        name=USERS_CHART_NAME,
-                        height=350,
-                        type="line",
-                        data="$.users_period_chart.*",
-                        card=False,
-                        period_days_select=[7, 28, 90, 365, None],
-                        options={
-                            "legend": {
-                                "show": False
-                            },
-                            "chart": {
-                                "zoom": {
-                                    "enabled": False,
-                                },
-                                "toolbar": {
-                                    "show": False,
-                                },
-                                "stacked": False,
-                                "type": "line"
-                            },
-                            "xaxis": {
-                                "type": "datetime",
-                                "labels": {"show": True}
-                            },
-                            "yaxis": [
-                                {
-                                    "labels": {
-                                        "show": False,
-                                        "formatter": commify("$")
-                                    },
-                                },
-                            ],
-                            "colors": ["#F76D00"],
-                            "labels": ekp_map(
-                                sort_by(
-                                    json_array(
-                                        "$.users_period_chart.*"
-                                    ),
-                                    "$.timestamp_ms"
-                                ), "$.timestamp_ms"
-                            ),
-                            "stroke": {
-                                "width": [4, 2],
-                                "colors": ["#F76D00"],
-                                "dashArray": [0, [3, 2]]
-                            }
-                        },
-                        series=[
-                            {
-                                "name": "Active Users",
-                                "type": "line",
-                                "data": ekp_map(
-                                    sort_by(
-                                        json_array(
-                                            "$.users_period_chart.*"),
-                                        "$.timestamp_ms"
-                                    ),
-                                    "$.active_users"
-                                ),
-                            },
-                            {
-                                "name": "Active Users (Last Period)",
-                                "type": "line",
-                                "data": ekp_map(
-                                    sort_by(
-                                        json_array(
-                                            "$.users_last_period_chart.*"
-                                        ),
-                                        "$.timestamp_ms"
-                                    ),
-                                    "$.active_users"
-                                ),
-                            },
-                        ],
-                    )
-                ]
-            ),
-            # __form_row(GAME_INFO_COLLECTION_NAME, USERS_CHART_FORM_NAME)
-        ]
-    )
-
 
 def __deep_dives_section():
     return Div(

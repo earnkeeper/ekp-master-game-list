@@ -11,8 +11,6 @@ class GameAlertService:
         self.alert_config_repo = alert_config_repo
 
     def save_alert(self, alert_form_values):
-        # pprint(alert_form_values)
-
         document = {
             "id": alert_form_values['id'],
             "created": alert_form_values['created'],

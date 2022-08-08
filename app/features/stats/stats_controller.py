@@ -94,11 +94,6 @@ class StatsController:
         
         all_documents = list(documents_dict.values())
 
-        # for doc in all_documents:
-        #     if doc["id"] == 'ape-in':
-            # if "game_name" not in doc or not doc['game_name'] or doc['game_name'] == "":
-            #     pprint(doc)
-
         await self.client_service.emit_documents(
             sid,
             STATS_TABLE_COLLECTION_NAME,
@@ -107,6 +102,3 @@ class StatsController:
 
         await self.client_service.emit_done(sid, STATS_TABLE_COLLECTION_NAME)
 
-        # futures = [update_socials(), update_activity(), update_volumes()]
-
-        # await asyncio.gather(*futures)

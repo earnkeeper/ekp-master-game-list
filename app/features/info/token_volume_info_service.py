@@ -9,10 +9,13 @@ class TokenVolumeInfoService:
         volume_repo: VolumeRepo,
     ):
         self.volume_repo = volume_repo
-
-    async def get_volume_document(self, game, rate):
-
+        
+    async def get_volume_records(self, game):
         records = self.volume_repo.find_by_game_id(game["id"])
+        return records
+        
+
+    async def get_volume_document(self, records, game, rate):
 
         now = datetime.now().timestamp()
         
@@ -82,5 +85,6 @@ class TokenVolumeInfoService:
             "volume7dcount": 0,
             "updated": now,
             "chart7d": chart7d_template,
+            "chartAll": []
         }        
         

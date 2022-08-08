@@ -7,11 +7,13 @@ from app.features.info.game_alert_service import GameAlertService
 from app.features.info.info_controller import InfoController
 from app.features.info.info_service import InfoService
 from app.features.info.media_info_service import MediaInfoService
+from app.features.info.price_analytics_service import PriceAnalyticsService
 from app.features.info.resources_info_service import ResourcesInfoService
 from app.features.info.social_followers_info_service import SocialFollowersInfoService
 from app.features.info.token_price_info_service import TokenPriceInfoService
 from app.features.info.token_volume_info_service import TokenVolumeInfoService
 from app.features.info.user_analytics_service import UserAnalyticsService
+from app.features.info.volume_analytics_service import VolumeAnalyticsService
 from app.features.stats.activity_stats_service import ActivityStatsService
 from app.features.stats.social_stats_service import SocialStatsService
 from app.features.stats.stats_controller import StatsController
@@ -55,6 +57,7 @@ class AppContainer(BaseContainer):
         super().__init__(config)
 
         MONGO_URI_ETH = config("MONGO_URI_ETH")
+        MONGO_URI_BSC = config("MONGO_URI_BSC")
         MONGO_DB_NAME = config('MONGO_DB_NAME')
 
         # Image Proxy
@@ -67,6 +70,11 @@ class AppContainer(BaseContainer):
 
         self.mg_client_eth = MgClient(
             uri=MONGO_URI_ETH,
+            db_name=MONGO_DB_NAME
+        )
+
+        self.mg_client_bsc = MgClient(
+            uri=MONGO_URI_BSC,
             db_name=MONGO_DB_NAME
         )
 
@@ -100,6 +108,10 @@ class AppContainer(BaseContainer):
 
         self.contract_aggregate_repo_eth = ContractAggregateRepo(
             mg_client=self.mg_client_eth
+        )
+        
+        self.contract_aggregate_repo_bsc = ContractAggregateRepo(
+            mg_client=self.mg_client_bsc
         )
 
         self.transaction_repo_eth = TransactionRepo(
@@ -135,6 +147,7 @@ class AppContainer(BaseContainer):
 
         self.user_aggregate_service = UserAnalyticsService(
             contract_aggregate_repo_eth=self.contract_aggregate_repo_eth,
+            contract_aggregate_repo_bsc=self.contract_aggregate_repo_bsc,
             transaction_repo_eth=self.transaction_repo_eth,
             game_repo=self.game_repo
         )
@@ -143,6 +156,9 @@ class AppContainer(BaseContainer):
             mg_client=self.mg_client
         )
 
+        self.volume_analytics_service = VolumeAnalyticsService()
+        self.price_analytics_service = PriceAnalyticsService()
+        
         self.info_service = InfoService(
             activity_info_service=self.activity_info_service,
             cache_service=self.cache_service,
@@ -156,7 +172,9 @@ class AppContainer(BaseContainer):
             media_info_service=self.media_info_service,
             resources_info_service=self.resources_info_service,
             contract_aggregate_repo=self.contract_aggregate_repo_eth,
-            user_analytics_service=self.user_aggregate_service
+            user_analytics_service=self.user_aggregate_service,
+            volume_analytics_service=self.volume_analytics_service,
+            price_analytics_service=self.price_analytics_service
         )
 
         self.info_controller = InfoController(

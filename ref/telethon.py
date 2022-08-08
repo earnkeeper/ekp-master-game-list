@@ -14,4 +14,3 @@ if (client.is_user_authorized() == False):
 channel = client.get_entity('CHANNEL LINK')
 
 members = client.get_participants(channel)
-print(len(members))

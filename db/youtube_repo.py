@@ -76,13 +76,13 @@ class YoutubeRepo:
     def save(self, videos):
         if not videos or not len(videos):
             return
-        
+
         start = time.perf_counter()
-        
+
         self.collection.bulk_write(
             list(map(lambda video: UpdateOne(
                 {"id": video["id"]}, {"$set": video}, True), videos))
         )
 
-        print(
+        logging.info(
             f"⏱  [YoutubeRepo.save({len(videos)})] {time.perf_counter() - start:0.3f}s")
