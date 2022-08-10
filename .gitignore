@@ -176,3 +176,5 @@ ssl_certs/
 dolt_config.yaml
 dolttest.py
 mongo_data_to_dolt_transfer.py
+mongo_eth_test.py
+test_script.py

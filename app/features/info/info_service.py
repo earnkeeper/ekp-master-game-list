@@ -1,4 +1,5 @@
 from app.features.info.price_analytics_service import PriceAnalyticsService
+from app.features.info.shared_games_service import SharedGamesService
 from app.features.info.user_analytics_service import UserAnalyticsService
 from app.features.info.volume_analytics_service import VolumeAnalyticsService
 from app.utils.proxy_image import proxy_image
@@ -34,7 +35,8 @@ class InfoService:
         contract_aggregate_repo: ContractAggregateRepo,
         user_analytics_service: UserAnalyticsService,
         volume_analytics_service: VolumeAnalyticsService,
-        price_analytics_service: PriceAnalyticsService
+        price_analytics_service: PriceAnalyticsService,
+        # shared_games_service: SharedGamesService
     ):
         self.activity_info_service = activity_info_service
         self.cache_service = cache_service
@@ -51,6 +53,7 @@ class InfoService:
         self.user_analytics_service = user_analytics_service
         self.volume_analytics_service = volume_analytics_service
         self.price_analytics_service = price_analytics_service
+        # self.shared_games_service = shared_games_service
 
     async def get_documents(self, game_id, currency, users_days, volume_days, price_days, is_subscribed):
         
@@ -132,7 +135,8 @@ class InfoService:
         users_period_chart = self.user_analytics_service.get_period_chart(game, users_days)
         users_last_period_chart = self.user_analytics_service.get_last_period_chart(game, users_days)
         users_period_count = self.user_analytics_service.get_period_users(game, users_days)
-        
+
+        # shared_games_service = self.shared_games_service.get_games()
 
         telegram = game["telegram"] if (
             game["telegram"] and game["telegram"] != "https://t.me/") else None

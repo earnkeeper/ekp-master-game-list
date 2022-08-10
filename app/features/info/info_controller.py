@@ -34,7 +34,7 @@ class InfoController:
             return
 
         is_subscribed = client_is_subscribed(event)
-        
+
         game_id = path.replace(f'{self.path}/', '')
 
         currency = client_currency(event)
@@ -62,7 +62,8 @@ class InfoController:
         if price_chart_form and "days" in price_chart_form:
             price_days = price_chart_form["days"]
 
-        table_documents = await self.info_service.get_documents(game_id, currency, users_days, volume_days, price_days, is_subscribed)
+        table_documents = await self.info_service.get_documents(game_id, currency, users_days, volume_days, price_days,
+                                                                is_subscribed)
 
         await self.client_service.emit_documents(
             sid,
@@ -72,6 +73,7 @@ class InfoController:
         )
 
         await self.client_service.emit_done(sid, TABLE_COLLECTION_NAME)
+
 
 def client_is_subscribed(event):
     if (event is None):

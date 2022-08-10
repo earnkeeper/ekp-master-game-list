@@ -9,11 +9,13 @@ from app.features.info.info_service import InfoService
 from app.features.info.media_info_service import MediaInfoService
 from app.features.info.price_analytics_service import PriceAnalyticsService
 from app.features.info.resources_info_service import ResourcesInfoService
+from app.features.info.shared_games_service import SharedGamesService
 from app.features.info.social_followers_info_service import SocialFollowersInfoService
 from app.features.info.token_price_info_service import TokenPriceInfoService
 from app.features.info.token_volume_info_service import TokenVolumeInfoService
 from app.features.info.user_analytics_service import UserAnalyticsService
 from app.features.info.volume_analytics_service import VolumeAnalyticsService
+from app.features.shared_games.shared_games_controller import SharedGamesController
 from app.features.stats.activity_stats_service import ActivityStatsService
 from app.features.stats.social_stats_service import SocialStatsService
 from app.features.stats.stats_controller import StatsController
@@ -27,7 +29,7 @@ from db.resources_repo import ResourcesRepo
 from db.social_repo import SocialRepo
 from db.transaction_repo import TransactionRepo
 from db.volume_repo import VolumeRepo
-
+from ekp_sdk.services.web3_service import Web3
 from db.game_repo import GameRepo
 from db.youtube_repo import YoutubeRepo
 
@@ -94,6 +96,10 @@ class AppContainer(BaseContainer):
             mg_client=self.mg_client
         )
 
+        self.game_repo_bsc = GameRepo(
+            mg_client=self.mg_client_bsc
+        )
+
         self.youtube_repo = YoutubeRepo(
             mg_client=self.mg_client
         )
@@ -116,6 +122,10 @@ class AppContainer(BaseContainer):
 
         self.transaction_repo_eth = TransactionRepo(
             mg_client=self.mg_client_eth
+        )
+
+        self.transaction_repo_bsc = TransactionRepo(
+            mg_client=self.mg_client_bsc
         )
 
         # FEATURES - INFO
@@ -152,6 +162,15 @@ class AppContainer(BaseContainer):
             game_repo=self.game_repo
         )
 
+        self.web3 = Web3()
+
+        self.shared_games_service = SharedGamesService(
+            transaction_repo=self.transaction_repo_bsc,
+            game_repo=self.game_repo_bsc,
+            web3=self.web3,
+            web3_service=self.web3_service
+        )
+
         self.alert_config_repo = AlertConfigRepo(
             mg_client=self.mg_client
         )
@@ -174,7 +193,8 @@ class AppContainer(BaseContainer):
             contract_aggregate_repo=self.contract_aggregate_repo_eth,
             user_analytics_service=self.user_aggregate_service,
             volume_analytics_service=self.volume_analytics_service,
-            price_analytics_service=self.price_analytics_service
+            price_analytics_service=self.price_analytics_service,
+            # shared_games_service=self.shared_games_service
         )
 
         self.info_controller = InfoController(
@@ -220,6 +240,11 @@ class AppContainer(BaseContainer):
             game_alert_service=self.game_alert_service
         )
 
+        self.shared_games_controller = SharedGamesController(
+            client_service=self.client_service,
+            shared_games_service=self.shared_games_service
+        )
+
 
 if __name__ == '__main__':
     container = AppContainer()
@@ -230,6 +255,8 @@ if __name__ == '__main__':
 
     container.client_service.add_controller(container.info_controller)
     container.client_service.add_controller(container.stats_controller)
+
+    container.client_service.add_controller(container.shared_games_controller)
 
     logging.info("🚀 App started")
 
