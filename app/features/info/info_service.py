@@ -1,5 +1,4 @@
 from app.features.info.price_analytics_service import PriceAnalyticsService
-from app.features.info.shared_games_service import SharedGamesService
 from app.features.info.user_analytics_service import UserAnalyticsService
 from app.features.info.volume_analytics_service import VolumeAnalyticsService
 from app.utils.proxy_image import proxy_image

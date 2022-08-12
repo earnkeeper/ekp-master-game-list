@@ -1,10 +1,10 @@
 from pprint import pprint
-from app.features.info.info_page import page
-from app.features.info.info_service import InfoService
 from ekp_sdk.services import ClientService
 from ekp_sdk.util import client_path, client_currency, form_values
 
-SHARED_GAMES_COLLECTION_NAME = "game_info"
+# SHARED_GAMES_COLLECTION_NAME = "game_info"
+
+SHARED_GAMES_COLLECTION_NAME = "similar_games"
 # TABLE_COLLECTION_NAME = "game_info"
 # USERS_CHART_NAME = "users"
 # VOLUME_CHART_NAME = "volume"
@@ -20,14 +20,15 @@ class SharedGamesController:
     ):
         self.client_service = client_service
         self.shared_games_service = shared_games_service
-        self.path = 'shared'
+        self.path = 'info'
 
-    # async def on_connect(self, sid):
-    #     await self.client_service.emit_page(
-    #         sid,
-    #         f'{self.path}/:gameId',
-    #         page(TABLE_COLLECTION_NAME, USERS_CHART_NAME, VOLUME_CHART_NAME, PRICE_CHART_NAME)
-    #     )
+    async def on_connect(self, sid):
+        print('Connected to shared games controller')
+        # await self.client_service.emit_page(
+        #     sid,
+        #     f'{self.path}/:gameId',
+        #     shared_games_page(TABLE_COLLECTION_NAME)
+        # )
 
     async def on_client_state_changed(self, sid, event):
         path = client_path(event)
@@ -36,8 +37,12 @@ class SharedGamesController:
             return
 
         game_id = path.replace(f'{self.path}/', '')
+        print(game_id)
+        shared_game_documents = self.shared_games_service.get_games(game_id)
 
-        shared_game_documents = self.shared_games_service.get_games()
+        print('start documents')
+        pprint(shared_game_documents)
+        print('end documents')
 
         await self.client_service.emit_documents(
             sid,

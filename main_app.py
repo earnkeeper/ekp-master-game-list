@@ -9,13 +9,13 @@ from app.features.info.info_service import InfoService
 from app.features.info.media_info_service import MediaInfoService
 from app.features.info.price_analytics_service import PriceAnalyticsService
 from app.features.info.resources_info_service import ResourcesInfoService
-from app.features.info.shared_games_service import SharedGamesService
 from app.features.info.social_followers_info_service import SocialFollowersInfoService
 from app.features.info.token_price_info_service import TokenPriceInfoService
 from app.features.info.token_volume_info_service import TokenVolumeInfoService
 from app.features.info.user_analytics_service import UserAnalyticsService
 from app.features.info.volume_analytics_service import VolumeAnalyticsService
 from app.features.shared_games.shared_games_controller import SharedGamesController
+from app.features.shared_games.shared_games_service import SharedGamesService
 from app.features.stats.activity_stats_service import ActivityStatsService
 from app.features.stats.social_stats_service import SocialStatsService
 from app.features.stats.stats_controller import StatsController

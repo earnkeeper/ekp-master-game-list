@@ -8,7 +8,7 @@ from ekp_sdk.ui import (Button, Card, Chart, Col, Column, Container, Datatable,
                         is_busy, json_array, navigate, sort_by, navigate_back, format_age, Avatar, Form, Select)
 
 
-def page(GAME_INFO_COLLECTION_NAME, USERS_CHART_NAME, VOLUME_CHART_NAME, PRICE_CHART_NAME):
+def page(GAME_INFO_COLLECTION_NAME, SHARED_GAMES_COLLECTION_NAME, USERS_CHART_NAME, VOLUME_CHART_NAME, PRICE_CHART_NAME):
     return Container(
         children=[
             Div(
@@ -38,6 +38,7 @@ def page(GAME_INFO_COLLECTION_NAME, USERS_CHART_NAME, VOLUME_CHART_NAME, PRICE_C
                             __info_section(),
                             __resources_section(),
                             __media_section(),
+                            __shared_games_section(SHARED_GAMES_COLLECTION_NAME),
                             __volumes_section(),
                             analytics_section(
                                 USERS_CHART_NAME,
@@ -96,6 +97,35 @@ def __media_section():
                         "props": {
                             "data": json_array("$.media.*"),
                             "tileSchema": __media_card()
+                        }
+                    },
+                ]
+            ),
+        ])
+
+def __shared_games_section(SHARED_GAMES_COLLECTION_NAME):
+    return Div(
+        context=format_template(f"$['{SHARED_GAMES_COLLECTION_NAME}']" + "[?(@.id == '{{ game_id }}')]", {
+            "game_id": "$.location.pathParams[1]"
+        }),
+        when=f"$.{SHARED_GAMES_COLLECTION_NAME}",
+        children=[
+            Div(
+                children=[
+                    Span("Similar Games", "font-medium-5 mt-3 d-block"),
+                    Hr(),
+                    Span(
+                        "Here are the top 10 games that players of Metabomb are also playing.",
+                    ),
+                ]),
+            Div(
+                children=[
+                    Div(style={"height": "48px"}),
+                    {
+                        "_type": "Scroller",
+                        "props": {
+                            "data": json_array(f"$.{SHARED_GAMES_COLLECTION_NAME}.*"),
+                            "tileSchema": __shared_games_card()
                         }
                     },
                 ]
@@ -423,6 +453,63 @@ def __media_card():
                     )
                 ]
             )
+        ]
+    )
+
+
+def __shared_games_card():
+    return Div(
+        style={"width": "320px"},
+        children=[
+            Div(
+                children=[
+                    Image(
+                        class_name="mb-1",
+                        src="$.banner_url",
+                        style={"height": "150px", "width": "100%"}
+                    ),
+                ]
+            ),
+            Div(
+                style={"height": "52px"},
+                class_name="px-1",
+                children=[
+                    Link(
+                        class_name="font-small-3",
+                        href=format_template("/game/all/info/{{ id }}", {
+                            "id": "$.game_id"
+                        }),
+                        external=True,
+                        content="$.game",
+                    ),
+                ]
+            ),
+            Div(
+                class_name="ml-1 mr-2 mt-1 mb-2",
+                children=[
+                    Row(
+                        children=[
+                            Col(
+                                class_name="col-6",
+                                children=[
+                                    Icon(
+                                        "user",
+                                        size='sm',
+                                        style={
+                                            "marginRight": "6px"
+                                        }
+                                    ),
+                                    Span(
+                                        format_template(
+                                            "{{ shared_players }} shared players",
+                                            {"shared_players": "$.players"}
+                                        ), "font-small-3")
+                                ]
+                            ),
+                        ]
+                    )
+                ]
+            ),
         ]
     )
 

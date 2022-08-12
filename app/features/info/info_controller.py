@@ -4,6 +4,7 @@ from app.features.info.info_service import InfoService
 from ekp_sdk.services import ClientService
 from ekp_sdk.util import client_path, client_currency, form_values
 
+SHARED_GAMES_COLLECTION_NAME = "similar_games"
 TABLE_COLLECTION_NAME = "game_info"
 USERS_CHART_NAME = "users"
 VOLUME_CHART_NAME = "volume"
@@ -24,7 +25,7 @@ class InfoController:
         await self.client_service.emit_page(
             sid,
             f'{self.path}/:gameId',
-            page(TABLE_COLLECTION_NAME, USERS_CHART_NAME, VOLUME_CHART_NAME, PRICE_CHART_NAME)
+            page(TABLE_COLLECTION_NAME, SHARED_GAMES_COLLECTION_NAME, USERS_CHART_NAME, VOLUME_CHART_NAME, PRICE_CHART_NAME)
         )
 
     async def on_client_state_changed(self, sid, event):
