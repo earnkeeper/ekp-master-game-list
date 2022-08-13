@@ -162,13 +162,9 @@ class AppContainer(BaseContainer):
             game_repo=self.game_repo
         )
 
-        self.web3 = Web3()
-
         self.shared_games_service = SharedGamesService(
             transaction_repo=self.transaction_repo_bsc,
             game_repo=self.game_repo_bsc,
-            web3=self.web3,
-            web3_service=self.web3_service
         )
 
         self.alert_config_repo = AlertConfigRepo(
@@ -194,7 +190,6 @@ class AppContainer(BaseContainer):
             user_analytics_service=self.user_aggregate_service,
             volume_analytics_service=self.volume_analytics_service,
             price_analytics_service=self.price_analytics_service,
-            # shared_games_service=self.shared_games_service
         )
 
         self.info_controller = InfoController(
