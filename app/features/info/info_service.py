@@ -35,7 +35,6 @@ class InfoService:
         user_analytics_service: UserAnalyticsService,
         volume_analytics_service: VolumeAnalyticsService,
         price_analytics_service: PriceAnalyticsService,
-        # shared_games_service: SharedGamesService
     ):
         self.activity_info_service = activity_info_service
         self.cache_service = cache_service
@@ -52,10 +51,193 @@ class InfoService:
         self.user_analytics_service = user_analytics_service
         self.volume_analytics_service = volume_analytics_service
         self.price_analytics_service = price_analytics_service
-        # self.shared_games_service = shared_games_service
+
+    def get_game(self, game_id):
+        return self.game_repo.find_one_by_id(game_id)
+
+    async def get_game_info(self, game, currency, is_subscribed):
+        now = datetime.now().timestamp()
+
+        banner_url = game.get('banner_url', None)
+        telegram_members = None
+        discord_members = None
+        twitter = None
+        twitter_followers = None
+        description = None
+
+        latest_social_record = self.social_repo.find_latest(game['id'])
+
+        if game["twitter"]:
+            twitter = f'https://twitter.com/{game["twitter"]}'
+
+            if latest_social_record is not None:
+                twitter_followers = latest_social_record.get(
+                    "twitter_followers", None)
+
+        if game["discord"]:
+            if latest_social_record is not None:
+                discord_members = latest_social_record.get(
+                    "discord_members", None)
+
+        if game["telegram"]:
+            if latest_social_record is not None:
+                telegram_members = latest_social_record.get(
+                    "telegram_members", None)
+
+        rate = 1
+
+        if currency["id"] != "usd":
+            rate = await self.cache_service.wrap(
+                f"coingecko_price_usd_{currency['id']}",
+                lambda: self.coingecko_service.get_latest_price(
+                    'usd-coin', currency["id"]),
+                ex=3600
+            )
+
+        if twitter_followers is None:
+            twitter_followers = "Twitter"
+
+        if discord_members is None:
+            discord_members = "Discord"
+
+        if telegram_members is None:
+            telegram_members = "Telegram"
+
+        description = game.get("description", None)
+
+        telegram = game["telegram"] if (
+            game["telegram"] and game["telegram"] != "https://t.me/") else None
+
+        if telegram and not telegram.startswith("http"):
+            telegram = f"https://t.me/{telegram}"
+
+        return [
+            {
+                "id": game['id'],
+                "updated": now,
+                "name": game["name"],
+                "banner": proxy_image(banner_url),
+                "twitter_followers": twitter_followers,
+                "telegram_members": telegram_members,
+                "discord_members": discord_members,
+                "description": description,
+                "twitter": twitter,
+                "telegram": telegram,
+                "discord": game["discord"],
+                "website": game["website"],
+                "is_subscribed": is_subscribed,
+                "fiat_symbol": currency['symbol'],
+                "statsAvailable": False,
+                "rate": rate
+            }
+        ]
+
+    async def add_activity(self, game, game_info):
+        activity_document = await self.activity_info_service.get_activity_document(game)
+
+        game_info[0]["activity"] = activity_document
+
+        if activity_document is not None:
+            game_info[0]["statsAvailable"] = True
+
+        return game_info
+
+    async def add_social(self, game, game_info):
+        social_document = await self.social_followers_info_service.get_social_document(game)
+
+        game_info[0]["social"] = social_document
+
+        if social_document is not None:
+            game_info[0]["statsAvailable"] = True
+
+        return game_info
+
+    async def add_media(self, game, game_info):
+        media_documents = await self.media_info_service.get_media_documents(game)
+
+        game_info[0]["media"] = media_documents
+
+        return game_info
+
+    async def add_volume(self, game, game_info, volume_days, is_subscribed):
+        rate = game_info[0]["rate"]
+        volume_records = await self.token_volume_info_service.get_volume_records(game)
+        volume_document = await self.token_volume_info_service.get_volume_document(volume_records, game, rate)
+
+        game_info[0]["volume"] = volume_document
+
+        if volume_document is not None:
+            game_info[0]["statsAvailable"] = True
+
+        if is_subscribed:
+            volume_period_chart = self.volume_analytics_service.get_period_chart(
+                volume_days, volume_records)
+
+            volume_last_period_chart = self.volume_analytics_service.get_last_period_chart(
+                volume_days, volume_records)
+
+            game_info[0]["analytics_volume"] = {
+                "volume_period_chart": volume_period_chart,
+                "volume_last_period_chart": volume_last_period_chart,
+            }
+
+        if len(volume_period_chart):
+            game_info[0]["analytics_available"] = True
+
+        return game_info
+
+    async def add_price(self, game, game_info, price_days, is_subscribed):
+        rate = game_info[0]["rate"]
+
+        price_records = self.token_price_info_service.get_price_records(game)
+        price_document = await self.token_price_info_service.get_price_document(price_records, game, rate)
+
+        if price_document and isinstance(game['coin_ids'], list) and len(game['coin_ids']):
+            game_info[0]["coingecko"] = f"https://www.coingecko.com/en/coins/{game['coin_ids'][0]}"
+
+        game_info[0]["price"] = price_document
+
+        if price_document is not None:
+            game_info[0]["statsAvailable"] = True
+
+        if is_subscribed:
+            price_period_chart = self.price_analytics_service.get_period_chart(
+                price_days, price_records)
+            price_last_period_chart = self.price_analytics_service.get_last_period_chart(
+                price_days, price_records)
+
+            game_info[0]["analytics_price"] = {
+                "price_period_chart": price_period_chart,
+                "price_last_period_chart": price_last_period_chart,
+            }
+            
+        if len(price_period_chart):
+            game_info[0]["analytics_available"] = True
+
+        return game_info
+
+    async def add_users(self, game, game_info, users_days, is_subscribed):
+
+        if not is_subscribed:
+            return game_info
+
+        users_period_chart = self.user_analytics_service.get_period_chart(
+            game, users_days)
+        users_last_period_chart = self.user_analytics_service.get_last_period_chart(
+            game, users_days)
+
+        game_info[0]["analytics_users"] = {
+            "users_period_chart": users_period_chart,
+            "users_last_period_chart": users_last_period_chart,
+        }
+        
+        if len(users_last_period_chart):
+            game_info[0]["analytics_available"] = True
+        
+        return game_info
 
     async def get_documents(self, game_id, currency, users_days, volume_days, price_days, is_subscribed):
-        
+
         game = self.game_repo.find_one_by_id(game_id)
         now = datetime.now().timestamp()
 
@@ -122,34 +304,38 @@ class InfoService:
 
         price_records = self.token_price_info_service.get_price_records(game)
         price_document = await self.token_price_info_service.get_price_document(price_records, game, rate)
-        price_period_chart = self.price_analytics_service.get_period_chart(price_days, price_records)
-        price_last_period_chart = self.price_analytics_service.get_last_period_chart(price_days, price_records)
+        price_period_chart = self.price_analytics_service.get_period_chart(
+            price_days, price_records)
+        price_last_period_chart = self.price_analytics_service.get_last_period_chart(
+            price_days, price_records)
 
         volume_records = await self.token_volume_info_service.get_volume_records(game)
         volume_document = await self.token_volume_info_service.get_volume_document(volume_records, game, rate)
-        volume_period_chart = self.volume_analytics_service.get_period_chart(volume_days, volume_records)
-        volume_last_period_chart = self.volume_analytics_service.get_last_period_chart(volume_days, volume_records)
-        volume_period_total = self.volume_analytics_service.get_period_total(volume_days, volume_records)
+        volume_period_chart = self.volume_analytics_service.get_period_chart(
+            volume_days, volume_records)
+        volume_last_period_chart = self.volume_analytics_service.get_last_period_chart(
+            volume_days, volume_records)
 
-        users_period_chart = self.user_analytics_service.get_period_chart(game, users_days)
-        users_last_period_chart = self.user_analytics_service.get_last_period_chart(game, users_days)
-        users_period_count = self.user_analytics_service.get_period_users(game, users_days)
+        users_period_chart = self.user_analytics_service.get_period_chart(
+            game, users_days)
+        users_last_period_chart = self.user_analytics_service.get_last_period_chart(
+            game, users_days)
 
         # shared_games_service = self.shared_games_service.get_games()
 
         telegram = game["telegram"] if (
             game["telegram"] and game["telegram"] != "https://t.me/") else None
-        
+
         if telegram and not telegram.startswith("http"):
             telegram = f"https://t.me/{telegram}"
-            
+
         stats_available = activity_document is not None or volume_document is not None or price_document is not None or social_document is not None
-        
+
         coingecko_link = None
-        
+
         if price_document and isinstance(game['coin_ids'], list) and len(game['coin_ids']):
             coingecko_link = f"https://www.coingecko.com/en/coins/{game['coin_ids'][0]}"
-        
+
         return [
             {
                 "id": game_id,

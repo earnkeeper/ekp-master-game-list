@@ -20,7 +20,7 @@ class SharedGamesController:
     ):
         self.client_service = client_service
         self.shared_games_service = shared_games_service
-        self.path = 'info'
+        self.path = 'info_disable'
 
     async def on_connect(self, sid):
         print('Connected to shared games controller')

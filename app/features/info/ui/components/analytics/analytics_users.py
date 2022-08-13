@@ -1,4 +1,4 @@
-from app.features.info.components.analytics.analytics_volume import analytics_volume
+from app.features.info.ui.components.analytics.analytics_volume import analytics_volume
 from app.utils.page_title import page_title
 from ekp_sdk.ui import (Button, Card, Chart, Col, Column, Container, Datatable,
                         Div, Hr, Icon, Image, Link, Paragraphs, Row, Span,

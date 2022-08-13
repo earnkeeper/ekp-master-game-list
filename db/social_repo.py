@@ -17,6 +17,8 @@ class SocialRepo:
         self.collection.create_index("timestamp")
         self.collection.create_index("game_id")
         self.collection.create_index("platform")
+        self.collection.create_index("date_timestamp")
+        self.collection.create_index("twitter_followers")
 
     def group_by_date(self, game_id, since):
         start = time.perf_counter()
