@@ -8,7 +8,7 @@ from ekp_sdk.ui import (Button, Card, Chart, Col, Column, Container, Datatable,
                         is_busy, json_array, navigate, sort_by, navigate_back, format_age, Avatar, Form, Select)
 
 
-def page(GAME_INFO_COLLECTION_NAME, SHARED_GAMES_COLLECTION_NAME, USERS_CHART_NAME, VOLUME_CHART_NAME, PRICE_CHART_NAME):
+def page(GAME_INFO_COLLECTION_NAME, USERS_CHART_NAME, VOLUME_CHART_NAME, PRICE_CHART_NAME):
     return Container(
         children=[
             Div(
@@ -38,7 +38,7 @@ def page(GAME_INFO_COLLECTION_NAME, SHARED_GAMES_COLLECTION_NAME, USERS_CHART_NA
                             __info_section(),
                             __resources_section(),
                             __media_section(),
-                            __shared_games_section(SHARED_GAMES_COLLECTION_NAME),
+                            __shared_games_section(),
                             __volumes_section(),
                             analytics_section(
                                 USERS_CHART_NAME,
@@ -103,12 +103,9 @@ def __media_section():
             ),
         ])
 
-def __shared_games_section(SHARED_GAMES_COLLECTION_NAME):
+def __shared_games_section():
     return Div(
-        context=format_template(f"$['{SHARED_GAMES_COLLECTION_NAME}']" + "[?(@.id == '{{ game_id }}')]", {
-            "game_id": "$.location.pathParams[1]"
-        }),
-        when=f"$.{SHARED_GAMES_COLLECTION_NAME}",
+        when=f"$.shared_games",
         children=[
             Div(
                 children=[
@@ -124,7 +121,7 @@ def __shared_games_section(SHARED_GAMES_COLLECTION_NAME):
                     {
                         "_type": "Scroller",
                         "props": {
-                            "data": json_array(f"$.{SHARED_GAMES_COLLECTION_NAME}.*"),
+                            "data": json_array(f"$.shared_games.*"),
                             "tileSchema": __shared_games_card()
                         }
                     },

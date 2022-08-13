@@ -1,4 +1,5 @@
 from app.features.info.price_analytics_service import PriceAnalyticsService
+from app.features.info.shared_games_service import SharedGamesService
 from app.features.info.user_analytics_service import UserAnalyticsService
 from app.features.info.volume_analytics_service import VolumeAnalyticsService
 from app.utils.proxy_image import proxy_image
@@ -35,6 +36,7 @@ class InfoService:
         user_analytics_service: UserAnalyticsService,
         volume_analytics_service: VolumeAnalyticsService,
         price_analytics_service: PriceAnalyticsService,
+        shared_games_service: SharedGamesService
     ):
         self.activity_info_service = activity_info_service
         self.cache_service = cache_service
@@ -51,6 +53,7 @@ class InfoService:
         self.user_analytics_service = user_analytics_service
         self.volume_analytics_service = volume_analytics_service
         self.price_analytics_service = price_analytics_service
+        self.shared_games_service = shared_games_service
 
     def get_game(self, game_id):
         return self.game_repo.find_one_by_id(game_id)
@@ -233,6 +236,16 @@ class InfoService:
         
         if len(users_last_period_chart):
             game_info[0]["analytics_available"] = True
+        
+        return game_info
+    
+    async def add_shared_games(self, game, game_info):
+        shared_game_documents = self.shared_games_service.get_games(game)
+        
+        if shared_game_documents is None or not len(shared_game_documents):
+            return game_info
+        
+        game_info[0]["shared_games"] = shared_game_documents
         
         return game_info
 

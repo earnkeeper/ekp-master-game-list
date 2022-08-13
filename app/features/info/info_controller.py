@@ -5,7 +5,6 @@ from app.features.info.info_service import InfoService
 from ekp_sdk.services import ClientService
 from ekp_sdk.util import client_path, client_currency, form_values
 
-SHARED_GAMES_COLLECTION_NAME = "similar_games"
 GAME_INFO_COLLECTION_NAME = "game_info"
 USERS_CHART_NAME = "users"
 VOLUME_CHART_NAME = "volume"
@@ -26,7 +25,7 @@ class InfoController:
         await self.client_service.emit_page(
             sid,
             f'{self.path}/:gameId',
-            page(GAME_INFO_COLLECTION_NAME, SHARED_GAMES_COLLECTION_NAME,
+            page(GAME_INFO_COLLECTION_NAME,
                  USERS_CHART_NAME, VOLUME_CHART_NAME, PRICE_CHART_NAME)
         )
 
@@ -69,27 +68,26 @@ class InfoController:
 
             return
 
+        # GAME INFO
 
-        ### GAME INFO
-        
         game_info = await self.info_service.get_game_info(game, currency, is_subscribed)
         await self.__emit_game_info(sid, game_id, game_info)
-        
-        ### ACTIVITY
+
+        # ACTIVITY
 
         game_info = await self.info_service.add_activity(game, game_info)
         await self.__emit_game_info(sid, game_id, game_info)
 
-        ### SOCIAL
+        # SOCIAL
 
         game_info = await self.info_service.add_social(game, game_info)
         await self.__emit_game_info(sid, game_id, game_info)
 
-        ### MEDIA
+        # MEDIA
         game_info = await self.info_service.add_media(game, game_info)
         await self.__emit_game_info(sid, game_id, game_info)
 
-        ### USERS
+        # USERS
 
         users_chart_form = form_values(event, f"chart_{USERS_CHART_NAME}")
         users_days = 7
@@ -98,7 +96,7 @@ class InfoController:
         game_info = await self.info_service.add_users(game, game_info, users_days, is_subscribed)
         await self.__emit_game_info(sid, game_id, game_info)
 
-        ### VOLUME
+        # VOLUME
 
         volume_chart_form = form_values(event, f"chart_{VOLUME_CHART_NAME}")
         volume_days = 7
@@ -106,18 +104,23 @@ class InfoController:
             volume_days = volume_chart_form["days"]
         game_info = await self.info_service.add_volume(game, game_info, volume_days, is_subscribed)
         await self.__emit_game_info(sid, game_id, game_info)
-        
-        ### PRICE
-        
+
+        # PRICE
+
         price_chart_form = form_values(event, f"chart_{PRICE_CHART_NAME}")
         price_days = 7
         if price_chart_form and "days" in price_chart_form:
             price_days = price_chart_form["days"]
         game_info = await self.info_service.add_price(game, game_info, price_days, is_subscribed)
         await self.__emit_game_info(sid, game_id, game_info)
+
+        # SHARED GAMES
+        
+        game_info = await self.info_service.add_shared_games(game, game_info)
+        await self.__emit_game_info(sid, game_id, game_info)
         
 
-        ### DONE
+        # DONE
 
         await self.client_service.emit_done(sid, GAME_INFO_COLLECTION_NAME)
 

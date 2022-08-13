@@ -13,14 +13,8 @@ class SharedGamesService:
         self.transaction_repo = transaction_repo
         self.game_repo = game_repo
 
-    def get_games(self, game_id):
-        games = list(self.game_repo.collection.find())
-
-        game_contracts = []
-
-        for game in games:
-            if game['id'] == game_id:
-                game_contracts = game['tokens']['bsc']
+    def get_games(self, game):
+        game_contracts = game['tokens']['bsc']
 
         shared_games = []
 
@@ -71,17 +65,18 @@ class SharedGamesService:
                         }
                     ]
                 ))
-
+                games = self.game_repo.find_all()
+                
                 for record in shared_transactions:
                     if record['_id'] in game_contracts:
                         continue
-                    for game in games:
-                        if record["_id"] in game["tokens"]["bsc"]:
+                    for g in games:
+                        if record["_id"] in g["tokens"]["bsc"]:
                             shared_games.append(
                                 {
-                                    "game_id": game["id"],
-                                    "game": game["name"],
-                                    "banner_url": game["banner_url"],
+                                    "game_id": g["id"],
+                                    "game": g["name"],
+                                    "banner_url": g["banner_url"],
                                     "players": record["count"]
                                 }
                             )

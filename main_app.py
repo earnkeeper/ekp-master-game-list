@@ -14,8 +14,7 @@ from app.features.info.token_price_info_service import TokenPriceInfoService
 from app.features.info.token_volume_info_service import TokenVolumeInfoService
 from app.features.info.user_analytics_service import UserAnalyticsService
 from app.features.info.volume_analytics_service import VolumeAnalyticsService
-from app.features.shared_games.shared_games_controller import SharedGamesController
-from app.features.shared_games.shared_games_service import SharedGamesService
+from app.features.info.shared_games_service import SharedGamesService
 from app.features.stats.activity_stats_service import ActivityStatsService
 from app.features.stats.social_stats_service import SocialStatsService
 from app.features.stats.stats_controller import StatsController
@@ -29,7 +28,6 @@ from db.resources_repo import ResourcesRepo
 from db.social_repo import SocialRepo
 from db.transaction_repo import TransactionRepo
 from db.volume_repo import VolumeRepo
-from ekp_sdk.services.web3_service import Web3
 from db.game_repo import GameRepo
 from db.youtube_repo import YoutubeRepo
 
@@ -190,6 +188,7 @@ class AppContainer(BaseContainer):
             user_analytics_service=self.user_aggregate_service,
             volume_analytics_service=self.volume_analytics_service,
             price_analytics_service=self.price_analytics_service,
+            shared_games_service=self.shared_games_service
         )
 
         self.info_controller = InfoController(
@@ -235,11 +234,6 @@ class AppContainer(BaseContainer):
             game_alert_service=self.game_alert_service
         )
 
-        self.shared_games_controller = SharedGamesController(
-            client_service=self.client_service,
-            shared_games_service=self.shared_games_service
-        )
-
 
 if __name__ == '__main__':
     container = AppContainer()
@@ -250,8 +244,6 @@ if __name__ == '__main__':
 
     container.client_service.add_controller(container.info_controller)
     container.client_service.add_controller(container.stats_controller)
-
-    container.client_service.add_controller(container.shared_games_controller)
 
     logging.info("🚀 App started")
 
