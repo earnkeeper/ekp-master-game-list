@@ -11,6 +11,7 @@ class SharedGamesRepo:
     ):
         self.mg_client = mg_client
         self.collection = self.mg_client.db['shared_games']
+        self.collection.create_index("id", unique=True)
         self.collection.create_index("game_id")
         self.collection.create_index("date_timestamp")
         # self.collection.create_index("source")
@@ -67,11 +68,14 @@ class SharedGamesRepo:
 
     def save(self, models):
 
-        start = time.perf_counter()
-
         if not len(models):
             return
 
-        self.collection.insert_many(models)
+        start = time.perf_counter()
+
+        self.collection.bulk_write(
+            list(map(lambda model: UpdateOne(
+                {"id": model["id"]}, {"$set": model}, True), models))
+        )
 
         logging.info(f"⏱  [SharedGamesRepo.save({len(models)})] {time.perf_counter() - start:0.3f}s")

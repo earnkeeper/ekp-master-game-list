@@ -13,6 +13,10 @@ image: youtube_sync
 dockerfile: Dockerfile.youtube_sync
 context: .
 ---
+image: shared_games_sync
+dockerfile: Dockerfile.shared_games_sync
+context: .
+---
 image: app
 dockerfile: Dockerfile.app
 context: .

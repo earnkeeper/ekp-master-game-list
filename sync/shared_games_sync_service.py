@@ -105,6 +105,7 @@ class SharedGamesSyncService:
                             if record["_id"] in g["tokens"]["bsc"]:
                                 shared_games.append(
                                     {
+                                        "id": f'{game["id"]}_{g["id"]}',
                                         "game_id": game["id"],
                                         "shared_game_id": g["id"],
                                         "game": g["name"],

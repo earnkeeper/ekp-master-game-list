@@ -1,0 +1,35 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: shared-games-sync
+spec:
+  schedule: "0 0 * * *"
+  concurrencyPolicy: Forbid
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+          labels:
+            app: shared-games-sync
+        spec:
+          restartPolicy: Never
+          containers:
+            - name: python
+              image: "{{ .Values.werf.image.shared_games_sync }}"
+              workingDir: /app
+              env:
+                - name: MONGO_URI
+                  value: "{{ .Values.mongodb.uri }}"
+                - name: MONGO_URI_BSC
+                  value: "{{ .Values.mongodb_bsc.uri }}"
+                - name: MONGO_DB_NAME
+                  value: '{{ eq .Values.werf.env "staging" | ternary .Values.mongodb.dbName.staging .Values.mongodb.dbName._default }}'
+              volumeMounts:
+                - name: secret-files
+                  mountPath: "/app/secret"
+                  readOnly: true
+          volumes:
+            - name: secret-files
+              secret:
+                secretName: secret-files
+                optional: false

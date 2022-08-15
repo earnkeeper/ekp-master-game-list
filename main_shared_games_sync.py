@@ -36,8 +36,12 @@ class AppContainer(BaseContainer):
             mg_client=self.mg_client_bsc
         )
 
-        self.shared_games_repo_bsc = SharedGamesRepo(
-            mg_client=self.mg_client_bsc
+        # self.shared_games_repo_bsc = SharedGamesRepo(
+        #     mg_client=self.mg_client_bsc
+        # )
+
+        self.shared_games_repo = SharedGamesRepo(
+            mg_client=self.mg_client
         )
 
         # Services
@@ -45,7 +49,7 @@ class AppContainer(BaseContainer):
         self.shared_games_sync_service = SharedGamesSyncService(
             transaction_repo=self.transaction_repo_bsc,
             game_repo=self.game_repo_bsc,
-            shared_games_repo=self.shared_games_repo_bsc
+            shared_games_repo=self.shared_games_repo
         )
 
         # self.resources_sync_service = ResourcesSyncService(
