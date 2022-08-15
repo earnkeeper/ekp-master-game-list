@@ -172,6 +172,8 @@ class InfoService:
         if volume_document is not None:
             game_info[0]["statsAvailable"] = True
 
+        volume_period_chart = []
+
         if is_subscribed:
             volume_period_chart = self.volume_analytics_service.get_period_chart(
                 volume_days, volume_records)
@@ -202,6 +204,8 @@ class InfoService:
 
         if price_document is not None:
             game_info[0]["statsAvailable"] = True
+
+        price_period_chart = []
 
         if is_subscribed:
             price_period_chart = self.price_analytics_service.get_period_chart(

@@ -107,6 +107,7 @@ class SharedGamesSyncService:
                                     {
                                         "id": f'{game["id"]}_{g["id"]}',
                                         "game_id": game["id"],
+                                        "game_name": game["name"],
                                         "shared_game_id": g["id"],
                                         "game": g["name"],
                                         "date_timestamp": today_timestamp,

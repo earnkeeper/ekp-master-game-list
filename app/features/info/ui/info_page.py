@@ -112,8 +112,13 @@ def __shared_games_section():
                     Span("Similar Games", "font-medium-5 mt-3 d-block"),
                     Hr(),
                     Span(
-                        "Here are the top 10 games that players of Metabomb are also playing.",
-                    ),
+                        format_template(
+                            "Here are the top 10 games that players of {{ game_name }} are also playing.",
+                            {"game_name": "$.name"}
+                        ))
+                    # Span(
+                    #     "Here are the top 10 games that players of Metabomb are also playing.",
+                    # ),
                 ]),
             Div(
                 children=[
@@ -468,13 +473,13 @@ def __shared_games_card():
                 ]
             ),
             Div(
-                style={"height": "52px"},
+                # style={"height": "52px"},
                 class_name="px-1",
                 children=[
                     Link(
                         class_name="font-small-3",
                         href=format_template("/game/all/info/{{ id }}", {
-                            "id": "$.game_id"
+                            "id": "$.shared_game_id"
                         }),
                         external=True,
                         content="$.game",
@@ -487,7 +492,7 @@ def __shared_games_card():
                     Row(
                         children=[
                             Col(
-                                class_name="col-6",
+                                class_name="col-12",
                                 children=[
                                     Icon(
                                         "user",

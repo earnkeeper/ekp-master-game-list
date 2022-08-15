@@ -25,6 +25,7 @@ from db.alert_config_repo import AlertConfigRepo
 from db.contract_aggregate_repo import ContractAggregateRepo
 from db.price_repo import PriceRepo
 from db.resources_repo import ResourcesRepo
+from db.shared_games_repo import SharedGamesRepo
 from db.social_repo import SocialRepo
 from db.transaction_repo import TransactionRepo
 from db.volume_repo import VolumeRepo
@@ -126,6 +127,10 @@ class AppContainer(BaseContainer):
             mg_client=self.mg_client_bsc
         )
 
+        self.shared_games_repo = SharedGamesRepo(
+            mg_client=self.mg_client
+        )
+
         # FEATURES - INFO
 
         self.activity_info_service = ActivityInfoService(
@@ -161,8 +166,9 @@ class AppContainer(BaseContainer):
         )
 
         self.shared_games_service = SharedGamesService(
-            transaction_repo=self.transaction_repo_bsc,
-            game_repo=self.game_repo_bsc,
+            shared_games_repo=self.shared_games_repo
+            # transaction_repo=self.transaction_repo_bsc,
+            # game_repo=self.game_repo_bsc,
         )
 
         self.alert_config_repo = AlertConfigRepo(

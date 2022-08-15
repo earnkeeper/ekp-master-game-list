@@ -21,6 +21,23 @@ class SharedGamesRepo:
             "disable": False
         }))
 
+    def find_shared_games_by_game_id(self, game_id):
+        results = list(
+            self.collection.find(
+                {
+                    "game_id": game_id
+                },
+                {
+                    "_id": False
+                }
+            )
+            .limit(10)
+        )
+
+        if not len(results):
+            return []
+
+        return results
 
     def find_game_ids_with_shared_games_today(self, midnight):
         results = list(
