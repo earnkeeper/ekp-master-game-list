@@ -12,6 +12,7 @@ from app.features.stats.activity_stats_page import activity_tab
 from app.features.stats.token_price_stats_service import TokenPriceStatsService
 from app.features.stats.volume_stats_service import VolumeStatsService
 
+VOLUME_CHART_COLLECTION_NAME = "volume_chart_collection"
 STATS_TABLE_COLLECTION_NAME = "game_stats_service"
 ALERT_FORM = "game_alerts"
 
@@ -47,7 +48,7 @@ class StatsController:
         await self.client_service.emit_page(
             sid,
             self.path,
-            activity_tab(STATS_TABLE_COLLECTION_NAME)
+            activity_tab(STATS_TABLE_COLLECTION_NAME, VOLUME_CHART_COLLECTION_NAME)
         )
 
     async def on_client_state_changed(self, sid, event):
@@ -67,6 +68,8 @@ class StatsController:
 
         await self.client_service.emit_busy(sid, STATS_TABLE_COLLECTION_NAME)
 
+        await self.client_service.emit_busy(sid, VOLUME_CHART_COLLECTION_NAME)
+
         rate = 1
 
         if currency["id"] != "usd":
@@ -85,6 +88,8 @@ class StatsController:
 
         price_documents = await self.token_price_stats_service.get_documents(rate)
 
+        # pprint(volume_documents)
+
         documents_dict = defaultdict(dict)
         
         for document in (social_document, activity_document, volume_documents, price_documents):
@@ -94,11 +99,41 @@ class StatsController:
         
         all_documents = list(documents_dict.values())
 
+        # pprint(all_documents[:20])
+
+        # pprint(volume_documents[:20])
+
+
         await self.client_service.emit_documents(
             sid,
             STATS_TABLE_COLLECTION_NAME,
             all_documents,
         )
 
+        all_games_volume_dict = {}
+
+        for volume_document in volume_documents:
+            chart7d_volume = volume_document['chart7d_volume']
+            for volume_timestamp in list(chart7d_volume.keys()):
+                if volume_timestamp not in all_games_volume_dict:
+                    all_games_volume_dict[volume_timestamp] = {
+                        'timestamp': volume_timestamp,
+                        'timestamp_ms': volume_timestamp*1000,
+                        'volume': chart7d_volume[volume_timestamp]['volume']
+                    }
+                else:
+                    all_games_volume_dict[volume_timestamp]['volume'] += chart7d_volume[volume_timestamp]['volume']
+
+        # pprint(all_games_volume_dict)
+
+        await self.client_service.emit_documents(
+            sid,
+            VOLUME_CHART_COLLECTION_NAME,
+            all_games_volume_dict,
+        )
+
         await self.client_service.emit_done(sid, STATS_TABLE_COLLECTION_NAME)
 
+        pprint(all_games_volume_dict)
+
+        await self.client_service.emit_done(sid, VOLUME_CHART_COLLECTION_NAME)

@@ -8,14 +8,88 @@ from ekp_sdk.ui import (Button, Card, Chart, Col, Column, Container, Datatable,
 from ekp_sdk.util import collection, documents
 
 
-def activity_tab(COLLECTION_NAME):
+def activity_tab(COLLECTION_NAME, VOLUME_CHART_COLLECTION_NAME):
     return Container(
         children=[
             page_title("activity", "Games"),
+            __volume_chart(VOLUME_CHART_COLLECTION_NAME),
             __table_row(COLLECTION_NAME)
         ]
     )
 
+
+def __volume_chart(VOLUME_CHART_COLLECTION_NAME):
+    return Div(
+        style={
+            "marginRight": "-10px",
+            "marginLeft": "-22px",
+            "marginBottom": "-14px",
+            "marginTop": "-20px"
+        },
+        children=[
+            Chart(
+                title="",
+                height=220,
+                type="line",
+                data=f"$.{VOLUME_CHART_COLLECTION_NAME}.*",
+                card=False,
+                options={
+                    "legend": {
+                        "show": False
+                    },
+                    "chart": {
+                        "zoom": {
+                            "enabled": False,
+                        },
+                        "toolbar": {
+                            "show": False,
+                        },
+                        "stacked": False,
+                        "type": "line"
+                    },
+                    "xaxis": {
+                        "type": "datetime",
+                        "labels": {"show": True}
+                    },
+                    "yaxis": [
+                        {
+                            "labels": {
+                                "show": False,
+                                "formatter": commify("$")
+                            },
+                        },
+                    ],
+                    "colors": ["#F76D00"],
+                    "labels": ekp_map(
+                        sort_by(
+                            json_array(
+                                f"$.{VOLUME_CHART_COLLECTION_NAME}.*"
+                            ),
+                            "$.timestamp_ms"
+                        ), "$.timestamp_ms"
+                    ),
+                    "stroke": {
+                        "width": [4, 4],
+                        "curve": 'smooth',
+                        "colors": ["#F76D00"]
+                    }
+                },
+                series=[
+                    {
+                        "name": "Volume",
+                        "type": "line",
+                        "data": ekp_map(
+                            sort_by(
+                                json_array(f"$.{VOLUME_CHART_COLLECTION_NAME}.*"),
+                                "$.timestamp_ms"
+                            ),
+                            "$.volume"
+                        ),
+                    },
+                ],
+            )
+        ]
+    )
 
 def __table_row(COLLECTION_NAME):
     return Datatable(
