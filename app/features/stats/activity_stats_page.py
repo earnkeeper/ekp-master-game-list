@@ -17,6 +17,17 @@ def activity_tab(COLLECTION_NAME, VOLUME_CHART_COLLECTION_NAME):
         ]
     )
 
+# def __volume_card(VOLUME_CHART_COLLECTION_NAME):
+#     return Div(
+#         context=f"{VOLUME_CHART_COLLECTION_NAME}",
+#         children=[
+#             Card(
+#                 children=[
+#                     __volume_chart(VOLUME_CHART_COLLECTION_NAME),
+#                 ]
+#             )
+#         ]
+#     )
 
 def __volume_chart(VOLUME_CHART_COLLECTION_NAME):
     return Div(

@@ -16,6 +16,7 @@ from app.features.info.user_analytics_service import UserAnalyticsService
 from app.features.info.volume_analytics_service import VolumeAnalyticsService
 from app.features.info.shared_games_service import SharedGamesService
 from app.features.stats.activity_stats_service import ActivityStatsService
+from app.features.stats.all_games_volume_service import AllGamesVolumeService
 from app.features.stats.social_stats_service import SocialStatsService
 from app.features.stats.stats_controller import StatsController
 from app.features.stats.token_price_stats_service import TokenPriceStatsService
@@ -229,6 +230,8 @@ class AppContainer(BaseContainer):
             alert_config_repo=self.alert_config_repo
         )
 
+        self.all_games_volume_service = AllGamesVolumeService()
+
         self.stats_controller = StatsController(
             client_service=self.client_service,
             cache_service=self.cache_service,
@@ -237,7 +240,8 @@ class AppContainer(BaseContainer):
             social_stats_service=self.social_stats_service,
             volume_stats_service=self.volume_stats_service,
             token_price_stats_service=self.token_price_stats_service,
-            game_alert_service=self.game_alert_service
+            game_alert_service=self.game_alert_service,
+            all_games_volume_service=self.all_games_volume_service
         )
 
 
