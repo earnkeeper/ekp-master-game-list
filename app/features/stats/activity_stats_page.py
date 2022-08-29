@@ -4,7 +4,7 @@ from ekp_sdk.ui import (Button, Card, Chart, Col, Column, Container, Datatable,
                         Div, Icon, Image, Link, Paragraphs, Row, Span, commify,
                         ekp_map, format_currency, format_mask_address,
                         format_percent, format_template, is_busy, json_array,
-                        navigate, sort_by, switch_case)
+                        navigate, sort_by, switch_case, Hr)
 from ekp_sdk.util import collection, documents
 
 
@@ -12,22 +12,45 @@ def activity_tab(COLLECTION_NAME, VOLUME_CHART_COLLECTION_NAME):
     return Container(
         children=[
             page_title("activity", "Games"),
-            __volume_chart(VOLUME_CHART_COLLECTION_NAME),
-            __table_row(COLLECTION_NAME)
+            __volumes_section(VOLUME_CHART_COLLECTION_NAME),
+            # Hr(),
+            Div(style={"height": "50px"}),
+            __table_section(COLLECTION_NAME)
+            # __table_row(COLLECTION_NAME)
         ]
     )
 
-# def __volume_card(VOLUME_CHART_COLLECTION_NAME):
-#     return Div(
-#         context=f"{VOLUME_CHART_COLLECTION_NAME}",
-#         children=[
-#             Card(
-#                 children=[
-#                     __volume_chart(VOLUME_CHART_COLLECTION_NAME),
-#                 ]
-#             )
-#         ]
-#     )
+def __volumes_section(VOLUME_CHART_COLLECTION_NAME):
+    return Div([
+        Span("Volumes of all games", "font-medium-5 mt-3 d-block"),
+        Hr(),
+        Div(
+            when=f"$.{VOLUME_CHART_COLLECTION_NAME}",
+            children=[
+                Span(
+                    "Here is the graph of all games volume according to each day for the past 7 days.",
+                ),
+                Div(style={"height": "20px"}),
+                __volume_chart(VOLUME_CHART_COLLECTION_NAME)
+            ]
+        ),
+    ])
+
+
+def __table_section(COLLECTION_NAME):
+    return Div([
+        Span("Stats of all games", "font-medium-5 mt-3 d-block"),
+        Hr(),
+        Div(
+            children=[
+                Span(
+                    "We collect the statistics for hundreds of games and demonstrate it to our users.",
+                ),
+                Div(style={"height": "20px"}),
+                __table_row(COLLECTION_NAME)
+            ]
+        ),
+    ])
 
 def __volume_chart(VOLUME_CHART_COLLECTION_NAME):
     return Div(

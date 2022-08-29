@@ -138,7 +138,7 @@ class StatsController:
             all_games_volume_documents,
         )
 
-        pprint(all_games_volume_documents)
+        # pprint(all_games_volume_documents)
 
         await self.client_service.emit_done(sid, STATS_TABLE_COLLECTION_NAME)
 

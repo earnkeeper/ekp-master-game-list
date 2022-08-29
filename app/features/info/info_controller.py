@@ -105,7 +105,7 @@ class InfoController:
         game_info = await self.info_service.add_volume(game, game_info, volume_days, is_subscribed)
         await self.__emit_game_info(sid, game_id, game_info)
 
-        pprint(game_info)
+        # pprint(game_info)
 
         # PRICE
 
