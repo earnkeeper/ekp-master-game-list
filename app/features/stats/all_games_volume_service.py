@@ -1,35 +1,39 @@
 from pprint import pprint
 
-from shared.get_midnight_utc import get_midnight_utc
-from app.utils.proxy_image import proxy_image
-from db.activity_repo import ActivityRepo
+from app.features.info.token_volume_info_service import TokenVolumeInfoService
+from app.features.info.volume_analytics_service import VolumeAnalyticsService
+
 from db.game_repo import GameRepo
-from datetime import datetime
-import copy
+
 
 
 class AllGamesVolumeService:
-    # def __init__(
-    #     self,
-    #     activity_repo: ActivityRepo,
-    #     game_repo: GameRepo,
-    # ):
-    #     self.activity_repo = activity_repo
-    #     self.game_repo = game_repo
+    def __init__(
+            self,
+            token_volume_info_service: TokenVolumeInfoService,
+            volume_analytics_service: VolumeAnalyticsService,
+            game_repo: GameRepo
+    ):
+        self.token_volume_info_service = token_volume_info_service
+        self.volume_analytics_service = volume_analytics_service
+        self.game_repo = game_repo
 
-    async def get_documents(self, volume_documents):
-        all_games_volume_dict = {}
 
-        for volume_document in volume_documents:
-            chart7d_volume = volume_document['chart7d_volume']
-            for volume_timestamp in list(chart7d_volume.keys()):
-                if volume_timestamp not in all_games_volume_dict:
-                    all_games_volume_dict[volume_timestamp] = {
-                        'timestamp': volume_timestamp,
-                        'timestamp_ms': volume_timestamp*1000,
-                        'volume': chart7d_volume[volume_timestamp]['volume']
-                    }
-                else:
-                    all_games_volume_dict[volume_timestamp]['volume'] += chart7d_volume[volume_timestamp]['volume']
+    async def get_documents(self, volume_days):
 
-        return [values for values in all_games_volume_dict.values()]
+        volume_records = await self.token_volume_info_service.get_all_games_volume()
+
+        volume_period_chart = self.volume_analytics_service.get_period_chart(
+            volume_days, volume_records)
+        volume_last_period_chart = self.volume_analytics_service.get_last_period_chart(
+            volume_days, volume_records)
+
+        volume_info = {}
+
+        volume_info["analytics_volume"] = {
+            "volume_period_chart": volume_period_chart,
+            "volume_last_period_chart": volume_last_period_chart,
+        }
+
+        return [volume_info]
+

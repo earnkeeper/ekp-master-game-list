@@ -41,7 +41,7 @@ class PriceAnalyticsService:
                 continue;
             
             chart_record = {}
-            chart_record["timestamp_ms"] = record['timestamp']
+            chart_record["timestamp_ms"] = record['timestamp'] * 1000
             chart_record["price_usd"] = record["price_usd"]
             chart.append(chart_record)
 

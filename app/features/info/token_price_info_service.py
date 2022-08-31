@@ -14,6 +14,10 @@ class TokenPriceInfoService:
         records = self.price_repo.find_by_game_id(game["id"])
         return records
 
+    async def get_all_games_price(self):
+        records = self.price_repo.get_prices_of_all_games_by_timestamp()
+        return records
+
     async def get_price_document(self, price_records, game, rate):
 
         ago_7d = get_midnight_utc().timestamp() - 7 * 86400

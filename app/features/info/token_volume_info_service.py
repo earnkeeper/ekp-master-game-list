@@ -13,6 +13,10 @@ class TokenVolumeInfoService:
     async def get_volume_records(self, game):
         records = self.volume_repo.find_by_game_id(game["id"])
         return records
+
+    async def get_all_games_volume(self):
+        records = self.volume_repo.get_volumes_of_all_games_by_timestamp()
+        return records
         
 
     async def get_volume_document(self, records, game, rate):

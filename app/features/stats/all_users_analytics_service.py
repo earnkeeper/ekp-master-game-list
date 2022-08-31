@@ -8,7 +8,7 @@ from db.transaction_repo import TransactionRepo
 from shared.get_midnight_utc import get_midnight_utc
 
 
-class UserAnalyticsService:
+class AllUsersAnalyticsService:
     def __init__(
             self,
             contract_aggregate_repo_eth: ContractAggregateRepo,
@@ -21,22 +21,9 @@ class UserAnalyticsService:
         self.transaction_repo_eth = transaction_repo_eth
         self.game_repo = game_repo
 
-    def get_period_users(self, game, days):
-        start = int(datetime.now().timestamp()) - days * 86400
-        end = int(datetime.now().timestamp())
 
-        eth_addresses = game['tokens']['eth']
-
-        user_count_eth = self.transaction_repo_eth.get_active_user_count(
-            eth_addresses,
-            start,
-            end
-        )
-
-        return user_count_eth
-
-    def get_last_period_chart(self, game, days):
-        results = self.__get_chart(game, days * 2, days)
+    def get_last_period_chart(self, days):
+        results = self.__get_chart(days * 2, days)
 
         if results is None:
             return None
@@ -53,43 +40,60 @@ class UserAnalyticsService:
 
         return results
 
-    def get_period_chart(self, game, days):
-        return self.__get_chart(game, days, 0)
+    def get_period_chart(self, days):
+        return self.__get_chart(
+            # game,
+            days,
+            0)
 
-    def __get_chart(self, game, start_days_ago, end_days_ago):
+    def __get_chart(
+            self,
+            # game,
+            start_days_ago,
+            end_days_ago):
 
         start = int(datetime.now().timestamp()) - start_days_ago * 86400
         end = int(datetime.now().timestamp()) - end_days_ago * 86400
 
+        # print(start)
+        # print(end)
+
+        bsc_results = self.contract_aggregate_repo_bsc.get_users_activity_of_all_games_by_timestamp(
+            start_timestamp=start,
+            end_timestamp=end
+        )
+
+        # pprint('bsc_results: ')
+        # pprint(bsc_results)
+
+        eth_results = self.contract_aggregate_repo_eth.get_users_activity_of_all_games_by_timestamp(
+            start_timestamp=start,
+            end_timestamp=end
+        )
+
+        # pprint('eth_results: ')
+        # pprint(eth_results)
+
+        timestamps = set([k['timestamp'] for k in bsc_results + eth_results])
         all_chain_results = []
+        for timestamp in timestamps:
+            temp_active_users = []
+            temp_total_transfers = []
+            for dict_ in bsc_results + eth_results:
+                if dict_['timestamp'] == timestamp:
+                    temp_active_users.append(dict_['active_users'])
+                    temp_total_transfers.append(dict_['total_transfers'])
+            all_chain_results.append({'timestamp': timestamp,
+                          'active_users': sum(temp_active_users),
+                          'total_transfers': sum(temp_total_transfers),
+                          })
 
-        eth_addresses = game['tokens']['eth']
-
-        if len(eth_addresses):
-            results = self.contract_aggregate_repo_eth.get_range(
-                eth_addresses,
-                start,
-                end
-            )
-            all_chain_results += results
-
-        bsc_addresses = game['tokens']['bsc']
-
-        if len(bsc_addresses):
-            results = self.contract_aggregate_repo_bsc.get_range(
-                bsc_addresses,
-                start,
-                end
-            )
-            all_chain_results += results
-
-        if not len(all_chain_results):
-            return None
-
+        # pprint(dict3)
+        # return []
         chart = {}
 
         for result in all_chain_results:
-            dt = parser.parse(result['_id'])
+            dt = parser.parse(result['timestamp'])
             dtm = get_midnight_utc(dt)
             dtm_timestamp = dtm.timestamp()
             timestamp_ms = int(dtm_timestamp) * 1000
@@ -115,7 +119,5 @@ class UserAnalyticsService:
                 key=lambda x: x['timestamp_ms']
             )
         )
-
-        # pprint(result_list)
 
         return result_list

@@ -16,7 +16,10 @@ from app.features.info.user_analytics_service import UserAnalyticsService
 from app.features.info.volume_analytics_service import VolumeAnalyticsService
 from app.features.info.shared_games_service import SharedGamesService
 from app.features.stats.activity_stats_service import ActivityStatsService
+from app.features.stats.all_games_price_service import AllGamesPriceService
+from app.features.stats.all_games_user_activity_service import AllGamesUserActivityService
 from app.features.stats.all_games_volume_service import AllGamesVolumeService
+from app.features.stats.all_users_analytics_service import AllUsersAnalyticsService
 from app.features.stats.social_stats_service import SocialStatsService
 from app.features.stats.stats_controller import StatsController
 from app.features.stats.token_price_stats_service import TokenPriceStatsService
@@ -230,7 +233,29 @@ class AppContainer(BaseContainer):
             alert_config_repo=self.alert_config_repo
         )
 
-        self.all_games_volume_service = AllGamesVolumeService()
+        self.all_games_volume_service = AllGamesVolumeService(
+            token_volume_info_service=self.token_volume_info_service,
+            volume_analytics_service=self.volume_analytics_service,
+            game_repo=self.game_repo
+        )
+
+        self.all_games_price_service = AllGamesPriceService(
+            token_price_info_service=self.token_price_info_service,
+            price_analytics_service=self.price_analytics_service,
+            game_repo=self.game_repo
+        )
+
+        self.all_users_analytics_service = AllUsersAnalyticsService(
+            contract_aggregate_repo_bsc=self.contract_aggregate_repo_bsc,
+            contract_aggregate_repo_eth=self.contract_aggregate_repo_eth,
+            transaction_repo_eth=self.transaction_repo_eth,
+            game_repo=self.game_repo
+        )
+
+        self.all_games_users_activity_service = AllGamesUserActivityService(
+            all_users_analytics_service=self.all_users_analytics_service,
+            game_repo=self.game_repo
+        )
 
         self.stats_controller = StatsController(
             client_service=self.client_service,
@@ -241,7 +266,9 @@ class AppContainer(BaseContainer):
             volume_stats_service=self.volume_stats_service,
             token_price_stats_service=self.token_price_stats_service,
             game_alert_service=self.game_alert_service,
-            all_games_volume_service=self.all_games_volume_service
+            all_games_volume_service=self.all_games_volume_service,
+            all_games_price_service=self.all_games_price_service,
+            all_games_users_activity_service=self.all_games_users_activity_service
         )
 
 

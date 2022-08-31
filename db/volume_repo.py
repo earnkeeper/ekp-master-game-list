@@ -3,10 +3,11 @@ from ekp_sdk.db import MgClient
 from pymongo import UpdateOne
 import time
 
+
 class VolumeRepo:
     def __init__(
-        self,
-        mg_client: MgClient
+            self,
+            mg_client: MgClient
     ):
         self.mg_client = mg_client
         self.collection = self.mg_client.db['token_volume']
@@ -19,42 +20,65 @@ class VolumeRepo:
         return list(
             self.collection.find().sort("timestamp")
         )
-    
+
     def find_by_game_id(self, game_id):
-        return list(self.collection.find({ "game_id": game_id }).sort("timestamp"))
-        
+        return list(self.collection.find({"game_id": game_id}).sort("timestamp"))
+
+    def get_volumes_of_all_games_by_timestamp(self):
+        results = list(self.collection.aggregate([
+            {
+                "$group":
+                    {
+                        "_id": "$timestamp",
+                        "volume_usd_total": {"$sum": "$volume_usd"}
+                    }
+
+            },
+            {
+                "$project": {
+                    "_id": 0,
+                    "timestamp": "$_id",
+                    "volume_usd": "$volume_usd_total"
+                }
+            }
+        ]
+        ))
+
+        if not len(results):
+            return []
+
+        return results
+
     def find_latest_record_by_game_id(self, game_id, sort_by, direction=-1):
         results = list(
             self.collection
-            .find({ "game_id": game_id })
-            .sort(sort_by, direction)
-            .limit(1)
+                .find({"game_id": game_id})
+                .sort(sort_by, direction)
+                .limit(1)
         )
 
         if not len(results):
             return None
 
         return results[0]
-    
+
     def delete_by_game_id(self, game_id):
-        self.collection.delete_many({ "game_id": game_id })
-        
+        self.collection.delete_many({"game_id": game_id})
+
     def save(self, models):
-    
+
         if not len(models):
             return
-        
+
         start = time.perf_counter()
-                
+
         def update_action(model):
-            return UpdateOne({ "id": model["id"]}, {"$set": model}, True)
+            return UpdateOne({"id": model["id"]}, {"$set": model}, True)
 
         self.collection.bulk_write(
             list(map(lambda model: update_action(model), models))
         )
-        
+
         logging.info(
             f"⏱  [VolumeRepo.save({len(models)})] {time.perf_counter() - start:0.3f}s"
         )
-
-

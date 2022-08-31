@@ -14,6 +14,55 @@ class ContractAggregateRepo:
         self.mg_client = mg_client
         self.collection = self.mg_client.db['contract_aggregates']
 
+    def get_users_activity_of_all_games_by_timestamp(self, start_timestamp, end_timestamp):
+        results = list(self.collection.aggregate([
+            {
+                "$match": {
+                    "timestamp": {
+                        "$gte": start_timestamp,
+                        "$lt": end_timestamp
+                    }
+                }
+            },
+            {
+                "$group":
+                    {
+                        "_id": {
+                            "$dateToString": {
+                                "format": "%Y-%m-%d",
+                                "date": {
+                                    "$convert": {
+                                        "input": {
+                                            "$multiply": [1000, "$timestamp"]
+                                        },
+                                        "to": "date"
+                                    }
+                                }
+                            }
+                        },
+                        # "_id": "$timestamp",
+                        "total_active_users": {"$sum": "$active_users"},
+                        "total_total_transfers": {"$sum": "$total_transfers"}
+
+                    }
+
+            },
+            {
+                "$project": {
+                    "_id": 0,
+                    "timestamp": "$_id",
+                    "active_users": "$total_active_users",
+                    "total_transfers": "$total_total_transfers",
+                }
+            }
+        ]
+        ))
+
+        if not len(results):
+            return []
+
+        return results
+
     def get_range(self, addresses, start_timestamp, end_timestamp):
         start = t.perf_counter()
 

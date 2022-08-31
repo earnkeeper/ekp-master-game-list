@@ -7,6 +7,8 @@ from ekp_sdk.util import client_path, client_query_param, client_currency, form_
 
 from app.features.info.game_alert_service import GameAlertService
 from app.features.stats.activity_stats_service import ActivityStatsService
+from app.features.stats.all_games_price_service import AllGamesPriceService
+from app.features.stats.all_games_user_activity_service import AllGamesUserActivityService
 from app.features.stats.all_games_volume_service import AllGamesVolumeService
 from app.features.stats.social_stats_service import SocialStatsService
 from app.features.stats.activity_stats_page import activity_tab
@@ -14,6 +16,8 @@ from app.features.stats.token_price_stats_service import TokenPriceStatsService
 from app.features.stats.volume_stats_service import VolumeStatsService
 
 VOLUME_CHART_COLLECTION_NAME = "game_volume_chart"
+PRICE_CHART_COLLECTION_NAME = "game_price_chart"
+USERS_CHART_COLLECTION_NAME = "game_users_chart"
 STATS_TABLE_COLLECTION_NAME = "game_stats_service"
 ALERT_FORM = "game_alerts"
 
@@ -29,7 +33,9 @@ class StatsController:
             volume_stats_service: VolumeStatsService,
             token_price_stats_service: TokenPriceStatsService,
             game_alert_service: GameAlertService,
-            all_games_volume_service: AllGamesVolumeService
+            all_games_volume_service: AllGamesVolumeService,
+            all_games_price_service: AllGamesPriceService,
+            all_games_users_activity_service: AllGamesUserActivityService
     ):
         self.client_service = client_service
         self.cache_service = cache_service
@@ -40,6 +46,8 @@ class StatsController:
         self.token_price_stats_service = token_price_stats_service
         self.game_alert_service = game_alert_service
         self.all_games_volume_service = all_games_volume_service
+        self.all_games_price_service = all_games_price_service
+        self.all_games_users_activity_service = all_games_users_activity_service
         self.path = 'stats'
 
     async def on_connect(self, sid):
@@ -52,7 +60,12 @@ class StatsController:
         await self.client_service.emit_page(
             sid,
             self.path,
-            activity_tab(STATS_TABLE_COLLECTION_NAME, VOLUME_CHART_COLLECTION_NAME)
+            activity_tab(
+                STATS_TABLE_COLLECTION_NAME,
+                VOLUME_CHART_COLLECTION_NAME,
+                PRICE_CHART_COLLECTION_NAME,
+                USERS_CHART_COLLECTION_NAME
+            )
         )
 
     async def on_client_state_changed(self, sid, event):
@@ -72,6 +85,10 @@ class StatsController:
         await self.client_service.emit_busy(sid, STATS_TABLE_COLLECTION_NAME)
 
         await self.client_service.emit_busy(sid, VOLUME_CHART_COLLECTION_NAME)
+
+        await self.client_service.emit_busy(sid, PRICE_CHART_COLLECTION_NAME)
+
+        await self.client_service.emit_busy(sid, USERS_CHART_COLLECTION_NAME)
 
         rate = 1
 
@@ -106,8 +123,34 @@ class StatsController:
 
         # pprint(volume_documents[:20])
 
-        all_games_volume_documents = await self.all_games_volume_service.get_documents(volume_documents)
+        # all_games_volume_documents = await self.all_games_volume_service.get_documents(volume_documents)
 
+        volume_chart_form = form_values(event, f"chart_{VOLUME_CHART_COLLECTION_NAME}")
+        volume_days = 7
+        if volume_chart_form and "days" in volume_chart_form:
+            volume_days = volume_chart_form["days"]
+
+
+        all_games_volume_documents = await self.all_games_volume_service.get_documents(volume_days)
+
+        price_chart_form = form_values(event, f"chart_{PRICE_CHART_COLLECTION_NAME}")
+        price_days = 7
+        if price_chart_form and "days" in price_chart_form:
+            price_days = price_chart_form["days"]
+
+        all_games_price_documents = await self.all_games_price_service.get_documents(price_days)
+
+        users_chart_form = form_values(event, f"chart_{USERS_CHART_COLLECTION_NAME}")
+        users_days = 7
+        if users_chart_form and "days" in users_chart_form:
+            users_days = users_chart_form["days"]
+
+        all_games_users_activity_documents = await self.all_games_users_activity_service.get_documents(users_days)
+
+        # pprint(all_games_users_activity_documents)
+
+
+        # pprint(all_games_volume_documents)
         await self.client_service.emit_documents(
             sid,
             STATS_TABLE_COLLECTION_NAME,
@@ -138,8 +181,24 @@ class StatsController:
             all_games_volume_documents,
         )
 
+        await self.client_service.emit_documents(
+            sid,
+            PRICE_CHART_COLLECTION_NAME,
+            all_games_price_documents,
+        )
+
+        await self.client_service.emit_documents(
+            sid,
+            USERS_CHART_COLLECTION_NAME,
+            all_games_users_activity_documents,
+        )
+
         # pprint(all_games_volume_documents)
 
         await self.client_service.emit_done(sid, STATS_TABLE_COLLECTION_NAME)
 
         await self.client_service.emit_done(sid, VOLUME_CHART_COLLECTION_NAME)
+
+        await self.client_service.emit_done(sid, PRICE_CHART_COLLECTION_NAME)
+
+        await self.client_service.emit_done(sid, USERS_CHART_COLLECTION_NAME)
