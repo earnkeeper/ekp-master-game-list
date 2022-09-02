@@ -18,18 +18,25 @@ class AllGamesUserActivityService:
         self.all_users_analytics_service = all_users_analytics_service
         self.game_repo = game_repo
 
-    async def get_documents(self, volume_days):
+    async def get_documents(self, volume_days, is_subscribed):
 
         all_games_users_analytic_records = self.all_users_analytics_service.get_period_chart(volume_days)
 
         all_games_last_users_analytic_records = self.all_users_analytics_service.get_last_period_chart(volume_days)
 
-        analytics_users = {
+        analytics_info = {}
+
+        analytics_info["analytics_users"] = {
             "users_period_chart": all_games_users_analytic_records,
             "users_last_period_chart": all_games_last_users_analytic_records
         }
 
-        return [{"analytics_users": analytics_users}]
+        if is_subscribed:
+            analytics_info["analytics_users"]["is_subscribed"] = True
+
+        return [analytics_info]
+
+
         # pprint()
         # volume_records = await self.token_volume_info_service.get_all_games_volume()
         #

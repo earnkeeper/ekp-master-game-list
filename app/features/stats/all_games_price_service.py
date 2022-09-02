@@ -19,7 +19,7 @@ class AllGamesPriceService:
         self.game_repo = game_repo
 
 
-    async def get_documents(self, price_days, rate):
+    async def get_documents(self, price_days, rate, is_subscribed):
 
         price_records = await self.token_price_info_service.get_all_games_price()
 
@@ -34,6 +34,9 @@ class AllGamesPriceService:
             "price_period_chart": price_period_chart,
             "price_last_period_chart": price_last_period_chart,
         }
+
+        if is_subscribed:
+            price_info["analytics_price"]["is_subscribed"] = True
 
         return [price_info]
 

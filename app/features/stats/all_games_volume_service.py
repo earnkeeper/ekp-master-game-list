@@ -19,7 +19,7 @@ class AllGamesVolumeService:
         self.game_repo = game_repo
 
 
-    async def get_documents(self, volume_days, rate):
+    async def get_documents(self, volume_days, rate, is_subscribed):
 
         volume_records = await self.token_volume_info_service.get_all_games_volume()
 
@@ -34,6 +34,9 @@ class AllGamesVolumeService:
             "volume_period_chart": volume_period_chart,
             "volume_last_period_chart": volume_last_period_chart,
         }
+
+        if is_subscribed:
+            volume_info["analytics_volume"]["is_subscribed"] = True
 
         return [volume_info]
 

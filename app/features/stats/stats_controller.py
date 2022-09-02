@@ -74,6 +74,8 @@ class StatsController:
         if path and (path != self.path):
             return
 
+        is_subscribed = client_is_subscribed(event)
+
         currency = client_currency(event)
 
         alert_form_values = form_values(event, ALERT_FORM)
@@ -130,24 +132,24 @@ class StatsController:
         if volume_chart_form and "days" in volume_chart_form:
             volume_days = volume_chart_form["days"]
 
-        all_games_volume_documents = await self.all_games_volume_service.get_documents(volume_days, rate)
+        all_games_volume_documents = await self.all_games_volume_service.get_documents(volume_days, rate, is_subscribed)
 
         price_chart_form = form_values(event, f"chart_{PRICE_CHART_COLLECTION_NAME}")
         price_days = 7
         if price_chart_form and "days" in price_chart_form:
             price_days = price_chart_form["days"]
 
-        all_games_price_documents = await self.all_games_price_service.get_documents(price_days, rate)
+        all_games_price_documents = await self.all_games_price_service.get_documents(price_days, rate, is_subscribed)
 
         users_chart_form = form_values(event, f"chart_{USERS_CHART_COLLECTION_NAME}")
         users_days = 7
         if users_chart_form and "days" in users_chart_form:
             users_days = users_chart_form["days"]
 
-        all_games_users_activity_documents = await self.all_games_users_activity_service.get_documents(users_days)
+        all_games_users_activity_documents = await self.all_games_users_activity_service.get_documents(users_days,
+                                                                                                       is_subscribed)
 
         # pprint(all_games_users_activity_documents)
-
 
         # pprint(all_games_volume_documents)
         await self.client_service.emit_documents(
@@ -155,8 +157,6 @@ class StatsController:
             STATS_TABLE_COLLECTION_NAME,
             all_documents,
         )
-
-
 
         # all_games_volume_dict = {}
         #
@@ -201,3 +201,19 @@ class StatsController:
         await self.client_service.emit_done(sid, PRICE_CHART_COLLECTION_NAME)
 
         await self.client_service.emit_done(sid, USERS_CHART_COLLECTION_NAME)
+
+
+def client_is_subscribed(event):
+    if (event is None):
+        return False
+
+    if ("state" not in event.keys()):
+        return False
+
+    if ("client" not in event["state"].keys()):
+        return False
+
+    if ("subscribed" not in event["state"]["client"].keys()):
+        return False
+
+    return event["state"]["client"]["subscribed"]

@@ -56,19 +56,19 @@ def analytics_section(VOLUME_CHART_COLLECTION_NAME, PRICE_CHART_COLLECTION_NAME,
                                     )
                                 ]
                             ),
-                            Tab(
-                                label="Price",
-                                children=[
-                                    Div(
-                                        context=f"$.{PRICE_CHART_COLLECTION_NAME}.*",
-                                        children=[
-                                            analytics_price(
-                                                PRICE_CHART_COLLECTION_NAME
-                                            )
-                                        ]
-                                    )
-                                ]
-                            ),
+                            # Tab(
+                            #     label="Price",
+                            #     children=[
+                            #         Div(
+                            #             context=f"$.{PRICE_CHART_COLLECTION_NAME}.*",
+                            #             children=[
+                            #                 analytics_price(
+                            #                     PRICE_CHART_COLLECTION_NAME
+                            #                 )
+                            #             ]
+                            #         )
+                            #     ]
+                            # ),
                             Tab(
                                 label="Users",
                                 children=[
@@ -93,8 +93,8 @@ def analytics_users(USERS_CHART_COLLECTION_NAME):
     return Card(
         children=[
             Div(
+                when="$.is_subscribed",
                 context="$.analytics_users",
-                when="$",
                 class_name="mx-1 my-2",
                 style={
                     "marginRight": "-10px",
@@ -182,6 +182,100 @@ def analytics_users(USERS_CHART_COLLECTION_NAME):
                     )
                 ]
             ),
+            Div(
+                when={"not": "$.is_subscribed"},
+                context="$.analytics_users",
+                class_name="mx-1 my-2",
+                style={
+                    "marginRight": "-10px",
+                    "marginLeft": "-22px",
+                    "marginBottom": "-14px",
+                    "marginTop": "-20px"
+                },
+                children=[
+                    Chart(
+                        title="",
+                        name=USERS_CHART_COLLECTION_NAME,
+                        height=350,
+                        type="line",
+                        data=f"$.users_period_chart.*",
+                        card=False,
+                        options={
+                            "legend": {
+                                "show": False
+                            },
+                            "chart": {
+                                "zoom": {
+                                    "enabled": False,
+                                },
+                                "toolbar": {
+                                    "show": False,
+                                },
+                                "stacked": False,
+                                "type": "line"
+                            },
+                            "xaxis": {
+                                "type": "datetime",
+                                "labels": {"show": True}
+                            },
+                            "yaxis": [
+                                {
+                                    "labels": {
+                                        "show": False,
+                                        "formatter": commify("$")
+                                    },
+                                },
+                            ],
+                            "colors": ["#F76D00"],
+                            "labels": ekp_map(
+                                sort_by(
+                                    json_array(
+                                        "$.users_period_chart.*"
+                                    ),
+                                    "$.timestamp_ms"
+                                ), "$.timestamp_ms"
+                            ),
+                            "stroke": {
+                                "width": [4, 2],
+                                "colors": ["#F76D00"],
+                                "dashArray": [0, [3, 2]]
+                            }
+                        },
+                        series=[
+                            {
+                                "name": "Users",
+                                "type": "line",
+                                "data": ekp_map(
+                                    sort_by(
+                                        json_array(
+                                            "$.users_period_chart.*"),
+                                        "$.timestamp_ms"
+                                    ),
+                                    "$.active_users"
+                                ),
+                            },
+                            {
+                                "name": "Users (Last Period)",
+                                "type": "line",
+                                "data": ekp_map(
+                                    sort_by(
+                                        json_array(
+                                            "$.users_last_period_chart.*"
+                                        ),
+                                        "$.timestamp_ms"
+                                    ),
+                                    "$.active_users"
+                                ),
+                            },
+                        ],
+                    ),
+                    Span(
+                        "By default you can see historical data for the past 7 days. Want to see more deep historical data?"),
+                    Div(class_name="pt-1"),
+                    Link(content="Subscribe here", href="/account")
+                ]
+            ),
+
         ]
     )
 
@@ -189,8 +283,8 @@ def analytics_volume(VOLUME_CHART_COLLECTION_NAME):
     return Card(
         children=[
             Div(
+                when="$.is_subscribed",
                 context="$.analytics_volume",
-                when="$",
                 class_name="mx-1 my-2",
                 style={
                     "marginRight": "-10px",
@@ -276,6 +370,99 @@ def analytics_volume(VOLUME_CHART_COLLECTION_NAME):
                             },
                         ],
                     )
+                ]
+            ),
+            Div(
+                when={"not": "$.is_subscribed"},
+                context="$.analytics_volume",
+                class_name="mx-1 my-2",
+                style={
+                    "marginRight": "-10px",
+                    "marginLeft": "-22px",
+                    "marginBottom": "-14px",
+                    "marginTop": "-20px"
+                },
+                children=[
+                    Chart(
+                        title="",
+                        name=VOLUME_CHART_COLLECTION_NAME,
+                        height=350,
+                        type="line",
+                        data=f"$.volume_period_chart.*",
+                        card=False,
+                        options={
+                            "legend": {
+                                "show": False
+                            },
+                            "chart": {
+                                "zoom": {
+                                    "enabled": False,
+                                },
+                                "toolbar": {
+                                    "show": False,
+                                },
+                                "stacked": False,
+                                "type": "line"
+                            },
+                            "xaxis": {
+                                "type": "datetime",
+                                "labels": {"show": True}
+                            },
+                            "yaxis": [
+                                {
+                                    "labels": {
+                                        "show": False,
+                                        "formatter": commify("$")
+                                    },
+                                },
+                            ],
+                            "colors": ["#F76D00"],
+                            "labels": ekp_map(
+                                sort_by(
+                                    json_array(
+                                        "$.volume_period_chart.*"
+                                    ),
+                                    "$.timestamp_ms"
+                                ), "$.timestamp_ms"
+                            ),
+                            "stroke": {
+                                "width": [4, 2],
+                                "colors": ["#F76D00"],
+                                "dashArray": [0, [3, 2]]
+                            }
+                        },
+                        series=[
+                            {
+                                "name": "Volume",
+                                "type": "line",
+                                "data": ekp_map(
+                                    sort_by(
+                                        json_array(
+                                            "$.volume_period_chart.*"),
+                                        "$.timestamp_ms"
+                                    ),
+                                    "$.volume_usd"
+                                ),
+                            },
+                            {
+                                "name": "Volume (Last Period)",
+                                "type": "line",
+                                "data": ekp_map(
+                                    sort_by(
+                                        json_array(
+                                            "$.volume_last_period_chart.*"
+                                        ),
+                                        "$.timestamp_ms"
+                                    ),
+                                    "$.volume_usd"
+                                ),
+                            },
+                        ],
+                    ),
+                    Span(
+                        "By default you can see historical data for the past 7 days. Want to see more deep historical data?"),
+                    Div(class_name="pt-1"),
+                    Link(content="Subscribe here", href="/account")
                 ]
             ),
         ]
