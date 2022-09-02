@@ -49,7 +49,7 @@ class TokenPriceStatsService:
             if delta_today < 0:
                 delta_today_color = "danger"
 
-            price = float('%s' % float('%.3g' % price * rate))
+            price = float("%.2f" % (price*rate))
 
             document = {
                 "id": game_id,

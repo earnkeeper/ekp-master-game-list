@@ -19,14 +19,14 @@ class AllGamesVolumeService:
         self.game_repo = game_repo
 
 
-    async def get_documents(self, volume_days):
+    async def get_documents(self, volume_days, rate):
 
         volume_records = await self.token_volume_info_service.get_all_games_volume()
 
         volume_period_chart = self.volume_analytics_service.get_period_chart(
-            volume_days, volume_records)
+            volume_days, volume_records, rate)
         volume_last_period_chart = self.volume_analytics_service.get_last_period_chart(
-            volume_days, volume_records)
+            volume_days, volume_records, rate)
 
         volume_info = {}
 

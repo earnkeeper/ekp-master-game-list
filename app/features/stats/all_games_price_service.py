@@ -19,14 +19,14 @@ class AllGamesPriceService:
         self.game_repo = game_repo
 
 
-    async def get_documents(self, price_days):
+    async def get_documents(self, price_days, rate):
 
         price_records = await self.token_price_info_service.get_all_games_price()
 
         price_period_chart = self.price_analytics_service.get_period_chart(
-            price_days, price_records)
+            price_days, price_records, rate)
         price_last_period_chart = self.price_analytics_service.get_last_period_chart(
-            price_days, price_records)
+            price_days, price_records, rate)
 
         price_info = {}
 

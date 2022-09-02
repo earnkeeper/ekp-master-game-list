@@ -5,19 +5,18 @@ from shared.get_midnight_utc import get_midnight_utc
 
 
 class VolumeAnalyticsService:
-    def get_last_period_chart(self, days, volume_records):
-        results = self.__get_chart(days * 2, days, volume_records)
+    def get_last_period_chart(self, days, volume_records, rate):
+        results = self.__get_chart(days * 2, days, volume_records, rate)
 
         if results is None:
             return None
 
-        while (len(results) < (days - 1)):
+        while len(results) < (days - 1):
             results.insert(
                 0,
                 {
                     "timestamp_ms": 0,
-                    "active_users": None,
-                    "total_transfers": None
+                    "volume_usd": None
                 }
             )
 
@@ -36,10 +35,10 @@ class VolumeAnalyticsService:
 
         return total_usd
 
-    def get_period_chart(self, days, volume_records):
-        return self.__get_chart(days, 0, volume_records)
+    def get_period_chart(self, days, volume_records, rate):
+        return self.__get_chart(days, 0, volume_records, rate)
 
-    def __get_chart(self, start_days_ago, end_days_ago, volume_records):
+    def __get_chart(self, start_days_ago, end_days_ago, volume_records, rate):
 
         start = int(datetime.now().timestamp()) - start_days_ago * 86400
         end = int(datetime.now().timestamp()) - end_days_ago * 86400
@@ -55,7 +54,7 @@ class VolumeAnalyticsService:
 
             chart_record = {}
             chart_record["timestamp_ms"] = record['timestamp'] * 1000
-            chart_record["volume_usd"] = record["volume_usd"]
+            chart_record["volume_usd"] = record["volume_usd"] * rate
             chart.append(chart_record)
 
         return chart
