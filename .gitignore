@@ -178,3 +178,5 @@ dolttest.py
 mongo_data_to_dolt_transfer.py
 mongo_eth_test.py
 test_script.py
+excel_to_mongo_insert.py
+game_meta.xlsx

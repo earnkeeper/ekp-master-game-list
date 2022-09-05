@@ -691,10 +691,30 @@ def __table_row(COLLECTION_NAME):
                 # right=True
             ),
             Column(
+                id="genre",
+                title="Genre",
+                min_width="120px",
+                value="$.genre",
+                # cell=name_cell("$.genre"),
+                searchable=True,
+                sortable=True,
+                # right=True
+            ),
+            Column(
+                id="platform",
+                title="Platform",
+                min_width="80px",
+                value="$.platform",
+                # cell=name_cell("$.genre"),
+                searchable=True,
+                sortable=True,
+                # right=True
+            ),
+            Column(
                 id="price24h",
                 title="Price",
                 sortable=True,
-                width="150px",
+                width="100px",
                 cell=change_cell(format_currency("$.price", "$.fiat_symbol", False), "$.price_delta_pc", "$.price_delta_color"),
                 right=True
             ),

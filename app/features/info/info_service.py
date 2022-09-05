@@ -128,6 +128,8 @@ class InfoService:
                 "telegram": telegram,
                 "discord": game["discord"],
                 "website": game["website"],
+                "genre": game["genre"] if "genre" in game else None,
+                "platform": game["platform"] if "platform" in game else None,
                 "is_subscribed": is_subscribed,
                 "fiat_symbol": currency['symbol'],
                 "statsAvailable": False,

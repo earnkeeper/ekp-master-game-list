@@ -103,6 +103,7 @@ def __media_section():
             ),
         ])
 
+
 def __shared_games_section():
     return Div(
         when=f"$.shared_games",
@@ -325,6 +326,7 @@ def __volumes_section():
         )
 
     ])
+
 
 def __deep_dives_section():
     return Div(
@@ -1056,6 +1058,8 @@ def __socials_section():
                 "cib-discord",
                 commify("$.discord_members")
             ),
+            __icon_text_col("$.genre", "cil-gamepad"),
+            __icon_text_col("$.platform", "cil-laptop"),
         ]
     )
 
@@ -1097,6 +1101,41 @@ def __image_link_col(href, image_url, content, color):
                         )
                     ]
                 )
+            )
+        ]
+    )
+
+
+def __icon_text_col(content, icon):
+    return Col(
+        when=content,
+        class_name="col-auto my-auto pr-2 pb-1",
+        children=[
+            Row(
+                [
+                    Col(
+                        "col-auto my-auto pr-0",
+                        [
+                            Icon(
+                                icon,
+                                size='lg'
+                            )
+                        ]
+                    ),
+                    Col(
+                        "col-auto px-0",
+                        [Div([], style={"width": "8px"})]
+                    ),
+                    Col(
+                        "col-auto my-auto px-0",
+                        [
+                            Span(
+                                content,
+                                "font-small-3 font-weight-bold"
+                            )
+                        ]
+                    )
+                ]
             )
         ]
     )
