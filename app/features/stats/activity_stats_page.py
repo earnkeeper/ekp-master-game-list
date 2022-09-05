@@ -44,32 +44,6 @@ def analytics_section(VOLUME_CHART_COLLECTION_NAME, PRICE_CHART_COLLECTION_NAME,
                     Tabs(
                         children=[
                             Tab(
-                                label="Volume",
-                                children=[
-                                    Div(
-                                        context=f"$.{VOLUME_CHART_COLLECTION_NAME}.*",
-                                        children=[
-                                            analytics_volume(
-                                                VOLUME_CHART_COLLECTION_NAME
-                                            )
-                                        ]
-                                    )
-                                ]
-                            ),
-                            # Tab(
-                            #     label="Price",
-                            #     children=[
-                            #         Div(
-                            #             context=f"$.{PRICE_CHART_COLLECTION_NAME}.*",
-                            #             children=[
-                            #                 analytics_price(
-                            #                     PRICE_CHART_COLLECTION_NAME
-                            #                 )
-                            #             ]
-                            #         )
-                            #     ]
-                            # ),
-                            Tab(
                                 label="Users",
                                 children=[
                                     Div(
@@ -77,6 +51,19 @@ def analytics_section(VOLUME_CHART_COLLECTION_NAME, PRICE_CHART_COLLECTION_NAME,
                                         children=[
                                             analytics_users(
                                                 USERS_CHART_COLLECTION_NAME
+                                            )
+                                        ]
+                                    )
+                                ]
+                            ),
+                            Tab(
+                                label="Volume",
+                                children=[
+                                    Div(
+                                        context=f"$.{VOLUME_CHART_COLLECTION_NAME}.*",
+                                        children=[
+                                            analytics_volume(
+                                                VOLUME_CHART_COLLECTION_NAME
                                             )
                                         ]
                                     )
