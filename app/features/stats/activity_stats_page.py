@@ -588,7 +588,7 @@ def __table_section(COLLECTION_NAME):
         Div(
             children=[
                 Span(
-                    "We collect the statistics for hundreds of games and demonstrate it to our users.",
+                    "Price, social and volume data for hundreds of games. Sort by any metric, search for your game, subscribe if you want more flexibility and alerts on any metric changes.",
                 ),
                 Div(style={"height": "20px"}),
                 __table_row(COLLECTION_NAME)
