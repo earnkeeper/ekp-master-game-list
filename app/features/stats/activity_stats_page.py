@@ -680,6 +680,13 @@ def __table_row(COLLECTION_NAME):
         default_sort_asc=False,
         show_export=False,
         show_last_updated=True,
+        filters=[
+            {"columnId": "genre", "icon": "cil-spa"},
+            {"columnId": "platform", "icon": "cil-spa"},
+            # {"columnId": "hero_power", "icon": "cil-fire"},
+            # {"columnId": "hero_stamina", "icon": "cil-bolt"},
+            # {"columnId": "hero_class_capital", "icon": "cil-shield-alt", "imageMap": __CLASS_IMAGE_MAP},
+        ],
         columns=[
             Column(
                 id="game_name",
