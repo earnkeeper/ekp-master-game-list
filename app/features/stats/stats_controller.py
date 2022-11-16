@@ -139,7 +139,7 @@ class StatsController:
         if price_chart_form and "days" in price_chart_form:
             price_days = price_chart_form["days"]
 
-        all_games_price_documents = await self.all_games_price_service.get_documents(price_days, rate, is_subscribed)
+        # all_games_price_documents = await self.all_games_price_service.get_documents(price_days, rate, is_subscribed)
 
         # users_chart_form = form_values(event, f"chart_{USERS_CHART_COLLECTION_NAME}")
         # users_days = 7
@@ -180,11 +180,11 @@ class StatsController:
             all_games_volume_documents,
         )
 
-        await self.client_service.emit_documents(
-            sid,
-            PRICE_CHART_COLLECTION_NAME,
-            all_games_price_documents,
-        )
+        # await self.client_service.emit_documents(
+        #     sid,
+        #     PRICE_CHART_COLLECTION_NAME,
+        #     all_games_price_documents,
+        # )
 
         # await self.client_service.emit_documents(
         #     sid,
