@@ -90,7 +90,7 @@ class StatsController:
 
         await self.client_service.emit_busy(sid, PRICE_CHART_COLLECTION_NAME)
 
-        await self.client_service.emit_busy(sid, USERS_CHART_COLLECTION_NAME)
+        # await self.client_service.emit_busy(sid, USERS_CHART_COLLECTION_NAME)
 
         rate = 1
 
@@ -141,13 +141,13 @@ class StatsController:
 
         all_games_price_documents = await self.all_games_price_service.get_documents(price_days, rate, is_subscribed)
 
-        users_chart_form = form_values(event, f"chart_{USERS_CHART_COLLECTION_NAME}")
-        users_days = 7
-        if users_chart_form and "days" in users_chart_form:
-            users_days = users_chart_form["days"]
+        # users_chart_form = form_values(event, f"chart_{USERS_CHART_COLLECTION_NAME}")
+        # users_days = 7
+        # if users_chart_form and "days" in users_chart_form:
+        #     users_days = users_chart_form["days"]
 
-        all_games_users_activity_documents = await self.all_games_users_activity_service.get_documents(users_days,
-                                                                                                       is_subscribed)
+        # all_games_users_activity_documents = await self.all_games_users_activity_service.get_documents(users_days,
+        #                                                                                                is_subscribed)
 
         # pprint(all_games_users_activity_documents)
 
@@ -186,11 +186,11 @@ class StatsController:
             all_games_price_documents,
         )
 
-        await self.client_service.emit_documents(
-            sid,
-            USERS_CHART_COLLECTION_NAME,
-            all_games_users_activity_documents,
-        )
+        # await self.client_service.emit_documents(
+        #     sid,
+        #     USERS_CHART_COLLECTION_NAME,
+        #     all_games_users_activity_documents,
+        # )
 
         # pprint(all_games_volume_documents)
 
@@ -200,7 +200,7 @@ class StatsController:
 
         await self.client_service.emit_done(sid, PRICE_CHART_COLLECTION_NAME)
 
-        await self.client_service.emit_done(sid, USERS_CHART_COLLECTION_NAME)
+        # await self.client_service.emit_done(sid, USERS_CHART_COLLECTION_NAME)
 
 
 def client_is_subscribed(event):

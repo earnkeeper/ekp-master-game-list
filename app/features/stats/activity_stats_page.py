@@ -43,19 +43,19 @@ def analytics_section(VOLUME_CHART_COLLECTION_NAME, PRICE_CHART_COLLECTION_NAME,
                     Div(class_name="mt-2"),
                     Tabs(
                         children=[
-                            Tab(
-                                label="Users",
-                                children=[
-                                    Div(
-                                        context=f"$.{USERS_CHART_COLLECTION_NAME}.*",
-                                        children=[
-                                            analytics_users(
-                                                USERS_CHART_COLLECTION_NAME
-                                            )
-                                        ]
-                                    )
-                                ]
-                            ),
+                            # Tab(
+                            #     label="Users",
+                            #     children=[
+                            #         Div(
+                            #             context=f"$.{USERS_CHART_COLLECTION_NAME}.*",
+                            #             children=[
+                            #                 analytics_users(
+                            #                     USERS_CHART_COLLECTION_NAME
+                            #                 )
+                            #             ]
+                            #         )
+                            #     ]
+                            # ),
                             Tab(
                                 label="Volume",
                                 children=[
