@@ -11,14 +11,8 @@ from shared.get_midnight_utc import get_midnight_utc
 class AllUsersAnalyticsService:
     def __init__(
             self,
-            contract_aggregate_repo_eth: ContractAggregateRepo,
-            contract_aggregate_repo_bsc: ContractAggregateRepo,
-            transaction_repo_eth: TransactionRepo,
             game_repo: GameRepo,
     ):
-        self.contract_aggregate_repo_eth = contract_aggregate_repo_eth
-        self.contract_aggregate_repo_bsc = contract_aggregate_repo_bsc
-        self.transaction_repo_eth = transaction_repo_eth
         self.game_repo = game_repo
 
 
@@ -58,18 +52,12 @@ class AllUsersAnalyticsService:
         # print(start)
         # print(end)
 
-        bsc_results = self.contract_aggregate_repo_bsc.get_users_activity_of_all_games_by_timestamp(
-            start_timestamp=start,
-            end_timestamp=end
-        )
+        bsc_results = []
 
         # pprint('bsc_results: ')
         # pprint(bsc_results)
 
-        eth_results = self.contract_aggregate_repo_eth.get_users_activity_of_all_games_by_timestamp(
-            start_timestamp=start,
-            end_timestamp=end
-        )
+        eth_results = []
 
         # pprint('eth_results: ')
         # pprint(eth_results)

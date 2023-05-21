@@ -61,10 +61,6 @@ class AppContainer(BaseContainer):
 
         super().__init__(config)
 
-        MONGO_URI_ETH = config("MONGO_URI_ETH")
-        MONGO_URI_BSC = config("MONGO_URI_BSC")
-        MONGO_DB_NAME = config('MONGO_DB_NAME')
-
         # Image Proxy
 
         self.client_service.app.add_routes([
@@ -72,16 +68,6 @@ class AppContainer(BaseContainer):
         ])
 
         # DB
-
-        self.mg_client_eth = MgClient(
-            uri=MONGO_URI_ETH,
-            db_name=MONGO_DB_NAME
-        )
-
-        self.mg_client_bsc = MgClient(
-            uri=MONGO_URI_BSC,
-            db_name=MONGO_DB_NAME
-        )
 
         self.activity_repo = ActivityRepo(
             mg_client=self.mg_client
@@ -99,10 +85,6 @@ class AppContainer(BaseContainer):
             mg_client=self.mg_client
         )
 
-        self.game_repo_bsc = GameRepo(
-            mg_client=self.mg_client_bsc
-        )
-
         self.youtube_repo = YoutubeRepo(
             mg_client=self.mg_client
         )
@@ -113,22 +95,6 @@ class AppContainer(BaseContainer):
 
         self.resources_repo = ResourcesRepo(
             mg_client=self.mg_client
-        )
-
-        self.contract_aggregate_repo_eth = ContractAggregateRepo(
-            mg_client=self.mg_client_eth
-        )
-        
-        self.contract_aggregate_repo_bsc = ContractAggregateRepo(
-            mg_client=self.mg_client_bsc
-        )
-
-        self.transaction_repo_eth = TransactionRepo(
-            mg_client=self.mg_client_eth
-        )
-
-        self.transaction_repo_bsc = TransactionRepo(
-            mg_client=self.mg_client_bsc
         )
 
         self.shared_games_repo = SharedGamesRepo(
@@ -163,16 +129,11 @@ class AppContainer(BaseContainer):
         )
 
         self.user_aggregate_service = UserAnalyticsService(
-            contract_aggregate_repo_eth=self.contract_aggregate_repo_eth,
-            contract_aggregate_repo_bsc=self.contract_aggregate_repo_bsc,
-            transaction_repo_eth=self.transaction_repo_eth,
             game_repo=self.game_repo
         )
 
         self.shared_games_service = SharedGamesService(
             shared_games_repo=self.shared_games_repo
-            # transaction_repo=self.transaction_repo_bsc,
-            # game_repo=self.game_repo_bsc,
         )
 
         self.alert_config_repo = AlertConfigRepo(
@@ -194,7 +155,6 @@ class AppContainer(BaseContainer):
             social_followers_info_service=self.social_followers_info_service,
             media_info_service=self.media_info_service,
             resources_info_service=self.resources_info_service,
-            contract_aggregate_repo=self.contract_aggregate_repo_eth,
             user_analytics_service=self.user_aggregate_service,
             volume_analytics_service=self.volume_analytics_service,
             price_analytics_service=self.price_analytics_service,
@@ -246,9 +206,6 @@ class AppContainer(BaseContainer):
         )
 
         self.all_users_analytics_service = AllUsersAnalyticsService(
-            contract_aggregate_repo_bsc=self.contract_aggregate_repo_bsc,
-            contract_aggregate_repo_eth=self.contract_aggregate_repo_eth,
-            transaction_repo_eth=self.transaction_repo_eth,
             game_repo=self.game_repo
         )
 

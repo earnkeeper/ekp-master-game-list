@@ -32,7 +32,6 @@ class InfoService:
         social_followers_info_service: SocialFollowersInfoService,
         media_info_service: MediaInfoService,
         resources_info_service: ResourcesInfoService,
-        contract_aggregate_repo: ContractAggregateRepo,
         user_analytics_service: UserAnalyticsService,
         volume_analytics_service: VolumeAnalyticsService,
         price_analytics_service: PriceAnalyticsService,
@@ -49,7 +48,6 @@ class InfoService:
         self.social_followers_info_service = social_followers_info_service
         self.media_info_service = media_info_service
         self.resources_info_service = resources_info_service
-        self.contract_aggregate_repo = contract_aggregate_repo
         self.user_analytics_service = user_analytics_service
         self.volume_analytics_service = volume_analytics_service
         self.price_analytics_service = price_analytics_service

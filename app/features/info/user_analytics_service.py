@@ -11,14 +11,8 @@ from shared.get_midnight_utc import get_midnight_utc
 class UserAnalyticsService:
     def __init__(
             self,
-            contract_aggregate_repo_eth: ContractAggregateRepo,
-            contract_aggregate_repo_bsc: ContractAggregateRepo,
-            transaction_repo_eth: TransactionRepo,
             game_repo: GameRepo,
     ):
-        self.contract_aggregate_repo_eth = contract_aggregate_repo_eth
-        self.contract_aggregate_repo_bsc = contract_aggregate_repo_bsc
-        self.transaction_repo_eth = transaction_repo_eth
         self.game_repo = game_repo
 
     def get_period_users(self, game, days):
@@ -27,11 +21,7 @@ class UserAnalyticsService:
 
         eth_addresses = game['tokens']['eth']
 
-        user_count_eth = self.transaction_repo_eth.get_active_user_count(
-            eth_addresses,
-            start,
-            end
-        )
+        user_count_eth = 0
 
         return user_count_eth
 
@@ -66,21 +56,13 @@ class UserAnalyticsService:
         eth_addresses = game['tokens']['eth']
 
         if len(eth_addresses):
-            results = self.contract_aggregate_repo_eth.get_range(
-                eth_addresses,
-                start,
-                end
-            )
+            results = []
             all_chain_results += results
 
         bsc_addresses = game['tokens']['bsc']
 
         if len(bsc_addresses):
-            results = self.contract_aggregate_repo_bsc.get_range(
-                bsc_addresses,
-                start,
-                end
-            )
+            results = []
             all_chain_results += results
 
         if not len(all_chain_results):
