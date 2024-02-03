@@ -39,6 +39,9 @@ spec:
           ports:
             - containerPort: 3001
               protocol: TCP
+          resources:
+            limits:
+              memory: "500Mi"
       volumes:
         - name: secret-files
           secret:

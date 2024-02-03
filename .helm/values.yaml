@@ -5,7 +5,11 @@ redis:
     replicaCount: 1
     persistence:
       enabled: false
+    limits:
+      memory: 128Mi
   master:
     disableCommands: []
     persistence:
       enabled: false
+    limits:
+      memory: 128Mi
